@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Get Involved — Analyst Den</title>
+<link rel="stylesheet" href="styles.css"/>
+<link href="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css" rel="stylesheet"/>
+<style>
+/* Quill editor styling to match site design */
+.ql-toolbar.ql-snow {
+  border:none;border-bottom:1px solid var(--border);
+  font-family:var(--font-data);padding:10px 14px;background:var(--bg-alt);
+}
+.ql-container.ql-snow {
+  border:none;font-family:var(--font-body);font-size:15px;color:var(--text);
+}
+.ql-editor {
+  min-height:120px;padding:14px 16px;line-height:1.72;
+  font-family:var(--font-body);font-size:15px;color:var(--text);
+}
+.ql-editor.ql-blank::before {
+  color:var(--text-lt);font-style:normal;font-family:var(--font-body);font-size:14px;
+}
+.rich-wrap {
+  border:1.5px solid var(--border);transition:border-color 0.22s;
+}
+.rich-wrap:focus-within { border-color:var(--gold) }
+.word-count {
+  font-family:var(--font-data);font-size:11px;letter-spacing:0.06em;
+  color:var(--ink-xs);padding:6px 14px;
+  border-top:1px solid var(--border);background:var(--bg-alt);
+  display:flex;justify-content:space-between;
+}
+.word-count.over { color:var(--red) }
+</style>
+</head>
+<body>
+<header class="site-header"><div class="container header-inner"><a href="index.html" class="header-logo"><img src="assets/analyst-den-logo-3d.png" alt="Analyst Den"/></a><nav class="header-nav"><a href="index.html">Home</a><a href="research.html">Research</a><a href="contributors.html">Community</a><a href="about.html">About</a><a href="get-involved.html" class="active">Get Involved</a></nav><div class="header-right"><button class="menu-toggle">☰</button></div></div></header>
+<div class="mobile-menu"><button class="mobile-close">✕</button><a href="index.html">Home</a><a href="research.html">Research</a><a href="contributors.html">Community</a><a href="about.html">About</a><a href="get-involved.html" class="active">Get Involved</a></div>
+
+<div class="page-hero"><div class="container page-hero-inner"><p class="t-label" style="color:rgba(255,255,255,0.45);margin-bottom:14px">Join the Platform</p><h1>Be Part of<br>Meaningful Research</h1><p>Whether you are a student, practicing analyst, or researcher — there is a role for you. Apply in under 3 minutes.</p></div></div>
+
+<section>
+  <div class="container">
+    <div class="section-eyebrow"><span class="eyebrow-text">Step 1 — Choose Your Role</span><div class="eyebrow-line"></div></div>
+    <h2 class="t-headline" style="font-size:28px;margin-bottom:8px">What would you like to do?</h2>
+    <p class="t-body-sm" style="margin-bottom:28px">Select a role below, then scroll down to apply.</p>
+    <div class="role-cards" id="roleCards">
+      <div class="role-card" data-role="Field Researcher"><div class="role-icon">📊</div><h3>Field Researcher</h3><p>Collect data through structured surveys and interviews. Training provided — no prior experience needed.</p><span class="role-badge">Beginner Friendly</span></div>
+      <div class="role-card" data-role="Data Analyst"><div class="role-icon">🔬</div><h3>Data Analyst</h3><p>Clean, analyse, and visualise datasets from the field. Build a real published portfolio.</p><span class="role-badge">Intermediate</span></div>
+      <div class="role-card" data-role="Insight Writer"><div class="role-icon">✍️</div><h3>Insight Writer</h3><p>Turn data findings into readable reports and narratives that decision-makers act on.</p><span class="role-badge">All Levels</span></div>
+      <div class="role-card" data-role="Research Lead"><div class="role-icon">🗺️</div><h3>Research Lead</h3><p>Design methodology, manage field teams, ensure data quality. Prior research experience required.</p><span class="role-badge">Experienced</span></div>
+      <div class="role-card" data-role="Institutional Partner"><div class="role-icon">🏛️</div><h3>Institutional Partner</h3><p>Organisations and NGOs — partner with us to scope and fund research that matters.</p><span class="role-badge">Partnership</span></div>
+      <div class="role-card" data-role="Project Proposal"><div class="role-icon">💡</div><h3>Propose a Project</h3><p>Have a community challenge that needs data? Pitch a project. We review proposals quarterly.</p><span class="role-badge">Quarterly</span></div>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--bg-alt)">
+  <div class="container content-two-col">
+    <div class="perks-panel">
+      <h2>What you get as a contributor</h2>
+      <p>Real experience, a public profile, and published work — not just a volunteer badge.</p>
+      <div class="perk-item"><div class="perk-check">✓</div><div><strong>Published Research Credit</strong><span>Your name on a public report read by policymakers, businesses, and communities.</span></div></div>
+      <div class="perk-item"><div class="perk-check">✓</div><div><strong>Contributor Profile Page</strong><span>A public profile on analystden.org showcasing your projects and publications.</span></div></div>
+      <div class="perk-item"><div class="perk-check">✓</div><div><strong>Mentorship & Training</strong><span>Learn from experienced researchers and analysts throughout the project lifecycle.</span></div></div>
+      <div class="perk-item"><div class="perk-check">✓</div><div><strong>Community Network</strong><span>Connect with analysts and researchers from across Nigeria and the diaspora.</span></div></div>
+      <div style="margin-top:28px"><a href="#apply-form" class="btn btn--ghost">Apply Now →</a></div>
+    </div>
+    <div>
+      <div class="section-eyebrow"><span class="eyebrow-text">How It Works</span><div class="eyebrow-line"></div></div>
+      <div class="process-row"><div class="process-num">01</div><div class="process-content"><h3>Apply</h3><p>Fill in the application form below. Takes under 3 minutes.</p></div></div>
+      <div class="process-row"><div class="process-num">02</div><div class="process-content"><h3>Review</h3><p>We review all applications within 5 working days and respond by email.</p></div></div>
+      <div class="process-row"><div class="process-num">03</div><div class="process-content"><h3>Match</h3><p>You are matched to a project that fits your skills, interests, and availability.</p></div></div>
+      <div class="process-row"><div class="process-num">04</div><div class="process-content"><h3>Contribute</h3><p>Do real fieldwork, analysis, or writing with full support and mentorship.</p></div></div>
+      <div class="process-row" style="border-bottom:none"><div class="process-num">05</div><div class="process-content"><h3>Get Published</h3><p>Your name on a public report and a profile page on this site.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="apply-form">
+  <div class="container--narrow">
+    <div class="section-eyebrow"><span class="eyebrow-text">Step 2 — Apply</span><div class="eyebrow-line"></div></div>
+    <h2 class="t-headline" style="font-size:28px;margin-bottom:8px">Submit Your Application</h2>
+    <p class="t-body-sm" style="margin-bottom:36px">We review all applications within 5 working days and respond by email.</p>
+<style>
+.upload-field { padding:20px 24px; border-bottom:1px solid var(--border) }
+.upload-field label { display:block; font-family:var(--font-data); font-weight:700; font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-lt); margin-bottom:8px }
+.upload-field-hint { font-family:var(--font-body); font-size:12px; color:var(--text-lt); margin-top:5px }
+.upload-field-btn {
+  display:inline-flex; align-items:center; gap:8px;
+  padding:9px 18px; background:var(--forest); color:#fff;
+  border:none; font-family:var(--font-data); font-weight:700;
+  font-size:11px; letter-spacing:0.08em; text-transform:uppercase;
+  cursor:pointer; transition:opacity 0.2s; margin-top:8px;
+}
+.upload-field-btn:hover { opacity:0.85 }
+.upload-field-btn:disabled { opacity:0.5; cursor:not-allowed }
+.upload-status { font-family:var(--font-data); font-size:12px; color:var(--text-lt); margin-top:6px; display:none }
+.upload-status.show { display:block }
+.upload-status.ok { color:var(--forest) }
+.upload-status.err { color:#C0392B }
+.photo-preview { width:72px; height:72px; border-radius:50%; object-fit:cover; border:2px solid var(--border); display:none; margin-top:8px }
+.photo-preview.show { display:block }
+</style>
+
+<form id="apply-form" style="display:flex;flex-direction:column;gap:0;border:1px solid var(--border)">
+
+  <!-- Basic Info -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;border-bottom:1px solid var(--border)">
+    <div style="padding:24px;border-right:1px solid var(--border)">
+      <label class="form-label">Full Name *</label>
+      <input class="form-input" type="text" id="apply-name" placeholder="Your full name" required/>
+    </div>
+    <div style="padding:24px">
+      <label class="form-label">Email Address *</label>
+      <input class="form-input" type="email" id="apply-email" placeholder="your@email.com" required/>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;border-bottom:1px solid var(--border)">
+    <div style="padding:24px;border-right:1px solid var(--border)">
+      <label class="form-label">Role You're Applying For *</label>
+      <select class="form-select" id="apply-role" required>
+        <option value="">Select a role</option>
+        <option>Field Researcher</option>
+        <option>Data Analyst</option>
+        <option>Insight Writer</option>
+        <option>Research Lead</option>
+        <option>Institutional Partner</option>
+        <option>Project Proposal</option>
+      </select>
+    </div>
+    <div style="padding:24px">
+      <label class="form-label">Location</label>
+      <input class="form-input" type="text" id="apply-location" placeholder="City, State, Country"/>
+    </div>
+  </div>
+
+  <div style="padding:24px;border-bottom:1px solid var(--border)">
+    <label class="form-label">Tell us about your background and motivation *</label>
+    <textarea class="form-textarea" id="apply-motivation" placeholder="What's your data or research background? Why do you want to contribute to Analyst Den?" required></textarea>
+  </div>
+
+  <!-- Profile Photo -->
+  <div class="upload-field">
+    <label>Profile Photo <span style="font-weight:400;text-transform:none;letter-spacing:0">(Optional — you can add this later)</span></label>
+    <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+      <div>
+        <button type="button" class="upload-field-btn" id="photo-btn" onclick="document.getElementById('photo-input').click()">↑ Upload Photo</button>
+        <input type="file" id="photo-input" accept="image/jpeg,image/png,image/webp" style="display:none" onchange="handleApplyUpload(this,'photo-btn','photo-status','photo','photo-preview-img')"/>
+        <p class="upload-field-hint">JPG, PNG or WebP · Max 4MB</p>
+        <p class="upload-status" id="photo-status"></p>
+        <input type="hidden" id="apply-photo-url"/>
+      </div>
+      <img id="photo-preview-img" class="photo-preview" src="" alt="Photo preview"/>
+    </div>
+  </div>
+
+  <!-- CV Upload -->
+  <div class="upload-field">
+    <label>CV / Resume <span style="font-weight:400;text-transform:none;letter-spacing:0">(Optional but recommended)</span></label>
+    <button type="button" class="upload-field-btn" id="cv-btn" onclick="document.getElementById('cv-input').click()">↑ Upload CV</button>
+    <input type="file" id="cv-input" accept=".pdf,.doc,.docx" style="display:none" onchange="handleApplyUpload(this,'cv-btn','cv-status','raw','')"/>
+    <p class="upload-field-hint">PDF, DOC or DOCX · Max 10MB</p>
+    <p class="upload-status" id="cv-status"></p>
+    <input type="hidden" id="apply-cv-url"/>
+  </div>
+
+
+
+  <div style="padding:24px;border-bottom:1px solid var(--border);background:var(--bg-alt)">
+    <label class="form-label" style="margin-bottom:10px;display:block">Verification — answer to continue</label>
+    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+      <div style="font-family:var(--font-display);font-size:22px;font-weight:600;color:var(--text);background:var(--bg-card);padding:10px 20px;border:1.5px solid var(--border);letter-spacing:0.05em" id="captcha-question">—</div>
+      <span style="font-family:var(--font-data);font-size:16px;color:var(--text-lt)">=</span>
+      <input type="number" id="captcha-answer" class="form-input" style="width:100px;font-size:18px;text-align:center" placeholder="?" autocomplete="off"/>
+      <button type="button" onclick="refreshCaptcha()" style="background:none;border:none;cursor:pointer;color:var(--gold);font-family:var(--font-data);font-size:12px;letter-spacing:0.08em;text-transform:uppercase;font-weight:700">↻ New</button>
+    </div>
+    <p id="captcha-error" style="color:#C0392B;font-family:var(--font-data);font-size:12px;letter-spacing:0.06em;margin-top:8px;display:none">Incorrect answer — please try again</p>
+  </div>
+  <div style="padding:24px">
+    <button type="submit" class="btn btn--primary" style="width:100%;justify-content:center">Submit Application →</button>
+  </div>
+</form>
+  </div>
+</section>
+
+<section style="background:var(--bg-alt)">
+  <div class="container--narrow">
+    <div class="section-eyebrow"><span class="eyebrow-text">Common Questions</span><div class="eyebrow-line"></div></div>
+    <div class="faq-item"><button class="faq-q">Do I need prior research experience?<span class="faq-toggle">+</span></button><div class="faq-a">For Field Researcher and Data Analyst roles, no prior experience is required. We provide training and mentorship throughout the project.</div></div>
+    <div class="faq-item"><button class="faq-q">Is this a paid opportunity?<span class="faq-toggle">+</span></button><div class="faq-a">Currently contributions are voluntary. You receive published research credit, a public profile, and real portfolio experience in return.</div></div>
+    <div class="faq-item"><button class="faq-q">How long does a project last?<span class="faq-toggle">+</span></button><div class="faq-a">Projects typically run for 3 months from data collection to final report publication.</div></div>
+    <div class="faq-item"><button class="faq-q">Can I contribute remotely?<span class="faq-toggle">+</span></button><div class="faq-a">Data analysis and insight writing roles can be done remotely. Field research roles require in-person attendance in Ogun State.</div></div>
+  </div>
+</section>
+
+<footer class="site-footer"><div class="container"><div class="footer-grid"><div class="footer-brand"><span class="footer-logo">Analyst Den</span><p>A Datavasity platform.</p></div><div class="footer-col"><p class="footer-col-title">Research</p><a href="research.html">Projects</a><a href="publications.html">Publications</a></div><div class="footer-col"><p class="footer-col-title">Community</p><a href="contributors.html">Contributors</a><a href="get-involved.html">Get Involved</a></div><div class="footer-col"><p class="footer-col-title">About</p><a href="about.html">About Us</a><a href="contact.html">Contact</a></div><div class="footer-col"><p class="footer-col-title">Portal</p><a href="admin.html" style="opacity:0.7">Admin Login</a><a href="dashboard.html" style="opacity:0.7">Contributor Login</a></div>
+    </div><div class="footer-bottom"><span>© 2026 Analyst Den by Datavasity</span><span>hello@analystden.org</span></div></div></footer>
+<script src="script.js"></script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, addDoc, collection, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+const app = initializeApp({
+  apiKey:"AIzaSyBzlCB74rpbd6o2vx7RbsfuIrkfOyhBUTQ",
+  authDomain:"analyst-den-3f9c9.firebaseapp.com",
+  projectId:"analyst-den-3f9c9",
+  storageBucket:"analyst-den-3f9c9.firebasestorage.app",
+  messagingSenderId:"438646500281",
+  appId:"1:438646500281:web:8a7c48d0ca882e2b5a6468"
+});
+const db = getFirestore(app);
+/* ── MATH CAPTCHA ── */
+let captchaAnswer = 0;
+function refreshCaptcha(){
+  const ops = ['+','-','×'];
+  const op  = ops[Math.floor(Math.random()*3)];
+  let a,b,result;
+  if(op==='+'){  a=Math.floor(Math.random()*12)+1; b=Math.floor(Math.random()*12)+1; result=a+b; }
+  else if(op==='-'){ a=Math.floor(Math.random()*12)+5; b=Math.floor(Math.random()*a)+1; result=a-b; }
+  else{ a=Math.floor(Math.random()*9)+2; b=Math.floor(Math.random()*9)+2; result=a*b; }
+  captchaAnswer = result;
+  const q = document.getElementById('captcha-question');
+  if(q) q.textContent = `${a} ${op} ${b}`;
+  const inp = document.getElementById('captcha-answer');
+  if(inp) inp.value = '';
+  const err = document.getElementById('captcha-error');
+  if(err) err.style.display = 'none';
+}
+window.refreshCaptcha = refreshCaptcha;
+document.addEventListener('DOMContentLoaded', refreshCaptcha);
+
+const CLOUD = 'dzacwqaam';
+const PRESET = 'analyst_den_uploads';
+
+/* Upload helper for application form */
+window.handleApplyUpload = async function(fileInput, btnId, statusId, type, previewId) {
+  const file = fileInput.files[0];
+  if(!file) return;
+
+  const maxMB = type === 'raw' ? 10 : 4;
+  if(file.size > maxMB * 1024 * 1024){
+    const s = document.getElementById(statusId);
+    s.textContent = `File too large — max ${maxMB}MB`;
+    s.className = 'upload-status show err';
+    fileInput.value = ''; return;
+  }
+
+  const btn    = document.getElementById(btnId);
+  const status = document.getElementById(statusId);
+  btn.disabled = true; btn.textContent = 'Uploading…';
+  status.textContent = 'Uploading…'; status.className = 'upload-status show';
+
+  try {
+    const endpoint = type === 'raw'
+      ? `https://api.cloudinary.com/v1_1/${CLOUD}/raw/upload`
+      : `https://api.cloudinary.com/v1_1/${CLOUD}/image/upload`;
+
+    const fd = new FormData();
+    fd.append('file', file);
+    fd.append('upload_preset', PRESET);
+    fd.append('folder', 'analyst-den/applications');
+
+    const res  = await fetch(endpoint, { method:'POST', body:fd });
+    const data = await res.json();
+
+    if(data.secure_url){
+      const sizeKB = Math.round((data.bytes||0)/1024);
+      const label  = sizeKB > 1000 ? (sizeKB/1024).toFixed(1)+'MB' : sizeKB+'KB';
+      status.textContent = `✓ ${file.name} (${label})`;
+      status.className = 'upload-status show ok';
+
+      // Store URL in hidden field
+      if(btnId === 'photo-btn'){
+        const url = data.secure_url.replace('/upload/','/upload/q_auto:good,f_auto,w_400,c_limit/');
+        document.getElementById('apply-photo-url').value = url;
+        if(previewId){
+          const prev = document.getElementById(previewId);
+          prev.src = url; prev.classList.add('show');
+        }
+      } else if(btnId === 'cv-btn'){
+        document.getElementById('apply-cv-url').value = data.secure_url;
+      } else if(btnId === 'cl-btn'){
+        document.getElementById('apply-cl-url').value = data.secure_url;
+      }
+    } else {
+      throw new Error(data.error?.message || 'Upload failed');
+    }
+  } catch(err){
+    status.textContent = '✗ Upload failed — ' + err.message;
+    status.className = 'upload-status show err';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = btnId === 'photo-btn' ? '↑ Upload Photo' : btnId === 'cv-btn' ? '↑ Upload CV' : '↑ Upload Cover Letter';
+    fileInput.value = '';
+  }
+};
+
+/* Form submit */
+const applyForm = document.getElementById('apply-form');
+if(applyForm){
+  applyForm.addEventListener('submit', async e => {
+    e.preventDefault();
+    const btn = applyForm.querySelector('button[type="submit"]');
+
+    const name       = document.getElementById('apply-name')?.value.trim() || '';
+    const email      = document.getElementById('apply-email')?.value.trim() || '';
+    const role       = document.getElementById('apply-role')?.value.trim() || '';
+    const location   = document.getElementById('apply-location')?.value.trim() || '';
+    // Get from hidden input (populated by Quill editor)
+    const motivationEl = document.getElementById('apply-motivation');
+    const motivation = motivationEl?.value.trim() || motivationEditor?.getText().trim() || '';
+    const coverLetterHtml = document.getElementById('apply-cl-url')?.value || '';
+    const photoUrl   = document.getElementById('apply-photo-url')?.value || '';
+    const cvUrl      = document.getElementById('apply-cv-url')?.value || '';
+    const clUrl      = ''; // Cover letter now stored as HTML text in coverLetterHtml
+
+    if(!name || !email || !role || !motivation){
+      alert('Please fill in all required fields (Name, Email, Role and Motivation).');
+      return;
+    }
+
+    // Check captcha
+    const userAnswer = parseInt(document.getElementById('captcha-answer')?.value);
+    const captchaErr = document.getElementById('captcha-error');
+    if(isNaN(userAnswer) || userAnswer !== captchaAnswer){
+      if(captchaErr) captchaErr.style.display = 'block';
+      refreshCaptcha();
+      return;
+    }
+    if(captchaErr) captchaErr.style.display = 'none';
+
+    btn.textContent = 'Submitting…'; btn.disabled = true;
+
+    try {
+      await addDoc(collection(db,'applications'), {
+        name, email, role, location, motivation,
+        photoUrl, cvUrl, coverLetterText: coverLetterHtml,
+        status: 'pending',
+        profileComplete: false,
+        submittedAt: serverTimestamp()
+      });
+
+      btn.textContent = 'Application Submitted ✓';
+      btn.style.background = 'var(--forest)';
+      // Redirect to thank you page
+      setTimeout(() => { window.location.href = 'thankyou.html'; }, 700);
+
+    } catch(err){
+      console.error('Application error:', err);
+      btn.textContent = 'Submit Application →';
+      btn.disabled = false;
+      alert('Submission failed: ' + (err.message || 'Please try again.'));
+    }
+  });
+}
+</script>

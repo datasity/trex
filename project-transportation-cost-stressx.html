@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Transportation Cost Stress — Analyst Den</title>
+<link rel="stylesheet" href="styles.css"/>
+<style>
+/* ── PROJECT DETAIL HERO — text LEFT, framed image RIGHT ── */
+.pd-hero {
+  background: var(--ink);
+  border-bottom: 3px solid var(--gold);
+  padding: 0;
+  overflow: hidden;
+}
+[data-theme="dark"] .pd-hero {
+  background: #0e0e0e;
+}
+
+.pd-hero-inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 0 40px;
+  display: grid;
+  grid-template-columns: 1fr 480px;
+  gap: 64px;
+  align-items: center;
+  min-height: 420px;
+}
+
+/* LEFT: all text */
+.pd-hero-text {
+  padding: 64px 0;
+}
+.pd-hero-eyebrow {
+  font-family: var(--font-data);
+  font-weight: 700; font-size: 10px;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 20px;
+}
+.pd-hero-text h1 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(32px, 4vw, 56px);
+  line-height: 1.02; letter-spacing: -0.025em;
+  color: #ffffff;
+  margin-bottom: 22px;
+}
+.pd-hero-chips {
+  display: flex; gap: 10px; flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+.pd-chip {
+  font-family: var(--font-data); font-size: 11px;
+  font-weight: 600; letter-spacing: 0.06em;
+  padding: 6px 14px;
+  border: 1px solid rgba(255,255,255,0.22);
+  color: rgba(255,255,255,0.78);
+}
+.pd-hero-actions {
+  display: flex; gap: 12px; flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.pd-hero-countdown {
+  font-family: var(--font-data); font-size: 12px;
+  color: rgba(255,255,255,0.38);
+  margin-top: 4px;
+}
+.pd-hero-countdown span {
+  color: var(--gold); font-weight: 700;
+}
+
+/* RIGHT: framed image card — exactly like the screenshot */
+.pd-hero-imgcard {
+  background: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+  margin: 48px 0;
+}
+.pd-hero-imgcard-title {
+  display: flex; align-items: center; gap: 10px;
+  padding: 14px 18px;
+  border-bottom: 1px solid #e8e4de;
+  background: #ffffff;
+}
+.pd-hero-imgcard-icon {
+  font-size: 18px;
+}
+.pd-hero-imgcard-label {
+  font-family: var(--font-data); font-weight: 700;
+  font-size: 13px; color: #111111;
+  letter-spacing: 0.01em;
+}
+@media(max-width:600px){#contributors-strip [style*="repeat(4"]{grid-template-columns:repeat(2,1fr)!important}}
+.pd-hero-imgcard img {
+  width: 100%; height: auto;
+  display: block;
+  object-fit: contain;
+  object-position: center top;
+  background: #f5f5f0;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .pd-hero-inner {
+    grid-template-columns: 1fr;
+    gap: 0;
+    padding: 0 24px;
+  }
+  .pd-hero-imgcard {
+    margin: 0 0 40px;
+    max-width: 480px;
+  }
+  .pd-hero-text { padding: 48px 0 32px }
+}
+@media (max-width: 540px) {
+  .pd-hero-text { padding: 36px 0 24px }
+  .pd-hero-text h1 { font-size: clamp(28px, 8vw, 40px) }
+}
+.t-body h2,.t-body h3{font-family:var(--font-display);font-weight:600;margin:1em 0 0.5em}
+.t-body p{margin-bottom:1em;line-height:1.8}
+.t-body ul,.t-body ol{padding-left:1.5em;margin-bottom:1em}
+.t-body li{margin-bottom:0.4em;line-height:1.7}
+.t-body strong{font-weight:700}
+@keyframes tlAmberPulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.6);opacity:0.6}}
+@keyframes tlIn{to{opacity:1;transform:translateY(0)}}
+</style>
+
+<style>
+/* Power BI Modal */
+.pbi-modal-overlay {
+  display:none;position:fixed;inset:0;z-index:999;
+  background:rgba(0,0,0,0.82);backdrop-filter:blur(6px);
+  align-items:center;justify-content:center;
+  animation:overlayIn 0.25s ease;
+}
+.pbi-modal-overlay.open { display:flex }
+@keyframes overlayIn{ from{opacity:0} to{opacity:1} }
+.pbi-modal {
+  background:#111;width:95vw;height:90vh;max-width:1400px;
+  position:relative;animation:modalIn 0.3s cubic-bezier(.4,0,.2,1);
+  border:1px solid rgba(255,255,255,0.12);
+  display:flex;flex-direction:column;
+}
+@keyframes modalIn{ from{opacity:0;transform:scale(0.96) translateY(20px)} to{opacity:1;transform:scale(1) translateY(0)} }
+.pbi-modal-head {
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 20px;border-bottom:1px solid rgba(255,255,255,0.1);flex-shrink:0;
+}
+.pbi-modal-head h3 {
+  font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;
+  font-size:18px;color:#fff;letter-spacing:-0.01em;
+}
+.pbi-modal-close {
+  background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);
+  color:#fff;width:36px;height:36px;border-radius:50%;
+  font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:background 0.2s;flex-shrink:0;
+}
+.pbi-modal-close:hover { background:rgba(255,255,255,0.18) }
+.pbi-iframe-wrap { flex:1;position:relative }
+.pbi-iframe-wrap iframe { width:100%;height:100%;border:none;display:block }
+.pbi-loading {
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:14px;color:rgba(255,255,255,0.5);
+  font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:0.08em;text-transform:uppercase;
+}
+.pbi-spinner {
+  width:36px;height:36px;border:2px solid rgba(255,255,255,0.1);
+  border-top-color:#B8860B;border-radius:50%;
+  animation:spin 0.8s linear infinite;
+}
+@keyframes spin{ to{transform:rotate(360deg)} }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="index.html" class="header-logo">
+      <img src="assets/analyst-den-logo-3d.png" alt="Analyst Den"/>
+    </a>
+    <nav class="header-nav">
+      <a href="index.html">Home</a>
+      <a href="research.html" class="active">Research</a>
+      <a href="contributors.html">Community</a>
+      <a href="about.html">About</a>
+      <a href="get-involved.html">Get Involved</a>
+    </nav>
+    <div class="header-right">
+      <a href="get-involved.html" class="header-cta">Apply Now</a>
+      <button class="menu-toggle" aria-label="Open menu">☰</button>
+    </div>
+  </div>
+</header>
+<div class="mobile-menu">
+  <button class="mobile-close">✕</button>
+  <a href="index.html">Home</a>
+  <a href="research.html" class="active">Research</a>
+  <a href="contributors.html">Community</a>
+  <a href="about.html">About</a>
+  <a href="get-involved.html">Get Involved</a>
+  <a href="contact.html">Contact</a>
+</div>
+
+<!-- BREADCRUMB -->
+<div class="container">
+  <div class="breadcrumb">
+    <a href="index.html">Home</a>
+    <span class="breadcrumb-sep">/</span>
+    <a href="research.html">Research</a>
+    <span class="breadcrumb-sep">/</span>
+    <span>Transportation Cost Stress</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     HERO — text LEFT, framed image RIGHT
+══════════════════════════════ -->
+<div class="pd-hero">
+  <div class="pd-hero-inner">
+
+    <!-- LEFT -->
+    <div class="pd-hero-text">
+      <p class="pd-hero-eyebrow">Analyst Den Research Project</p>
+      <h1>Transportation Cost Stress</h1>
+      <div class="pd-hero-chips">
+        <span class="pd-chip">Ogun State, Nigeria</span>
+        <span class="pd-chip">March – May 2026</span>
+        <span class="pd-chip">Field Research</span>
+        <span class="tag tag--active" style="font-size:10px;letter-spacing:0.08em">Active</span>
+      </div>
+      <div class="pd-hero-actions">
+        <a href="get-involved.html" class="btn" style="background:transparent;color:#ffffff;border:1.5px solid rgba(255,255,255,0.7);font-family:var(--font-data);font-weight:700;font-size:12px;letter-spacing:0.10em;text-transform:uppercase;padding:13px 28px;">Become a Contributor</a>
+        <button onclick="window.openTimeline()" class="btn btn--primary" id="timeline-btn">Project Timeline →</button>
+      </div>
+      <p class="pd-hero-countdown">
+        Next update in <span id="countdown-timer">Loading…</span>
+      </p>
+    </div>
+
+    <!-- RIGHT: framed image card -->
+    <div class="pd-hero-imgcard">
+      <img id="hero-project-img" src="assets/trans.png" alt="Project image" style="width:100%;height:100%;object-fit:cover;border-radius:inherit"/>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     KEY NUMBERS
+══════════════════════════════ -->
+<section>
+  <div class="container">
+    <div class="data-numbers">
+      <div class="data-number-col">
+        <div class="data-number">1,240</div>
+        <div class="data-number-label">Survey Responses</div>
+      </div>
+      <div class="data-number-col">
+        <div class="data-number">12</div>
+        <div class="data-number-label">LGA Coverage Areas</div>
+      </div>
+      <div class="data-number-col">
+        <div class="data-number">72%</div>
+        <div class="data-number-label">Report High Transport Burden</div>
+      </div>
+      <div class="data-number-col">
+        <div class="data-number">5</div>
+        <div class="data-number-label">Research Contributors</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════
+     OVERVIEW + METHODOLOGY
+══════════════════════════════ -->
+<!-- Timeline section - shown when button clicked -->
+<section id="timeline-section" style="display:none;background:#EDEBE4;border-top:3px solid #B8860B;border-bottom:1px solid #D8D2C8">
+  <div class="container" style="padding-top:0;padding-bottom:0">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 0;border-bottom:1px solid #D8D2C8">
+      <span class="eyebrow-text">Project Timeline</span>
+      <button onclick="window.closeTimeline()" style="background:none;border:1px solid #D8D2C8;padding:7px 16px;font-family:var(--font-data);font-size:11px;font-weight:700;letter-spacing:0.10em;text-transform:uppercase;color:#6B6560;cursor:pointer">✕ Close</button>
+    </div>
+    <div id="timeline-track"></div>
+  </div>
+</section>
+
+<section>
+  <div class="container content-two-col">
+    <div>
+      <div class="section-eyebrow">
+        <span class="eyebrow-text">Project Overview</span>
+        <div class="eyebrow-line"></div>
+      </div>
+      <h2 class="t-headline" style="font-size:26px;margin-bottom:16px">About This Study</h2>
+      <p class="t-body">Transportation costs are a growing source of economic pressure for commuters and taxi drivers in Ogun State. Rising fuel prices, fare instability, and infrastructure constraints are reshaping daily mobility and household finances.</p>
+      <p class="t-body" style="margin-top:14px">This project documents how transport cost stress affects income, access to work, and daily living. Field researchers conducted structured interviews across 12 local government areas between March and May 2026.</p>
+      <blockquote class="pull-quote">"7 out of 10 households now spend more than 20% of monthly income on transportation alone."</blockquote>
+    </div>
+    <div>
+      <div class="section-eyebrow">
+        <span class="eyebrow-text">Methodology</span>
+        <div class="eyebrow-line"></div>
+      </div>
+      <div class="process-row" style="padding:20px 0">
+        <div class="process-num">01</div>
+        <div class="process-content"><h3>Survey Design</h3><p>Structured questionnaires developed across transport, income, and mobility dimensions.</p></div>
+      </div>
+      <div class="process-row" style="padding:20px 0">
+        <div class="process-num">02</div>
+        <div class="process-content"><h3>Field Collection</h3><p>1,240 face-to-face interviews across 12 LGAs, conducted by trained field researchers.</p></div>
+      </div>
+      <div class="process-row" style="padding:20px 0">
+        <div class="process-num">03</div>
+        <div class="process-content"><h3>Data Cleaning & Analysis</h3><p>Validated and cleaned dataset analysed using Power BI and Python.</p></div>
+      </div>
+      <div class="process-row" style="padding:20px 0;border-bottom:none">
+        <div class="process-num">04</div>
+        <div class="process-content"><h3>Reporting</h3><p>Findings published as a public insights report and downloadable PDF.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════
+     KEY FINDINGS
+══════════════════════════════ -->
+<section style="background:var(--bg-alt);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+  <div class="container">
+    <div class="section-eyebrow">
+      <span class="eyebrow-text">Key Findings</span>
+      <div class="eyebrow-line"></div>
+    </div>
+    <div class="project-findings">
+      <div class="finding-col">
+        <div class="finding-num">72%</div>
+        <div class="finding-label">Report increased transport burden</div>
+      </div>
+      <div class="finding-col">
+        <div class="finding-num">58%</div>
+        <div class="finding-label">Changed travel behaviour due to rising costs</div>
+      </div>
+      <div class="finding-col">
+        <div class="finding-num">34%</div>
+        <div class="finding-label">Spend over ₦15,000 monthly on transport</div>
+      </div>
+      <div class="finding-col">
+        <div class="finding-num">61%</div>
+        <div class="finding-label">Use informal transport as primary mode</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════
+     RESEARCH TEAM
+══════════════════════════════ -->
+<section id="team-section" style="display:none">
+  <div class="container">
+    <div class="section-eyebrow">
+      <span class="eyebrow-text">Research Team</span>
+      <div class="eyebrow-line"></div>
+    </div>
+    <div id="contributors-strip"></div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════
+     DOWNLOADS
+══════════════════════════════ -->
+<section style="background:var(--bg-alt);border-top:1px solid var(--border)">
+  <div class="container">
+    <div class="section-eyebrow">
+      <span class="eyebrow-text">Downloads</span>
+      <div class="eyebrow-line"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0;border:1px solid var(--border)">
+      <a href="assets/report.pdf" class="pub-card" download style="text-decoration:none">
+        <span class="pub-tag">PDF Report</span>
+        <p class="pub-title">Full Research Report</p>
+        <p class="pub-meta">PDF · 2.4MB</p>
+        <span class="pub-download">↓ Download</span>
+      </a>
+      <div class="pub-card">
+        <span class="pub-tag">Dataset</span>
+        <p class="pub-title">Raw Survey Dataset</p>
+        <p class="pub-meta">CSV · 1.8MB</p>
+        <span class="pub-download">↓ Download</span>
+      </div>
+      <div class="pub-card">
+        <span class="pub-tag">Methodology</span>
+        <p class="pub-title">Research Methodology</p>
+        <p class="pub-meta">PDF · 1.2MB</p>
+        <span class="pub-download">↓ Download</span>
+      </div>
+      <div class="pub-card">
+        <span class="pub-tag">Presentation</span>
+        <p class="pub-title">Findings Deck</p>
+        <p class="pub-meta">PPTX · 3.2MB</p>
+        <span class="pub-download">↓ Download</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+
+<!-- Power BI Modal -->
+<div class="pbi-modal-overlay" id="pbi-modal">
+  <div class="pbi-modal">
+    <div class="pbi-modal-head">
+      <h3 id="pbi-modal-title">Interactive Research Dashboard</h3>
+      <button class="pbi-modal-close" onclick="closePBI()">✕</button>
+    </div>
+    <div class="pbi-iframe-wrap">
+      <div class="pbi-loading" id="pbi-loading">
+        <div class="pbi-spinner"></div>
+        <span>Loading dashboard…</span>
+      </div>
+      <iframe id="pbi-iframe" src="" allowfullscreen
+        onload="document.getElementById('pbi-loading').style.display='none'">
+      </iframe>
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <span class="footer-logo">Analyst Den</span>
+        <p>A Datavasity platform.</p>
+      </div>
+      <div class="footer-col">
+        <p class="footer-col-title">Research</p>
+        <a href="research.html">Projects</a>
+        <a href="publications.html">Publications</a>
+      </div>
+      <div class="footer-col">
+        <p class="footer-col-title">Community</p>
+        <a href="contributors.html">Contributors</a>
+        <a href="get-involved.html">Get Involved</a>
+      </div>
+      <div class="footer-col">
+        <p class="footer-col-title">About</p>
+        <a href="about.html">About Us</a>
+        <a href="contact.html">Contact</a>
+      </div>
+      <div class="footer-col">
+        <p class="footer-col-title">Portal</p>
+        <a href="admin.html" style="opacity:0.7">Admin Login</a>
+        <a href="dashboard.html" style="opacity:0.7">Contributor Login</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Analyst Den by Datavasity</span>
+      <span>hello@analystden.org</span>
+    </div>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, doc, getDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const app = initializeApp({
+  apiKey:"AIzaSyBzlCB74rpbd6o2vx7RbsfuIrkfOyhBUTQ",
+  authDomain:"analyst-den-3f9c9.firebaseapp.com",
+  projectId:"analyst-den-3f9c9",
+  storageBucket:"analyst-den-3f9c9.firebasestorage.app",
+  messagingSenderId:"438646500281",
+  appId:"1:438646500281:web:8a7c48d0ca882e2b5a6468"
+});
+const db = getFirestore(app);
+
+async function loadProject(){
+  const id = new URLSearchParams(window.location.search).get('id');
+  if(!id) return; // no id = show default Transportation Cost Stress hardcoded content
+
+  try {
+    const snap = await getDoc(doc(db,'projects',id));
+    if(!snap.exists()) return;
+    const p = snap.data();
+
+    // Title
+    document.querySelectorAll('h1').forEach(el => {
+      if(el.textContent.includes('Transportation Cost Stress')) el.textContent = p.title||'';
+    });
+    document.title = `${p.title||'Project'} — Analyst Den`;
+    storeTL(p);
+
+    // Hero eyebrow
+    const eyebrow = document.querySelector('.pd-hero-eyebrow');
+    if(eyebrow) eyebrow.textContent = 'Analyst Den Research Project';
+
+    // Meta chips
+    const chips = document.querySelectorAll('.pd-chip');
+    if(chips[0]) chips[0].textContent = p.location||'';
+    if(chips[1]) chips[1].textContent = p.period||'';
+    if(chips[2]) chips[2].textContent = 'Field Research';
+
+    // Image
+    if(p.image){ const imgEl=document.getElementById('hero-project-img'); if(imgEl) imgEl.src=p.image; }
+
+    // Stats
+    const statNums = document.querySelectorAll('.data-number');
+    if(statNums[0] && p.responses) statNums[0].textContent = p.responses.toLocaleString();
+
+    // Description
+    const descEls = document.querySelectorAll('.t-body');
+    if(descEls[0] && p.description) descEls[0].innerHTML = p.description;
+    if(descEls[1] && p.writeup)     descEls[1].innerHTML = p.writeup;
+
+    // Pull quote
+    const quoteEl = document.querySelector('.pull-quote');
+    if(quoteEl && p.quote) quoteEl.textContent = `"${p.quote}"`;
+
+    // Downloads
+    const dlLinks = {
+      pdf:          document.querySelector('a[download].pub-card'),
+      dataset:      null,
+      methodology:  null,
+      presentation: null
+    };
+
+    // Power BI button
+    const pbiBtnWrap = document.getElementById('pbi-btn-wrap');
+    if(pbiBtnWrap){
+      if(p.powerbi){
+        pbiBtnWrap.innerHTML = `
+          <button onclick="openPBI('${p.powerbi}','${(p.title||'').replace(/'/g,"\'")} — Dashboard')"
+            class="btn btn--primary" style="display:inline-flex;align-items:center;gap:8px">
+            📊 View Interactive Dashboard
+          </button>`;
+      } else {
+        pbiBtnWrap.innerHTML = '';
+      }
+    }
+
+    // Update download cards
+    const pubCards = document.querySelectorAll('.pub-card');
+    if(pubCards[0] && p.pdf){
+      pubCards[0].href = p.pdf;
+      pubCards[0].style.opacity = '1';
+    }
+    if(pubCards[1] && p.dataset){
+      pubCards[1].href = p.dataset;
+      pubCards[1].style.opacity = '1';
+      pubCards[1].setAttribute('href', p.dataset);
+      const dl = pubCards[1].querySelector('.pub-download');
+      if(dl) dl.textContent = '↓ Download';
+    }
+    if(pubCards[2] && p.methodology){
+      pubCards[2].href = p.methodology;
+      pubCards[2].style.opacity = '1';
+      const dl = pubCards[2].querySelector('.pub-download');
+      if(dl) dl.textContent = '↓ Download';
+    }
+    if(pubCards[3] && p.presentation){
+      pubCards[3].href = p.presentation;
+      pubCards[3].style.opacity = '1';
+      const dl = pubCards[3].querySelector('.pub-download');
+      if(dl) dl.textContent = '↓ Download';
+    }
+
+    // Load contributors assigned to this project
+    if(p.title){
+      const contribSnap = await getDocs(collection(db,'contributors'));
+      const assigned = contribSnap.docs.map(d=>({id:d.id,...d.data()}))
+        .filter(c => Array.isArray(c.projects) && c.projects.some(proj =>
+          proj.toLowerCase().includes(p.title.toLowerCase().substring(0,10))
+        ));
+
+      const teamSec = document.getElementById('team-section');
+      const strip = document.getElementById('contributors-strip');
+      if(assigned.length && teamSec && strip){
+        teamSec.style.display = 'block';
+        strip.innerHTML = '';
+        var SHOW = 4; var showAll = false;
+        function buildGrid(){
+          strip.innerHTML = '';
+          var vis = showAll ? assigned : assigned.slice(0,SHOW);
+          var g = document.createElement('div');
+          g.style.cssText = 'display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:#D8D2C8;border:1px solid #D8D2C8';
+          g.innerHTML = vis.map(function(c,i){
+            var ini = (c.name||'?').split(' ').map(function(w){return w[0]||'';}).join('').substring(0,2).toUpperCase();
+            var av = c.avatar
+              ? '<img src="'+c.avatar+'" alt="'+(c.name||'')+'" style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid #D8D2C8;display:block;margin:0 auto 12px" onerror="this.style.display='none';this.nextSibling.style.display='flex'"/><div style="display:none;width:72px;height:72px;border-radius:50%;background:#EDEBE4;border:2px solid #D8D2C8;align-items:center;justify-content:center;font-weight:800;font-size:18px;color:#6B6560;margin:0 auto 12px">'+ini+'</div>'
+              : '<div style="display:flex;width:72px;height:72px;border-radius:50%;background:#EDEBE4;border:2px solid #D8D2C8;align-items:center;justify-content:center;font-weight:800;font-size:18px;color:#6B6560;margin:0 auto 12px">'+ini+'</div>';
+            return '<div style="background:#F6F3ED;padding:24px 12px 20px;text-align:center;transition:background 0.2s" onmouseover="this.style.background='#fff'" onmouseout="this.style.background='#F6F3ED'">'+av+'<div style="font-family:var(--font-display,Georgia,serif);font-weight:600;font-size:15px;color:#111;margin-bottom:4px">'+(c.name||'—')+'</div><div style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#6B6560">'+(c.role||'')+'</div></div>';
+          }).join('');
+          strip.appendChild(g);
+          if(assigned.length > SHOW){
+            var bw = document.createElement('div');
+            bw.style.cssText = 'text-align:center;padding:20px';
+            bw.innerHTML = '<button onclick="window._tg()" style="background:none;border:1.5px solid #D8D2C8;padding:9px 28px;font-size:11px;font-weight:700;letter-spacing:0.10em;text-transform:uppercase;color:#6B6560;cursor:pointer">'+(showAll?'↑ Show Less':'See All '+assigned.length+' Contributors ↓')+'</button>';
+            strip.appendChild(bw);
+          }
+        }
+        window._tg = function(){ showAll=!showAll; buildGrid(); };
+        buildGrid();
+      }
+    }
+
+  } catch(e){ console.error('Project detail load error:', e); }
+}
+
+loadProject();
+
+/* ── POWER BI MODAL ── */
+window.openPBI = function(url, title){
+  const modal = document.getElementById('pbi-modal');
+  const iframe = document.getElementById('pbi-iframe');
+  const loading = document.getElementById('pbi-loading');
+  const ttl = document.getElementById('pbi-modal-title');
+  if(ttl) ttl.textContent = title || 'Interactive Research Dashboard';
+  loading.style.display = 'flex';
+  iframe.src = url;
+  modal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+};
+window.closePBI = function(){
+  const modal = document.getElementById('pbi-modal');
+  const iframe = document.getElementById('pbi-iframe');
+  modal.classList.remove('open');
+  iframe.src = '';
+  document.body.style.overflow = '';
+};
+// Close on overlay click
+document.getElementById('pbi-modal')?.addEventListener('click', function(e){
+  if(e.target === this) closePBI();
+});
+// Close on Escape key
+document.addEventListener('keydown', e => { if(e.key==='Escape') closePBI(); });
+
+</script>
+
+<script>
+var _tlData = null;
+function storeTL(p){ _tlData = p; }
+
+window.openTimeline = function(){
+  var sec = document.getElementById('timeline-section');
+  if(!sec) return;
+  if(_tlData) renderTL(_tlData);
+  sec.style.display = 'block';
+  setTimeout(function(){
+    var top = sec.getBoundingClientRect().top + window.pageYOffset - 80;
+    window.scrollTo({top:top, behavior:'smooth'});
+  }, 60);
+  var btn = document.getElementById('timeline-btn');
+  if(btn){ btn.textContent = 'Hide Timeline ↑'; btn.onclick = window.closeTimeline; }
+};
+
+window.closeTimeline = function(){
+  var sec = document.getElementById('timeline-section');
+  if(sec) sec.style.display = 'none';
+  var btn = document.getElementById('timeline-btn');
+  if(btn){ btn.textContent = 'Project Timeline →'; btn.onclick = window.openTimeline; }
+};
+
+function renderTL(p){
+  var track = document.getElementById('timeline-track');
+  if(!track) return;
+  var def = [
+    {label:'Project Approved', description:'Project formally approved and added to the Analyst Den research pipeline.'},
+    {label:'Field Research Begins', description:'Field researchers deployed to target locations to begin data collection.'},
+    {label:'Data Collection Complete', description:'All survey responses collected and raw data secured for cleaning.'},
+    {label:'Analysis Phase', description:'Data cleaned, validated and analysed using Power BI and Python.'},
+    {label:'Report Published', description:'Findings published as a public insights report with downloadable PDF.'}
+  ];
+  var ms = (p.timeline && p.timeline.length) ? p.timeline : def.map(function(m){return{label:m.label,description:m.description,date:''};});
+  var today = new Date(); today.setHours(0,0,0,0);
+  var fc = false;
+  track.innerHTML = ms.map(function(m,i){
+    var hd = m.date && m.date.trim();
+    var md = hd ? new Date(m.date) : null;
+    var st = (md && md<=today) ? 'done' : (!fc ? (fc=true,'current') : 'pending');
+    var num = ('0'+(i+1)).slice(-2);
+    var ds = hd ? new Date(m.date).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}).toUpperCase() : (st==='current'?'IN PROGRESS':'SCHEDULED');
+    var dh = st==='done' ? '<span style="display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:#1F4D3A;color:#fff;font-size:9px;font-weight:900;margin-right:6px">✓</span>'+ds : st==='current' ? '<span style="width:6px;height:6px;border-radius:50%;background:#B8860B;display:inline-block;margin-right:6px;animation:tlAmberPulse 1.8s ease-in-out infinite"></span>'+ds : ds;
+    var nc=st==='done'?'#1F4D3A':st==='current'?'#B8860B':'#C4BDB0';
+    var dc=st==='done'?'#1F4D3A':st==='current'?'#B8860B':'#B0A99F';
+    var tc=st==='pending'?'#9E9890':'#111';
+    var bg=st==='current'?'background:#fff;border-top:3px solid #B8860B;':'background:#EDEBE4;';
+    var desc=m.description||m.desc||'';
+    return '<div style="display:grid;grid-template-columns:56px 1fr;border-bottom:1px solid #D8D2C8;'+bg+'"><div style="padding:28px 0 28px 24px;font-weight:800;font-size:13px;letter-spacing:0.04em;border-right:1px solid #D8D2C8;color:'+nc+'">'+num+'</div><div style="padding:28px 40px 28px 28px"><div style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:6px;color:'+dc+';display:flex;align-items:center">'+dh+'</div><div style="font-family:Georgia,serif;font-weight:600;font-size:20px;color:'+tc+'">'+m.label+'</div>'+(desc?'<div style="font-size:14px;line-height:1.72;margin-top:8px;color:'+(st==='pending'?'#B0A99F':'#3A3832')+';'+(st==='pending'?'font-style:italic':'')+'">'+(desc)+'</div>':'')+'</div></div>';
+  }).join('');
+}
+</script>
+</body>
+</html>

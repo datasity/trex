@@ -1,0 +1,1296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Contributor Dashboard — Analyst Den</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Lora:wght@400;500&family=Barlow+Condensed:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F6F3ED;--bg-alt:#EDEBE4;--bg-card:#fff;
+  --ink:#111;--ink-mid:#3A3832;--ink-lt:#6B6560;--ink-xs:#9E9890;
+  --border:#D8D2C8;--border-dk:#C4BDB0;
+  --gold:#B8860B;--gold-lt:rgba(184,134,11,0.10);
+  --forest:#1F4D3A;--red:#C0392B;
+  --font-display:'Cormorant Garamond',Georgia,serif;
+  --font-body:'Lora',Georgia,serif;
+  --font-data:'Barlow Condensed',sans-serif;
+  --sidebar:240px;
+  --t:0.22s;
+}
+*{box-sizing:border-box}
+body{font-family:var(--font-data);background:var(--bg);color:var(--ink);min-height:100vh;font-size:14px}
+
+/* ── LOGIN SCREEN ── */
+#login-screen{
+  display:flex;align-items:center;justify-content:center;
+  min-height:100vh;background:var(--ink);
+  animation:fadeIn 0.4s ease;
+}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.login-box{
+  background:var(--bg-card);padding:56px 48px;width:100%;max-width:440px;
+  border-top:4px solid var(--gold);text-align:center;
+}
+.login-logo{
+  font-family:var(--font-display);font-weight:600;font-size:24px;
+  color:var(--ink);margin-bottom:6px;
+}
+.login-sub{
+  font-size:12px;letter-spacing:0.08em;text-transform:uppercase;
+  color:var(--ink-lt);margin-bottom:40px;
+}
+.login-divider{
+  font-size:11px;letter-spacing:0.10em;text-transform:uppercase;
+  color:var(--ink-xs);margin:24px 0;
+  display:flex;align-items:center;gap:12px;
+}
+.login-divider::before,.login-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.google-btn{
+  width:100%;padding:14px;
+  background:var(--bg);border:1.5px solid var(--border-dk);
+  font-family:var(--font-data);font-weight:700;font-size:13px;
+  letter-spacing:0.08em;text-transform:uppercase;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;
+  transition:all var(--t);
+}
+.google-btn:hover{border-color:var(--ink);background:var(--ink);color:#fff}
+.google-icon{width:18px;height:18px}
+.login-note{font-size:12px;color:var(--ink-xs);margin-top:20px;line-height:1.6}
+.login-error{color:var(--red);font-size:12px;margin-top:14px;display:none;padding:10px;background:rgba(192,57,43,0.08);border:1px solid rgba(192,57,43,0.2)}
+
+/* ── DASHBOARD LAYOUT ── */
+#dashboard{display:none;min-height:100vh}
+
+.dash-header{
+  height:64px;background:var(--bg-card);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 32px;
+  position:sticky;top:0;z-index:100;
+  justify-content:space-between;
+}
+.dash-logo{font-family:var(--font-display);font-weight:600;font-size:20px;color:var(--ink)}
+.dash-logo span{font-size:11px;font-weight:400;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-lt);margin-left:10px;font-family:var(--font-data)}
+.dash-user{display:flex;align-items:center;gap:10px}
+.dash-avatar{width:34px;height:34px;border-radius:50%;object-fit:cover;border:2px solid var(--border)}
+.dash-name{font-size:13px;font-weight:600;color:var(--ink)}
+.dash-signout{
+  font-size:11px;letter-spacing:0.08em;text-transform:uppercase;
+  color:var(--ink-lt);background:none;border:1px solid var(--border);
+  padding:6px 12px;cursor:pointer;transition:all var(--t);font-family:var(--font-data);font-weight:600;
+}
+.dash-signout:hover{border-color:var(--red);color:var(--red)}
+
+.dash-body{display:flex;min-height:calc(100vh - 64px)}
+
+.dash-nav{
+  width:var(--sidebar);background:var(--bg-card);border-right:1px solid var(--border);
+  padding:24px 0;flex-shrink:0;position:sticky;top:64px;height:calc(100vh - 64px);overflow-y:auto;
+}
+.nav-section{padding:12px 20px 4px;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-xs)}
+.nav-item{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 20px;color:var(--ink-lt);cursor:pointer;
+  transition:all var(--t);font-size:13px;font-weight:600;
+  border-left:3px solid transparent;letter-spacing:0.02em;
+}
+.nav-item:hover{color:var(--ink);background:var(--bg-alt)}
+.nav-item.active{color:var(--ink);background:var(--bg-alt);border-left-color:var(--gold)}
+.nav-icon{font-size:16px;width:18px;text-align:center}
+
+.dash-main{flex:1;padding:36px 40px;max-width:900px}
+
+/* ── PAGES ── */
+.page{display:none}
+.page.active{display:block}
+
+/* ── COMPLETENESS BAR ── */
+.progress-card{
+  background:var(--bg-card);border:1px solid var(--border);
+  padding:20px 24px;margin-bottom:28px;
+  display:flex;align-items:center;gap:20px;flex-wrap:wrap;
+}
+.progress-bar-wrap{flex:1;min-width:200px}
+.progress-bar-track{
+  height:6px;background:var(--bg-alt);border-radius:3px;
+  margin:8px 0 4px;
+}
+.progress-bar-fill{
+  height:6px;background:var(--gold);border-radius:3px;
+  transition:width 0.5s ease;
+}
+.progress-label{font-size:12px;color:var(--ink-lt);letter-spacing:0.04em}
+.progress-pct{font-size:22px;font-weight:800;color:var(--gold);flex-shrink:0}
+
+/* ── FORM SECTIONS ── */
+.form-section{
+  background:var(--bg-card);border:1px solid var(--border);
+  margin-bottom:20px;overflow:hidden;
+}
+.form-section-head{
+  padding:18px 22px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.form-section-title{
+  font-family:var(--font-display);font-weight:600;font-size:18px;color:var(--ink);
+}
+.req-badge{
+  font-size:10px;padding:2px 8px;background:rgba(184,134,11,0.10);
+  color:var(--gold);font-weight:700;letter-spacing:0.08em;
+  border:1px solid rgba(184,134,11,0.25);
+}
+.form-body{padding:22px;display:flex;flex-direction:column;gap:16px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.field label{
+  display:block;font-size:11px;font-weight:700;letter-spacing:0.10em;
+  text-transform:uppercase;color:var(--ink-lt);margin-bottom:7px;
+}
+.field label .req{color:var(--gold)}
+.field input,.field textarea,.field select{
+  width:100%;padding:11px 13px;border:1.5px solid var(--border);
+  font-family:var(--font-data);font-size:14px;color:var(--ink);
+  background:var(--bg);outline:none;transition:border-color var(--t);
+}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--gold)}
+.field textarea{min-height:100px;resize:vertical;font-family:var(--font-body);font-size:14px}
+.field-hint{font-size:11px;color:var(--ink-xs);margin-top:4px}
+
+/* ── PHOTO UPLOAD ── */
+.photo-wrap{display:flex;align-items:center;gap:20px;padding:22px}
+.photo-preview-circle{
+  width:88px;height:88px;border-radius:50%;overflow:hidden;
+  border:2px solid var(--border);flex-shrink:0;background:var(--bg-alt);
+  display:flex;align-items:center;justify-content:center;font-size:28px;
+}
+.photo-preview-circle img{width:100%;height:100%;object-fit:cover;display:none}
+.photo-actions{display:flex;flex-direction:column;gap:8px}
+
+/* ── UPLOAD BUTTON ── */
+.upload-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:9px 16px;background:var(--forest);color:#fff;
+  border:none;font-family:var(--font-data);font-weight:700;
+  font-size:11px;letter-spacing:0.08em;text-transform:uppercase;
+  cursor:pointer;transition:opacity var(--t);
+}
+.upload-btn:hover{opacity:0.85}
+.upload-btn:disabled{opacity:0.5;cursor:not-allowed}
+.upload-status{font-size:11px;color:var(--ink-lt);margin-top:4px}
+.upload-status.ok{color:var(--forest)}
+.upload-status.err{color:var(--red)}
+
+/* ── SKILLS TAGS ── */
+.skills-wrap{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.skill-tag{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:5px 12px;border:1px solid var(--border);
+  font-size:12px;letter-spacing:0.04em;color:var(--ink);background:var(--bg);
+}
+.skill-tag button{
+  background:none;border:none;cursor:pointer;color:var(--ink-xs);
+  font-size:14px;line-height:1;transition:color var(--t);
+}
+.skill-tag button:hover{color:var(--red)}
+.add-skill-row{display:flex;gap:8px;margin-top:8px}
+.add-skill-row input{flex:1;padding:9px 12px;border:1.5px solid var(--border);font-family:var(--font-data);font-size:13px;color:var(--ink);background:var(--bg);outline:none}
+.add-skill-row input:focus{border-color:var(--gold)}
+
+/* ── SAVE BTN ── */
+.save-btn{
+  width:100%;padding:14px;background:var(--gold);color:#fff;
+  border:none;font-family:var(--font-data);font-weight:800;font-size:13px;
+  letter-spacing:0.10em;text-transform:uppercase;cursor:pointer;
+  transition:opacity var(--t);margin-top:8px;
+}
+.save-btn:hover{opacity:0.88}
+.save-btn:disabled{opacity:0.5;cursor:not-allowed}
+
+/* ── PROJECTS ── */
+.project-card-dash{
+  background:var(--bg-card);border:1px solid var(--border);
+  padding:20px 22px;margin-bottom:12px;
+  display:flex;align-items:center;gap:16px;
+}
+.project-card-img-sm{
+  width:72px;height:54px;object-fit:cover;
+  background:var(--bg-alt);flex-shrink:0;
+}
+.project-card-img-sm img{width:100%;height:100%;object-fit:cover}
+.project-card-body-dash{flex:1}
+.project-card-title-dash{
+  font-family:var(--font-display);font-weight:600;font-size:16px;
+  color:var(--ink);margin-bottom:3px;
+}
+.project-card-meta-dash{font-size:12px;color:var(--ink-lt);letter-spacing:0.04em}
+.interest-btn{
+  padding:8px 18px;border:1.5px solid var(--forest);
+  background:transparent;color:var(--forest);
+  font-family:var(--font-data);font-weight:700;font-size:11px;
+  letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;
+  transition:all var(--t);flex-shrink:0;
+}
+.interest-btn:hover,.interest-btn.interested{background:var(--forest);color:#fff}
+.interest-btn.assigned{background:var(--gold);color:#fff;border-color:var(--gold);pointer-events:none}
+
+/* ── TOAST ── */
+#toast{
+  position:fixed;bottom:24px;right:24px;z-index:9999;
+  background:var(--ink);color:#fff;
+  padding:12px 20px;font-size:13px;font-weight:600;letter-spacing:0.04em;
+  border-left:4px solid var(--gold);opacity:0;transform:translateY(8px);
+  transition:opacity 0.3s,transform 0.3s;pointer-events:none;
+}
+#toast.show{opacity:1;transform:translateY(0)}
+
+@media(max-width:768px){
+  .dash-nav{display:none}
+  .dash-main{padding:20px}
+  .field-row{grid-template-columns:1fr}
+}
+</style>
+<link href="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css" rel="stylesheet"/>
+<style>
+.ql-toolbar.ql-snow{border:none;border-bottom:1px solid var(--border);font-family:var(--font-data);padding:8px 12px;background:var(--bg-alt)}
+.ql-container.ql-snow{border:none}
+.ql-editor{min-height:100px;padding:12px 14px;line-height:1.72;font-size:14px;color:var(--ink);font-family:var(--font-body)}
+.ql-editor.ql-blank::before{color:var(--ink-xs);font-style:normal;font-size:13px;font-family:var(--font-body)}
+.rich-wrap{border:1.5px solid var(--border);transition:border-color 0.2s;background:var(--bg)}
+.rich-wrap:focus-within{border-color:var(--gold)}
+.rich-wc{font-size:11px;color:var(--ink-xs);padding:4px 12px;border-top:1px solid var(--border);background:var(--bg-alt);text-align:right;font-family:var(--font-data);letter-spacing:0.06em}
+.rich-wc.over{color:#C0392B}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════
+     LOGIN SCREEN
+════════════════════════ -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">Analyst Den</div>
+    <div class="login-sub">Contributor Dashboard</div>
+
+    <p style="font-family:var(--font-body);font-size:15px;color:var(--ink-mid);line-height:1.7;margin-bottom:28px">
+      Sign in with the Gmail account you used to apply. Only approved contributors can access this dashboard.
+    </p>
+
+    <button class="google-btn" id="google-login-btn">
+      <svg class="google-icon" viewBox="0 0 24 24">
+        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+      </svg>
+      Sign in with Google
+    </button>
+
+    <div class="login-error" id="login-error">
+      Access denied. Your email is not registered as an approved contributor. Please check you're using the correct Gmail account.
+    </div>
+
+    <p class="login-note">
+      Not approved yet? <a href="get-involved.html" style="color:var(--gold)">Apply to join →</a>
+    </p>
+  </div>
+</div>
+
+<!-- ════════════════════════
+     DASHBOARD
+════════════════════════ -->
+<div id="dashboard">
+  <header class="dash-header">
+    <div>
+      <span class="dash-logo">Analyst Den <span>Contributor Portal</span></span>
+    </div>
+    <div class="dash-user">
+      <img class="dash-avatar" id="dash-avatar" src="" alt=""/>
+      <span class="dash-name" id="dash-name">—</span>
+      <button class="dash-signout" id="signout-btn">Sign Out</button>
+    </div>
+  </header>
+
+  <div class="dash-body">
+    <!-- SIDEBAR NAV -->
+    <nav class="dash-nav">
+      <div class="nav-section">My Dashboard</div>
+      <div class="nav-item active" data-page="overview">
+        <span class="nav-icon">📊</span> Overview
+      </div>
+      <div class="nav-section">Profile</div>
+      <div class="nav-item" data-page="profile">
+        <span class="nav-icon">👤</span> My Profile
+      </div>
+      <div class="nav-item" data-page="photo">
+        <span class="nav-icon">📷</span> Photo & Documents
+      </div>
+      <div class="nav-section">Research</div>
+      <div class="nav-item" data-page="projects">
+        <span class="nav-icon">🗂️</span> Browse Projects
+      </div>
+      <div class="nav-item" data-page="myprojects">
+        <span class="nav-icon">✅</span> My Assignments
+      </div>
+      <div class="nav-item" data-page="propose">
+        <span class="nav-icon">💡</span> Propose a Project
+      </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main class="dash-main">
+
+      <!-- ── OVERVIEW ── -->
+      <div class="page active" id="page-overview">
+        <h2 style="font-family:var(--font-display);font-size:28px;font-weight:600;margin-bottom:6px">Welcome back</h2>
+        <p style="color:var(--ink-lt);font-size:14px;margin-bottom:24px">Complete your profile to go live on the Analyst Den contributor page.</p>
+
+        <!-- Completeness bar -->
+        <div class="progress-card">
+          <div class="progress-pct" id="progress-pct">0%</div>
+          <div class="progress-bar-wrap">
+            <div style="font-size:13px;font-weight:600;color:var(--ink)">Profile Completeness</div>
+            <div class="progress-bar-track">
+              <div class="progress-bar-fill" id="progress-bar" style="width:0%"></div>
+            </div>
+            <div class="progress-label" id="progress-label">Complete your profile to appear on the public site</div>
+          </div>
+        </div>
+
+        <!-- Quick links -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:28px">
+          <div style="background:var(--bg-card);border:1px solid var(--border);padding:20px;cursor:pointer" onclick="switchPage('profile')">
+            <div style="font-size:24px;margin-bottom:8px">👤</div>
+            <div style="font-size:13px;font-weight:700;color:var(--ink)">Edit Profile</div>
+            <div style="font-size:12px;color:var(--ink-lt);margin-top:2px">Name, bio, LinkedIn, WhatsApp</div>
+          </div>
+          <div style="background:var(--bg-card);border:1px solid var(--border);padding:20px;cursor:pointer" onclick="switchPage('photo')">
+            <div style="font-size:24px;margin-bottom:8px">📷</div>
+            <div style="font-size:13px;font-weight:700;color:var(--ink)">Upload Photo & CV</div>
+            <div style="font-size:12px;color:var(--ink-lt);margin-top:2px">Profile photo, CV, cover letter</div>
+          </div>
+          <div style="background:var(--bg-card);border:1px solid var(--border);padding:20px;cursor:pointer" onclick="switchPage('projects')">
+            <div style="font-size:24px;margin-bottom:8px">🗂️</div>
+            <div style="font-size:13px;font-weight:700;color:var(--ink)">Browse Projects</div>
+            <div style="font-size:12px;color:var(--ink-lt);margin-top:2px">Express interest in open research</div>
+          </div>
+        </div>
+
+        <!-- Missing fields alert -->
+        <div id="missing-fields-card" style="background:rgba(184,134,11,0.06);border:1px solid rgba(184,134,11,0.25);padding:18px 22px;display:none">
+          <div style="font-size:12px;font-weight:700;letter-spacing:0.10em;text-transform:uppercase;color:var(--gold);margin-bottom:10px">Required to go live</div>
+          <ul id="missing-list" style="list-style:none;padding:0;display:flex;flex-direction:column;gap:6px"></ul>
+        </div>
+      </div>
+
+      <!-- ── PROFILE ── -->
+      <div class="page" id="page-profile">
+        <h2 style="font-family:var(--font-display);font-size:28px;font-weight:600;margin-bottom:20px">My Profile</h2>
+
+        <div class="form-section">
+          <div class="form-section-head">
+            <span class="form-section-title">Personal Information</span>
+            <span class="req-badge">Required</span>
+          </div>
+          <div class="form-body">
+            <div class="field-row">
+              <div class="field">
+                <label>Full Name <span class="req">*</span></label>
+                <input type="text" id="p-name" placeholder="Your full name"/>
+              </div>
+              <div class="field">
+                <label>Role / Title <span class="req">*</span></label>
+                <input type="text" id="p-role" placeholder="e.g. Data Analyst"/>
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label>Location</label>
+                <input type="text" id="p-location" placeholder="City, Country"/>
+              </div>
+              <div class="field">
+                <label>WhatsApp Number <span class="req">*</span></label>
+                <input type="tel" id="p-whatsapp" placeholder="+234 801 000 0000"/>
+                <p class="field-hint">Include country code. Used by team leads to contact you.</p>
+              </div>
+            </div>
+            <div class="field">
+              <label>LinkedIn Profile URL</label>
+              <input type="url" id="p-linkedin" placeholder="https://linkedin.com/in/yourname"/>
+            </div>
+            <div class="field">
+              <label>Bio <span class="req">*</span></label>
+              <div class="rich-wrap" id="bio-rich">
+                <div id="bio-editor"></div>
+                <div class="rich-wc" id="bio-word-count">0 words (min 30)</div>
+              </div>
+              <input type="hidden" id="p-bio"/>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-head">
+            <span class="form-section-title">Skills</span>
+            <span class="req-badge">At least 1 required</span>
+          </div>
+          <div class="form-body">
+            <div id="skills-display" class="skills-wrap"></div>
+            <div class="add-skill-row">
+              <input type="text" id="skill-input" placeholder="Add a skill (e.g. Power BI, Python, SQL)"/>
+              <button class="upload-btn" onclick="addSkill()" style="background:var(--ink)">+ Add</button>
+            </div>
+            <p class="field-hint">Press Add or hit Enter to add each skill</p>
+          </div>
+        </div>
+
+        <button class="save-btn" id="save-profile-btn" onclick="saveProfile()">Save Profile →</button>
+      </div>
+
+      <!-- ── PHOTO & DOCUMENTS ── -->
+      <div class="page" id="page-photo">
+        <h2 style="font-family:var(--font-display);font-size:28px;font-weight:600;margin-bottom:20px">Photo & Documents</h2>
+
+        <div class="form-section">
+          <div class="form-section-head">
+            <span class="form-section-title">Profile Photo</span>
+            <span class="req-badge">Required</span>
+          </div>
+          <div class="photo-wrap">
+            <div class="photo-preview-circle" id="photo-circle">
+              <img id="photo-preview" src="" alt=""/>
+              <span id="photo-placeholder">📷</span>
+            </div>
+            <div class="photo-actions">
+              <button class="upload-btn" id="photo-upload-btn" onclick="document.getElementById('photo-file').click()">↑ Upload Photo</button>
+              <input type="file" id="photo-file" accept="image/jpeg,image/png,image/webp" style="display:none" onchange="handlePhotoUpload(this)"/>
+              <p class="upload-status" id="photo-status"></p>
+              <p class="field-hint">JPG, PNG or WebP · Max 4MB · Will be cropped to circle</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-head">
+            <span class="form-section-title">CV / Resume</span>
+            <span style="font-size:11px;color:var(--ink-lt)">Optional but recommended</span>
+          </div>
+          <div class="form-body">
+            <div id="cv-current" style="display:none;margin-bottom:10px">
+              <a id="cv-link" href="#" target="_blank" style="color:var(--gold);font-size:13px;font-weight:700">↓ View current CV</a>
+            </div>
+            <button class="upload-btn" id="cv-upload-btn" onclick="document.getElementById('cv-file').click()">↑ Upload CV</button>
+            <input type="file" id="cv-file" accept=".pdf,.doc,.docx" style="display:none" onchange="handleDocUpload(this,'cv')"/>
+            <p class="upload-status" id="cv-status"></p>
+            <p class="field-hint">PDF, DOC or DOCX · Max 10MB</p>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-head">
+            <span class="form-section-title">Cover Letter</span>
+            <span style="font-size:11px;color:var(--ink-lt)">Optional</span>
+          </div>
+          <div class="form-body">
+            <div id="cl-current" style="display:none;margin-bottom:10px">
+              <a id="cl-link" href="#" target="_blank" style="color:var(--gold);font-size:13px;font-weight:700">↓ View current cover letter</a>
+            </div>
+            <button class="upload-btn" id="cl-upload-btn" onclick="document.getElementById('cl-file').click()">↑ Upload Cover Letter</button>
+            <input type="file" id="cl-file" accept=".pdf,.doc,.docx" style="display:none" onchange="handleDocUpload(this,'cl')"/>
+            <p class="upload-status" id="cl-status"></p>
+            <p class="field-hint">PDF, DOC or DOCX · Max 10MB</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── BROWSE PROJECTS ── -->
+      <div class="page" id="page-projects">
+        <h2 style="font-family:var(--font-display);font-size:28px;font-weight:600;margin-bottom:8px">Browse Projects</h2>
+        <p style="color:var(--ink-lt);font-size:14px;margin-bottom:24px">Click "Express Interest" on any project you'd like to work on. Our team will review and confirm assignments.</p>
+        <div id="projects-list">
+          <div style="padding:40px;text-align:center;color:var(--ink-lt);font-size:13px">Loading projects…</div>
+        </div>
+      </div>
+
+      <!-- ── MY ASSIGNMENTS ── -->
+      <div class="page" id="page-myprojects">
+        <h2 style="font-family:var(--font-display);font-size:28px;font-weight:600;margin-bottom:8px">My Assignments</h2>
+        <p style="color:var(--ink-lt);font-size:14px;margin-bottom:24px">Projects you have been officially assigned to by the research team.</p>
+        <div id="my-projects-list">
+          <div style="padding:40px;text-align:center;color:var(--ink-lt);font-size:13px">Loading…</div>
+        </div>
+      </div>
+
+
+      <!-- ── PROPOSE A PROJECT ── -->
+      <div class="page" id="page-propose">
+        <h2 style="font-family:var(--font-display);font-size:28px;font-weight:600;margin-bottom:8px">Propose a Project</h2>
+        <p style="color:var(--ink-lt);font-size:14px;margin-bottom:24px">Have a community data challenge that needs research? Propose it here. Approved proposals are sponsored by Datavasity and you become the Project Sponsor.</p>
+
+        <div style="background:rgba(184,134,11,0.06);border:1px solid rgba(184,134,11,0.2);padding:16px 20px;margin-bottom:24px">
+          <div style="font-size:12px;font-weight:700;letter-spacing:0.10em;text-transform:uppercase;color:var(--gold);margin-bottom:6px">How it works</div>
+          <div style="font-size:13px;color:var(--ink-mid);line-height:1.65">1. Submit your proposal · 2. We review quarterly · 3. Approved proposals get funded by Datavasity · 4. You are credited as <strong>Project Sponsor</strong> on all publications</div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-head"><span class="form-section-title">Project Proposal</span></div>
+          <div class="form-body">
+            <div class="field">
+              <label>Project Title <span class="req">*</span></label>
+              <input type="text" id="prop-title" placeholder="e.g. Food Insecurity Among Urban Households in Ogun State" style="width:100%;padding:11px 13px;border:1.5px solid var(--border);font-family:var(--font-data);font-size:14px;color:var(--ink);background:var(--bg);outline:none"/>
+            </div>
+            <div class="field">
+              <label>Problem Statement <span class="req">*</span></label>
+              <div class="rich-wrap" id="prob-rich">
+                <div id="prob-editor"></div>
+                <div class="rich-wc" id="prob-wc">0 / 250 words</div>
+              </div>
+              <input type="hidden" id="prop-problem"/>
+            </div>
+            <div class="field">
+              <label>Expected Outcome</label>
+              <div class="rich-wrap" id="out-rich">
+                <div id="out-editor"></div>
+                <div class="rich-wc" id="out-wc">0 / 150 words</div>
+              </div>
+              <input type="hidden" id="prop-outcome"/>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+              <div class="field">
+                <label>Your Role</label>
+                <select id="prop-role" style="width:100%;padding:11px 13px;border:1.5px solid var(--border);font-family:var(--font-data);font-size:14px;color:var(--ink);background:var(--bg);outline:none">
+                  <option value="Project Sponsor">Project Sponsor</option>
+                  <option value="Lead Researcher">Lead Researcher</option>
+                  <option value="Data Analyst">Data Analyst</option>
+                  <option value="Field Researcher">Field Researcher</option>
+                  <option value="Insight Writer">Insight Writer</option>
+                  <option value="Research Associate">Research Associate</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Planned Start Date <span style="font-weight:400;font-size:11px;color:var(--ink-xs)">(Optional)</span></label>
+                <input type="text" id="prop-planned-date" placeholder="e.g. Q1 2027" style="width:100%;padding:11px 13px;border:1.5px solid var(--border);font-family:var(--font-data);font-size:14px;color:var(--ink);background:var(--bg);outline:none"/>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="background:var(--bg-card);border:1px solid var(--border);padding:14px 20px;margin-bottom:16px;display:flex;align-items:center;gap:12px">
+          <div style="font-size:20px">🏷️</div>
+          <div>
+            <div style="font-size:13px;font-weight:700;color:var(--ink)">All approved projects are sponsored by Datavasity</div>
+            <div style="font-size:12px;color:var(--ink-lt);margin-top:2px">You will be credited as Project Sponsor on all publications and the public project page.</div>
+          </div>
+        </div>
+
+        <button onclick="submitProposal()" style="width:100%;padding:14px;background:var(--forest);color:#fff;border:none;font-family:var(--font-data);font-weight:800;font-size:13px;letter-spacing:0.10em;text-transform:uppercase;cursor:pointer" id="propose-btn">Submit Proposal →</button>
+
+        <!-- My submitted proposals -->
+        <div style="margin-top:36px;padding-top:24px;border-top:1px solid var(--border)">
+          <div style="font-size:11px;font-weight:700;letter-spacing:0.10em;text-transform:uppercase;color:var(--ink-lt);margin-bottom:14px">My Submitted Proposals</div>
+          <div id="my-proposals-wrap"><p style="font-size:13px;color:var(--ink-lt)">Loading…</p></div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<!-- ════════════════════════
+     FIREBASE SCRIPT
+════════════════════════ -->
+
+<script src="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.js"></script>
+<script>
+/* ── QUILL INIT (plain script — runs synchronously) ── */
+let bioQ, probQ, outQ;
+const QB = [['bold','italic','underline'],[{'list':'ordered'},{'list':'bullet'}],['clean']];
+
+function cw(t){ return t.trim().split(/\s+/).filter(Boolean).length; }
+
+function initBioQ(){
+  if(bioQ || !document.getElementById('bio-editor')) return;
+  bioQ = new Quill('#bio-editor',{theme:'snow',placeholder:'Tell us about your background and what you bring to applied research. Minimum 30 words.',modules:{toolbar:QB}});
+  bioQ.on('text-change',()=>{
+    const w=cw(bioQ.getText()); const el=document.getElementById('bio-word-count');
+    if(el){el.textContent=w+' words'+(w<30?' (min 30 required)':w>150?' (over 150)':' ✓');el.className='rich-wc'+(w>150?' over':'');};
+    document.getElementById('p-bio').value=bioQ.root.innerHTML;
+  });
+  // Fill existing value
+  const existing = document.getElementById('p-bio')?.value;
+  if(existing) bioQ.root.innerHTML = existing;
+}
+
+function initPropQ(){
+  if(probQ || !document.getElementById('prob-editor')) return;
+  probQ = new Quill('#prob-editor',{theme:'snow',placeholder:"What community problem does this project address? What data doesn't exist? Why does it matter?",modules:{toolbar:QB}});
+  probQ.on('text-change',()=>{ const w=cw(probQ.getText()); const el=document.getElementById('prob-wc'); if(el){el.textContent=w+' / 250 words';el.className='rich-wc'+(w>250?' over':'');}; document.getElementById('prop-problem').value=probQ.root.innerHTML; });
+
+  outQ = new Quill('#out-editor',{theme:'snow',placeholder:'What would a published report enable? Who would benefit and how?',modules:{toolbar:QB}});
+  outQ.on('text-change',()=>{ const w=cw(outQ.getText()); const el=document.getElementById('out-wc'); if(el){el.textContent=w+' / 150 words';el.className='rich-wc'+(w>150?' over':'');}; document.getElementById('prop-outcome').value=outQ.root.innerHTML; });
+}
+
+// Init when tabs open — override switchPage
+document.addEventListener('DOMContentLoaded', ()=>{
+  // Profile tab is default so init bio editor
+  setTimeout(initBioQ, 200);
+});
+</script>
+<script type="module">
+import { initializeApp }   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, getDocs, doc, getDoc, setDoc, addDoc, updateDoc, deleteDoc, query, where, serverTimestamp }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+const app = initializeApp({
+  apiKey:"AIzaSyBzlCB74rpbd6o2vx7RbsfuIrkfOyhBUTQ",
+  authDomain:"analyst-den-3f9c9.firebaseapp.com",
+  projectId:"analyst-den-3f9c9",
+  storageBucket:"analyst-den-3f9c9.firebasestorage.app",
+  messagingSenderId:"438646500281",
+  appId:"1:438646500281:web:8a7c48d0ca882e2b5a6468"
+});
+const db   = getFirestore(app);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
+
+/* ── HELPERS ── */
+const $ = id => document.getElementById(id);
+let currentUser = null;
+let contribDoc  = null;
+let allSkills   = [];
+let myInterests = [];
+let myAssigned  = [];
+let allProjects = [];
+
+function toast(msg, dur=3000){
+  const t = $('toast'); t.textContent = msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), dur);
+}
+
+/* ── AUTH ── */
+onAuthStateChanged(auth, async user => {
+  if(user){
+    // Check if email is an approved contributor or applicant
+    const snap = await getDocs(query(collection(db,'applications'), where('email','==',user.email)));
+    const apps = snap.docs.map(d=>d.data());
+    const approved = apps.find(a => a.status === 'approved');
+
+    if(!approved){
+      // Not approved — sign out and show error
+      await signOut(auth);
+      $('login-error').style.display = 'block';
+      $('login-error').textContent = `Access denied. ${user.email} is not an approved contributor. Please check you're using the correct Gmail account.`;
+      return;
+    }
+
+    currentUser = user;
+    $('login-screen').style.display = 'none';
+    $('dashboard').style.display    = 'block';
+    $('dash-name').textContent = user.displayName || user.email;
+    if(user.photoURL){ $('dash-avatar').src = user.photoURL; $('dash-avatar').style.display='block'; }
+
+    await loadContributorProfile(user.email);
+    loadProjects();
+
+  } else {
+    $('login-screen').style.display = 'flex';
+    $('dashboard').style.display    = 'none';
+  }
+});
+
+/* ── GOOGLE SIGN IN ── */
+$('google-login-btn').onclick = async () => {
+  try {
+    $('login-error').style.display = 'none';
+    await signInWithPopup(auth, provider);
+  } catch(e){
+    console.error('Login error:', e);
+    $('login-error').style.display = 'block';
+    $('login-error').textContent = 'Sign-in failed. Please try again.';
+  }
+};
+
+$('signout-btn').onclick = () => signOut(auth);
+
+/* ── LOAD CONTRIBUTOR PROFILE ── */
+async function loadContributorProfile(email){
+  // Find contributor by email
+  const snap = await getDocs(query(collection(db,'contributors'), where('email','==',email)));
+  if(snap.empty){
+    // No contributor record yet — pre-fill from application
+    const appSnap = await getDocs(query(collection(db,'applications'), where('email','==',email)));
+    const appData = appSnap.docs[0]?.data() || {};
+    prefillForm(appData);
+    return;
+  }
+  contribDoc = { id: snap.docs[0].id, ...snap.docs[0].data() };
+  fillForm(contribDoc);
+
+  // Load interests
+  const intSnap = await getDocs(query(collection(db,'interests'), where('email','==',email)));
+  const intData = intSnap.docs.map(d=>({...d.data()}));
+  myInterests = intData.map(i=>i.projectId);
+  myAssigned  = intData.filter(i=>i.status==='assigned').map(i=>i.projectId);
+
+  updateProgress();
+}
+
+function prefillForm(data){
+  if($('p-name'))     $('p-name').value     = data.name||'';
+  if($('p-role'))     $('p-role').value     = data.role||'';
+  if($('p-location')) $('p-location').value = data.location||'';
+  if($('p-bio'))      $('p-bio').value      = data.motivation||'';
+  setTimeout(()=>{ if(bioQ && data.motivation) bioQ.root.innerHTML = data.motivation; }, 150);
+  updateBioCount();
+}
+
+function fillForm(data){
+  if($('p-name'))     $('p-name').value     = data.name||'';
+  if($('p-role'))     $('p-role').value     = data.role||'';
+  if($('p-location')) $('p-location').value = data.location||'';
+  if($('p-whatsapp')) $('p-whatsapp').value = data.whatsapp||'';
+  if($('p-linkedin')) $('p-linkedin').value = data.linkedin||'';
+  if($('p-bio'))      $('p-bio').value      = data.bio||'';
+  // Fill Quill if already initialised
+  setTimeout(()=>{ if(bioQ && data.bio) bioQ.root.innerHTML = data.bio; }, 150);
+  updateBioCount();
+
+  // Skills
+  allSkills = Array.isArray(data.skills) ? [...data.skills] : [];
+  renderSkills();
+
+  // Photo
+  if(data.avatar){
+    const img = $('photo-preview');
+    img.src = data.avatar; img.style.display='block';
+    $('photo-placeholder').style.display='none';
+  }
+  // CV
+  if(data.cvUrl){
+    $('cv-current').style.display = 'block';
+    $('cv-link').href = data.cvUrl;
+  }
+  // Cover letter
+  if(data.coverLetterUrl){
+    $('cl-current').style.display = 'block';
+    $('cl-link').href = data.coverLetterUrl;
+  }
+}
+
+/* ── PROGRESS ── */
+function updateProgress(){
+  const data = getCurrentFormData();
+  const fields = [
+    { key:'name',     label:'Full name',      val: data.name },
+    { key:'role',     label:'Role/title',     val: data.role },
+    { key:'whatsapp', label:'WhatsApp number',val: data.whatsapp },
+    { key:'bio',      label:'Bio (min 30 words)', val: data.bio && data.bio.split(/\s+/).filter(Boolean).length >= 30 ? data.bio : '' },
+    { key:'skills',   label:'At least 1 skill',   val: allSkills.length > 0 ? 'ok' : '' },
+    { key:'avatar',   label:'Profile photo',  val: contribDoc?.avatar || $('photo-preview')?.src || '' },
+  ];
+  const done   = fields.filter(f=>f.val).length;
+  const total  = fields.length;
+  const pct    = Math.round((done/total)*100);
+
+  $('progress-pct').textContent = pct+'%';
+  $('progress-bar').style.width = pct+'%';
+  $('progress-label').textContent = pct===100 ? '✓ Profile complete — waiting for admin approval to go live' : `${total-done} field(s) remaining`;
+
+  const missing = fields.filter(f=>!f.val);
+  const mc = $('missing-fields-card');
+  const ml = $('missing-list');
+  if(missing.length){
+    mc.style.display='block';
+    ml.innerHTML = missing.map(f=>`<li style="font-size:13px;color:var(--ink-mid);display:flex;align-items:center;gap:8px"><span style="color:var(--gold);font-weight:700">→</span>${f.label}</li>`).join('');
+  } else {
+    mc.style.display='none';
+  }
+}
+
+function getCurrentFormData(){
+  return {
+    name:     $('p-name')?.value.trim()||'',
+    role:     $('p-role')?.value.trim()||'',
+    location: $('p-location')?.value.trim()||'',
+    whatsapp: $('p-whatsapp')?.value.trim()||'',
+    linkedin: $('p-linkedin')?.value.trim()||'',
+    bio:      (bioQ ? bioQ.root.innerHTML : ($('p-bio')?.value||'')).trim(),
+  };
+}
+
+/* ── BIO WORD COUNT ── */
+function updateBioCount(){ if(bioQ) bioQ.update(); } // handled by Quill event
+
+/* ── SKILLS ── */
+window.addSkill = function(){
+  const inp = $('skill-input');
+  const val = inp.value.trim();
+  if(!val || allSkills.includes(val)) return;
+  allSkills.push(val);
+  inp.value = '';
+  renderSkills();
+};
+$('skill-input')?.addEventListener('keydown', e=>{ if(e.key==='Enter'){e.preventDefault();window.addSkill();} });
+
+function renderSkills(){
+  const wrap = $('skills-display');
+  if(!wrap) return;
+  wrap.innerHTML = allSkills.map((s,i)=>`
+    <span class="skill-tag">
+      ${s}
+      <button onclick="removeSkill(${i})" title="Remove">×</button>
+    </span>`).join('');
+}
+window.removeSkill = function(i){ allSkills.splice(i,1); renderSkills(); };
+
+/* ── SAVE PROFILE ── */
+window.saveProfile = async function(){
+  const btn = $('save-profile-btn');
+  const data = getCurrentFormData();
+
+  if(!data.name){ toast('Please enter your full name'); return; }
+  if(!data.whatsapp){ toast('WhatsApp number is required'); return; }
+
+  btn.textContent='Saving…'; btn.disabled=true;
+
+  const saveData = {
+    ...data, skills: allSkills,
+    updatedAt: serverTimestamp()
+  };
+
+  try {
+    if(contribDoc){
+      await updateDoc(doc(db,'contributors',contribDoc.id), saveData);
+      contribDoc = {...contribDoc,...saveData};
+    } else {
+      // Create new contributor record
+      const ref = await addDoc(collection(db,'contributors'), {
+        ...saveData,
+        email: currentUser.email,
+        profileComplete: false,
+        createdAt: serverTimestamp()
+      });
+      contribDoc = { id: ref.id, ...saveData };
+    }
+    toast('Profile saved ✓');
+    updateProgress();
+  } catch(e){
+    console.error(e); toast('Error saving profile');
+  } finally {
+    btn.textContent='Save Profile →'; btn.disabled=false;
+  }
+};
+
+/* ── CLOUDINARY UPLOADS ── */
+const CLOUD  = 'dzacwqaam';
+const PRESET = 'analyst_den_uploads';
+
+window.handlePhotoUpload = async function(fileInput){
+  const file = fileInput.files[0]; if(!file) return;
+  if(file.size > 4*1024*1024){ toast('Photo too large — max 4MB'); return; }
+  const btn = $('photo-upload-btn');
+  const status = $('photo-status');
+  btn.disabled=true; btn.textContent='Uploading…';
+  status.textContent='Uploading…'; status.className='upload-status';
+  try{
+    const fd = new FormData();
+    fd.append('file',file); fd.append('upload_preset',PRESET); fd.append('folder','analyst-den/avatars');
+    const res  = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD}/image/upload`,{method:'POST',body:fd});
+    const data = await res.json();
+    if(data.secure_url){
+      const url = data.secure_url.replace('/upload/','/upload/q_auto:good,f_auto,w_400,c_limit/');
+      // Update in Firestore
+      if(contribDoc){ await updateDoc(doc(db,'contributors',contribDoc.id),{avatar:url,updatedAt:serverTimestamp()}); contribDoc.avatar=url; }
+      $('photo-preview').src=url; $('photo-preview').style.display='block';
+      $('photo-placeholder').style.display='none';
+      status.textContent='✓ Photo uploaded'; status.className='upload-status ok';
+      toast('Photo uploaded ✓'); updateProgress();
+    } else throw new Error(data.error?.message||'Upload failed');
+  }catch(e){ status.textContent='✗ '+e.message; status.className='upload-status err'; }
+  finally{ btn.disabled=false; btn.textContent='↑ Upload Photo'; fileInput.value=''; }
+};
+
+window.handleDocUpload = async function(fileInput, type){
+  const file = fileInput.files[0]; if(!file) return;
+  if(file.size > 10*1024*1024){ toast('File too large — max 10MB'); return; }
+  const btnId    = type==='cv' ? 'cv-upload-btn'  : 'cl-upload-btn';
+  const statusId = type==='cv' ? 'cv-status'      : 'cl-status';
+  const btn = $(btnId); const status = $(statusId);
+  btn.disabled=true; btn.textContent='Uploading…';
+  status.textContent='Uploading…'; status.className='upload-status';
+  try{
+    const fd = new FormData();
+    fd.append('file',file); fd.append('upload_preset',PRESET); fd.append('folder','analyst-den/documents');
+    const res  = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD}/raw/upload`,{method:'POST',body:fd});
+    const data = await res.json();
+    if(data.secure_url){
+      const field = type==='cv' ? 'cvUrl' : 'coverLetterUrl';
+      if(contribDoc){ await updateDoc(doc(db,'contributors',contribDoc.id),{[field]:data.secure_url,updatedAt:serverTimestamp()}); contribDoc[field]=data.secure_url; }
+      if(type==='cv'){ $('cv-current').style.display='block'; $('cv-link').href=data.secure_url; }
+      else { $('cl-current').style.display='block'; $('cl-link').href=data.secure_url; }
+      const sizeKB = Math.round((data.bytes||0)/1024);
+      status.textContent=`✓ ${file.name} (${sizeKB}KB)`; status.className='upload-status ok';
+      toast(`${type.toUpperCase()} uploaded ✓`);
+    } else throw new Error(data.error?.message||'Upload failed');
+  }catch(e){ status.textContent='✗ '+e.message; status.className='upload-status err'; }
+  finally{ btn.disabled=false; btn.textContent=type==='cv'?'↑ Upload CV':'↑ Upload Cover Letter'; fileInput.value=''; }
+};
+
+/* ── LOAD PROJECTS ── */
+async function loadProjects(){
+  const list = $('projects-list');
+  try {
+    const snap = await getDocs(collection(db,'projects'));
+    allProjects = snap.docs.map(d=>({id:d.id,...d.data()}))
+      .sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+
+    if(!allProjects.length){
+      list.innerHTML='<div style="padding:40px;text-align:center;color:var(--ink-lt);font-size:13px">No projects yet — check back soon.</div>';
+      await loadMyProjects(allProjects); return;
+    }
+
+    list.innerHTML = `<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;align-items:center" id="proj-filters">
+      <button onclick="filterProj('all',this)" style="padding:7px 16px;font-family:var(--font-data);font-weight:700;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;border:1.5px solid var(--ink);background:var(--ink);color:#fff;cursor:pointer">All</button>
+      <button onclick="filterProj('active',this)" style="padding:7px 16px;font-family:var(--font-data);font-weight:700;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;border:1.5px solid var(--border);background:transparent;color:var(--ink-lt);cursor:pointer">Live</button>
+      <button onclick="filterProj('planned',this)" style="padding:7px 16px;font-family:var(--font-data);font-weight:700;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;border:1.5px solid var(--border);background:transparent;color:var(--ink-lt);cursor:pointer">Planned</button>
+      <button onclick="filterProj('completed',this)" style="padding:7px 16px;font-family:var(--font-data);font-weight:700;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;border:1.5px solid var(--border);background:transparent;color:var(--ink-lt);cursor:pointer">Completed</button>
+      <button id="toggle-assigned-btn" onclick="toggleAssigned(this)" style="margin-left:auto;padding:7px 14px;font-family:var(--font-data);font-weight:700;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;border:1.5px solid var(--border);background:rgba(31,77,58,0.1);color:var(--forest);cursor:pointer">Hide Assigned</button>
+    </div><div id="proj-cards"></div>`;
+
+    renderProjCards(allProjects);
+    await loadMyProjects(allProjects);
+  } catch(e) {
+    console.error('Projects error:', e);
+    list.innerHTML='<div style="padding:40px;text-align:center;color:#C0392B;font-size:13px">Failed to load projects — please refresh.</div>';
+  }
+}
+
+let _showAssigned = true;
+window.filterProj = function(filter, btn){
+  document.querySelectorAll('#proj-filters button:not(#toggle-assigned-btn)').forEach(b=>{ b.style.background='transparent'; b.style.color='var(--ink-lt)'; b.style.borderColor='var(--border)'; });
+  btn.style.background='var(--ink)'; btn.style.color='#fff'; btn.style.borderColor='var(--ink)';
+  window._currentFilter = filter;
+  const f = filter==='all' ? allProjects :
+    filter==='active' ? allProjects.filter(p=>['active','ongoing'].includes((p.status||'').toLowerCase())) :
+    filter==='planned' ? allProjects.filter(p=>(p.status||'').toLowerCase()==='planned') :
+    allProjects.filter(p=>(p.status||'').toLowerCase()==='completed');
+  renderProjCards(f, _showAssigned);
+};
+
+window.toggleAssigned = function(btn){
+  _showAssigned = !_showAssigned;
+  btn.textContent = _showAssigned ? 'Hide Assigned' : 'Show Assigned';
+  btn.style.background = _showAssigned ? 'rgba(31,77,58,0.1)' : 'var(--bg-alt)';
+  const filter = window._currentFilter || 'all';
+  const f = filter==='all' ? allProjects :
+    filter==='active' ? allProjects.filter(p=>['active','ongoing'].includes((p.status||'').toLowerCase())) :
+    filter==='planned' ? allProjects.filter(p=>(p.status||'').toLowerCase()==='planned') :
+    allProjects.filter(p=>(p.status||'').toLowerCase()==='completed');
+  renderProjCards(f, _showAssigned);
+};
+
+function renderProjCards(projects, showAssigned=true){
+  const wrap = document.getElementById('proj-cards');
+  if(!wrap) return;
+
+  // Optionally hide already-assigned projects
+  const filtered = showAssigned ? projects : projects.filter(p => !myAssigned.includes(p.id));
+
+  if(!filtered.length){ wrap.innerHTML='<div style="padding:32px;text-align:center;color:var(--ink-lt);font-size:13px">No projects in this category.</div>'; return; }
+
+  wrap.innerHTML = filtered.map(p=>{
+    const status = (p.status||'planned').toLowerCase();
+    const isCompleted = status==='completed';
+    const isActive = status==='active'||status==='ongoing';
+    const isPlanned = status==='planned';
+    const isInterested = myInterests.includes(p.id);
+    const isAssigned   = myAssigned.includes(p.id);
+    const sponsor = p.sponsor||'Datavasity';
+    const tmp = document.createElement('div'); tmp.innerHTML = p.description||'';
+    const desc = (tmp.textContent||tmp.innerText||'').trim();
+    const descPrev = desc.substring(0,150)+(desc.length>150?'…':'');
+    const badgeBg = isActive?'var(--forest)':isPlanned?'rgba(184,134,11,0.10)':'var(--bg-alt)';
+    const badgeCol = isActive?'#fff':isPlanned?'var(--gold)':'var(--ink-lt)';
+
+    // Project title is a link to project detail page
+    const titleLink = `<a href="project-transportation-cost-stress.html?id=${p.id}" style="font-family:var(--font-display);font-weight:600;font-size:16px;color:var(--ink);text-decoration:none" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ink)'">${p.title||'Untitled'} →</a>`;
+
+    let actionBtn = '';
+    if(isAssigned){
+      actionBtn = '<span style="font-family:var(--font-data);font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;background:var(--forest);color:#fff;padding:4px 10px">Assigned ✓</span>';
+    } else if(isCompleted){
+      actionBtn = '<span style="font-family:var(--font-data);font-size:11px;color:var(--ink-xs)">Completed</span>';
+    } else if(isInterested){
+      actionBtn = `<button id="int-btn-${p.id}" onclick="removeInterest('${p.id}')" style="padding:8px 14px;border:1.5px solid var(--forest);background:rgba(192,57,43,0.08);color:#C0392B;border:1.5px solid #C0392B;font-family:var(--font-data);font-weight:700;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer" title="Withdraw interest">Withdraw Interest</button>`;
+    } else {
+      actionBtn = `<button id="int-btn-${p.id}" onclick="expressInterest('${p.id}','${(p.title||'').replace(/'/g,"\'")}','${sponsor}')" style="padding:8px 16px;border:1.5px solid var(--forest);background:transparent;color:var(--forest);font-family:var(--font-data);font-weight:700;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer">Express Interest</button>`;
+    }
+
+    const assignedTag = isAssigned ? '<span style="font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:2px 8px;background:var(--forest);color:#fff;margin-left:6px">Assigned</span>' : '';
+
+    return `<div style="background:${isCompleted?'var(--bg-alt)':'var(--bg-card)'};border:1px solid var(--border);${isAssigned?'border-left:3px solid var(--forest)':''};padding:18px 22px;margin-bottom:10px;opacity:${isCompleted?0.7:1};display:flex;align-items:flex-start;gap:14px">
+      <div style="flex:1">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px">
+          ${titleLink}${assignedTag}
+          <span style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:3px 9px;background:${badgeBg};color:${badgeCol}">${status}</span>
+        </div>
+        <div style="font-size:12px;color:var(--ink-lt);margin-bottom:5px">${p.location||''}${p.period?' · '+p.period:''}${p.category?' · '+p.category:''}</div>
+        ${descPrev?`<div style="font-size:13px;color:var(--ink-mid);line-height:1.55;margin-bottom:5px">${descPrev}</div>`:''}
+        <div style="font-size:11px;color:var(--ink-xs);font-family:var(--font-data)">Sponsored by ${sponsor}</div>
+      </div>
+      <div style="flex-shrink:0;padding-top:4px">${actionBtn}</div>
+    </div>`;
+  }).join('');
+}
+
+
+async function loadMyProjects(allProjects){
+  const myList = $('my-projects-list');
+  const assigned = allProjects.filter(p =>
+    Array.isArray(contribDoc?.projects) && contribDoc.projects.some(pr=>pr.toLowerCase().includes((p.title||'').toLowerCase().substring(0,10)))
+  );
+  if(!assigned.length){
+    myList.innerHTML = '<div style="padding:40px;text-align:center;color:var(--ink-lt);font-size:13px">No assignments yet. Express interest in projects and our team will assign you.</div>';
+    return;
+  }
+  myList.innerHTML = assigned.map(p=>`
+    <a href="project-transportation-cost-stress.html?id=${p.id}" style="display:block;text-decoration:none;margin-bottom:10px">
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-left:3px solid var(--forest);padding:16px 20px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:background 0.18s" onmouseover="this.style.background='var(--bg-alt)'" onmouseout="this.style.background='var(--bg-card)'">
+        <div style="flex:1">
+          <div style="font-family:var(--font-display);font-weight:600;font-size:15px;color:var(--ink);margin-bottom:2px">${p.title||'—'} <span style="color:var(--gold)">→</span></div>
+          <div style="font-size:12px;color:var(--ink-lt)">${p.location||''}${p.period?' · '+p.period:''}${p.category?' · '+p.category:''}</div>
+          <div style="font-size:11px;color:var(--ink-xs);margin-top:2px;font-family:var(--font-data)">Click to view project</div>
+        </div>
+        <span style="font-family:var(--font-data);font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;background:var(--forest);color:#fff;padding:4px 10px;flex-shrink:0">Assigned ✓</span>
+      </div>
+    </a>`).join('');
+}
+
+/* ── EXPRESS INTEREST ── */
+window.removeInterest = async function(projectId){
+  if(!currentUser){ toast('Not signed in'); return; }
+  if(!confirm('Withdraw your interest in this project?')) return;
+  try {
+    // Load all interests and find this user's interest for this project
+    const snap = await getDocs(collection(db,'interests'));
+    const myInt = snap.docs.find(function(d){
+      return d.data().projectId === projectId && d.data().email === currentUser.email;
+    });
+    if(myInt){
+      await deleteDoc(doc(db,'interests', myInt.id));
+      myInterests = myInterests.filter(function(id){ return id !== projectId; });
+      // Update the button back to Express Interest
+      const proj = allProjects.find(function(p){ return p.id === projectId; });
+      const btn = document.getElementById('int-btn-' + projectId);
+      if(btn){
+        btn.textContent = 'Express Interest';
+        btn.style.background = 'transparent';
+        btn.style.color = 'var(--forest)';
+        btn.style.border = '1.5px solid var(--forest)';
+        btn.onclick = function(){ expressInterest(projectId, proj ? proj.title : '', proj ? (proj.sponsor||'Datavasity') : 'Datavasity'); };
+      }
+      toast('Interest withdrawn successfully');
+    } else {
+      toast('Interest record not found — please refresh');
+    }
+  } catch(e){
+    console.error('Remove interest error:', e);
+    toast('Error withdrawing interest: ' + (e.message||'please try again'));
+  }
+};
+
+window.expressInterest = async function(projectId, projectTitle, sponsor){
+  if(!currentUser) return;
+  if(myInterests.includes(projectId)){ toast('Already expressed interest'); return; }
+  try{
+    await addDoc(collection(db,'interests'),{
+      projectId, projectTitle,
+      email:  currentUser.email,
+      name:   contribDoc?.name || currentUser.displayName || '',
+      sponsor: sponsor||'Datavasity',
+      status: 'pending',
+      createdAt: serverTimestamp()
+    });
+    myInterests.push(projectId);
+    const btn = document.getElementById('int-btn-'+projectId);
+    if(btn){
+      btn.textContent='Withdraw Interest';
+      btn.title='Click to remove interest';
+      btn.style.background='rgba(192,57,43,0.08)';
+      btn.style.color='#C0392B';
+      btn.style.border='1.5px solid #C0392B';
+      btn.onclick = () => removeInterest(projectId);
+    }
+    toast('Interest recorded ✓ — our team will review and confirm');
+  }catch(e){ console.error(e); toast('Error — please try again'); }
+};
+
+/* ── NAV ── */
+document.querySelectorAll('.nav-item').forEach(item=>{
+  item.onclick=()=>switchPage(item.dataset.page);
+});
+window.switchPage = function(page){
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.querySelector(`[data-page="${page}"]`)?.classList.add('active');
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  $('page-'+page)?.classList.add('active');
+  if(page==='overview') updateProgress();
+  if(page==='propose'){ loadMyProposals(); setTimeout(initPropQ,100); }
+  if(page==='profile') setTimeout(initBioQ,100);
+};
+
+/* ── PROPOSE A PROJECT ── */
+window.submitProposal = async function(){
+  if(!currentUser){ toast('Please sign in first'); return; }
+  const btn = document.getElementById('propose-btn');
+  const title    = (document.getElementById('prop-title')?.value||'').trim();
+  // Sync Quill to hidden inputs
+  if(probQ) document.getElementById('prop-problem').value = probQ.root.innerHTML;
+  if(outQ)  document.getElementById('prop-outcome').value  = outQ.root.innerHTML;
+  const problem  = (probQ ? probQ.getText() : document.getElementById('prop-problem')?.value||'').trim();
+  const outcome  = (document.getElementById('prop-outcome')?.value||'').trim();
+  const role     = (document.getElementById('prop-role')?.value||'Project Sponsor');
+  const planned  = (document.getElementById('prop-planned-date')?.value||'').trim();
+
+  if(!title)  { toast('Please enter a project title'); return; }
+  if(!problem){ toast('Please describe the problem statement'); return; }
+
+  btn.textContent = 'Submitting…'; btn.disabled = true;
+  try {
+    await addDoc(collection(db,'proposals'), {
+      title, problem, outcome, role,
+      plannedDate:  planned,
+      proposedBy:   contribDoc?.name || currentUser.displayName || currentUser.email || '',
+      email:        currentUser.email || '',
+      sponsor:      'Datavasity',
+      status:       'pending',
+      createdAt:    serverTimestamp()
+    });
+    document.getElementById('prop-title').value    = '';
+    document.getElementById('prop-problem').value  = '';
+    document.getElementById('prop-outcome').value  = '';
+    if(probQ){ probQ.root.innerHTML=''; document.getElementById('prob-wc').textContent='0 / 250 words'; }
+    if(outQ){  outQ.root.innerHTML='';  document.getElementById('out-wc').textContent='0 / 150 words'; }
+    document.getElementById('prop-planned-date').value = '';
+    toast('Proposal submitted ✓ — we review proposals every quarter');
+    loadMyProposals();
+  } catch(e) {
+    console.error('Proposal error:', e);
+    toast('Error: ' + (e.message || 'please try again'));
+  } finally {
+    btn.disabled = false; btn.textContent = 'Submit Proposal →';
+  }
+};
+
+async function loadMyProposals(){
+  if(!currentUser) return;
+  const wrap = document.getElementById('my-proposals-wrap');
+  if(!wrap) return;
+  try {
+    const snap = await getDocs(collection(db,'proposals'));
+    const mine = snap.docs.map(d=>({id:d.id,...d.data()}))
+      .filter(p => p.email === currentUser.email)
+      .sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
+
+    window._myProposalsCache = mine;
+    if(!mine.length){ wrap.innerHTML='<p style="font-size:13px;color:var(--ink-lt)">No proposals submitted yet.</p>'; return; }
+
+    const statusColor = s => s==='approved'?'var(--forest)':s==='rejected'?'#C0392B':'var(--gold)';
+    const statusText  = s => s==='approved'?'✓ Approved — project added to research pipeline':s==='rejected'?'Not taken forward at this time':'Under review — checked quarterly';
+
+    wrap.innerHTML = mine.map(p => {
+      const sc = statusColor(p.status||'pending');
+      const tmp = document.createElement('div'); tmp.innerHTML = p.problem||'';
+      const probText = (tmp.textContent||'').trim().substring(0,120);
+      // Admin message section
+      const adminMsg = p.adminMessage ? `<div style="margin-top:10px;padding:10px 12px;background:rgba(184,134,11,0.06);border-left:3px solid var(--gold);font-size:13px;color:var(--ink-mid);line-height:1.6"><strong style="font-size:11px;font-family:var(--font-data);letter-spacing:0.06em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:4px">Message from Admin</strong>${p.adminMessage}</div>` : '';
+      return `
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-left:3px solid ${sc};padding:16px 20px;margin-bottom:10px">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:${adminMsg||probText?'10px':'0'}">
+          <div style="flex:1">
+            <div style="font-family:var(--font-display);font-weight:600;font-size:15px;color:var(--ink);margin-bottom:3px">${p.title||'—'}</div>
+            <div style="font-size:11px;font-family:var(--font-data);letter-spacing:0.06em;text-transform:uppercase;color:${sc};margin-bottom:3px">${p.status||'pending'}${p.plannedDate?' · Planned: '+p.plannedDate:''} · Sponsored by ${p.sponsor||'Datavasity'}</div>
+            <div style="font-size:12px;color:var(--ink-lt)">${statusText(p.status||'pending')}</div>
+          </div>
+          <div style="display:flex;gap:8px;flex-shrink:0">
+            <button onclick="viewMyProposal('${p.id}')" style="background:none;border:1px solid var(--border);padding:5px 12px;font-family:var(--font-data);font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-lt);cursor:pointer">View</button>
+            ${p.status==='pending'||!p.status?`<button onclick="deleteMyProposal('${p.id}')" style="background:none;border:1px solid var(--border);padding:5px 12px;font-family:var(--font-data);font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#C0392B;cursor:pointer">Delete</button>`:''}
+          </div>
+        </div>
+        ${probText?`<div style="font-size:13px;color:var(--ink-mid);line-height:1.55">${probText}…</div>`:''}
+        ${adminMsg}
+      </div>`; }).join('');
+  } catch(e){ console.error(e); wrap.innerHTML='<p style="font-size:13px;color:#C0392B">Error loading proposals</p>'; }
+}
+
+window.deleteMyProposal = async function(id){
+  if(!confirm('Delete this proposal?')) return;
+  try {
+    const {deleteDoc, doc:d2} = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+    await deleteDoc(d2(db,'proposals',id));
+    toast('Proposal deleted'); loadMyProposals();
+  } catch(e){ toast('Error: '+e.message); }
+};
+
+
+/* ── VIEW MY PROPOSAL ── */
+window.viewMyProposal = function(id){
+  const mine = window._myProposalsCache;
+  if(!mine){ alert('Please wait — data is loading'); return; }
+  const p = mine.find(function(x){ return x.id===id; });
+  if(!p){ alert('Proposal not found'); return; }
+  document.getElementById('pvm-title').textContent   = p.title||'—';
+  document.getElementById('pvm-role').textContent    = p.role||'—';
+  document.getElementById('pvm-status').textContent  = (p.status||'pending').toUpperCase();
+  document.getElementById('pvm-date').textContent    = p.plannedDate||'Not specified';
+  document.getElementById('pvm-sponsor').textContent = p.sponsor||'Datavasity';
+  document.getElementById('pvm-problem').innerHTML   = p.problem||'No problem statement provided';
+  document.getElementById('pvm-outcome').innerHTML   = p.outcome||'No outcome provided';
+  var msgWrap = document.getElementById('pvm-admin-msg-wrap');
+  if(p.adminMessage){ msgWrap.style.display='block'; document.getElementById('pvm-admin-msg').textContent=p.adminMessage; }
+  else { msgWrap.style.display='none'; }
+  var modal = document.getElementById('prop-view-modal');
+  modal.style.display='flex';
+};
+
+</script>
+
+<!-- Proposal View Modal (Contributor) -->
+<div id="prop-view-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:999;align-items:center;justify-content:center">
+  <div style="background:#fff;width:95%;max-width:600px;max-height:88vh;overflow-y:auto;border-top:4px solid var(--gold)">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 24px;border-bottom:1px solid var(--border)">
+      <h3 id="pvm-title" style="font-family:var(--font-display);font-size:20px;font-weight:600">Proposal Detail</h3>
+      <button onclick="document.getElementById('prop-view-modal').style.display='none'" style="background:none;border:none;font-size:22px;cursor:pointer;color:#888">✕</button>
+    </div>
+    <div style="padding:22px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px">
+        <div style="padding:12px;background:var(--bg);border:1px solid var(--border)"><div style="font-size:10px;font-weight:700;letter-spacing:0.10em;text-transform:uppercase;color:var(--ink-xs);margin-bottom:3px">Role</div><div id="pvm-role" style="font-size:14px;color:var(--ink)">—</div></div>
+        <div style="padding:12px;background:var(--bg);border:1px solid var(--border)"><div style="font-size:10px;font-weight:700;letter-spacing:0.10em;text-transform:uppercase;color:var(--ink-xs);margin-bottom:3px">Status</div><div id="pvm-status" style="font-size:14px;color:var(--ink)">—</div></div>
+        <div style="padding:12px;background:var(--bg);border:1px solid var(--border)"><div style="font-size:10px;font-weight:700;letter-spacing:0.10em;text-transform:uppercase;color:var(--ink-xs);margin-bottom:3px">Planned Date</div><div id="pvm-date" style="font-size:14px;color:var(--ink)">—</div></div>
+        <div style="padding:12px;background:var(--bg);border:1px solid var(--border)"><div style="font-size:10px;font-weight:700;letter-spacing:0.10em;text-transform:uppercase;color:var(--ink-xs);margin-bottom:3px">Sponsor</div><div id="pvm-sponsor" style="font-size:14px;color:var(--ink)">—</div></div>
+      </div>
+      <div style="margin-bottom:16px">
+        <div style="font-size:11px;font-weight:700;letter-spacing:0.10em;text-transform:uppercase;color:var(--ink-lt);margin-bottom:8px">Problem Statement</div>
+        <div id="pvm-problem" style="padding:14px;background:var(--bg);border:1px solid var(--border);font-size:14px;line-height:1.75;color:var(--ink)">—</div>
+      </div>
+      <div id="pvm-outcome-wrap" style="margin-bottom:16px">
+        <div style="font-size:11px;font-weight:700;letter-spacing:0.10em;text-transform:uppercase;color:var(--ink-lt);margin-bottom:8px">Expected Outcome</div>
+        <div id="pvm-outcome" style="padding:14px;background:var(--bg);border:1px solid var(--border);font-size:14px;line-height:1.75;color:var(--ink)">—</div>
+      </div>
+      <div id="pvm-admin-msg-wrap" style="display:none;margin-bottom:4px">
+        <div style="padding:14px 16px;background:rgba(184,134,11,0.06);border:1px solid rgba(184,134,11,0.25);border-left:3px solid var(--gold)">
+          <div style="font-size:11px;font-weight:700;letter-spacing:0.10em;text-transform:uppercase;color:var(--gold);margin-bottom:6px">Message from Admin</div>
+          <div id="pvm-admin-msg" style="font-size:14px;color:var(--ink);line-height:1.7">—</div>
+        </div>
+      </div>
+    </div>
+    <div style="padding:14px 24px;border-top:1px solid var(--border);display:flex;justify-content:flex-end">
+      <button onclick="document.getElementById('prop-view-modal').style.display='none'" style="padding:10px 24px;background:var(--ink);color:#fff;border:none;font-family:var(--font-data);font-weight:700;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer">Close</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>

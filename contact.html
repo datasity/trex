@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Contact — Analyst Den</title>
+<link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+<header class="site-header"><div class="container header-inner"><a href="index.html" class="header-logo"><img src="assets/analyst-den-logo-3d.png" alt="Analyst Den"/></a><nav class="header-nav"><a href="index.html">Home</a><a href="research.html">Research</a><a href="contributors.html">Community</a><a href="about.html">About</a><a href="get-involved.html">Get Involved</a></nav><div class="header-right"><a href="get-involved.html" class="header-cta">Apply Now</a><button class="menu-toggle">☰</button></div></div></header>
+<div class="mobile-menu"><button class="mobile-close">✕</button><a href="index.html">Home</a>
+<a href="research.html">Research</a>
+<a href="contributors.html">Community</a>
+<a href="about.html">About</a>
+<a href="get-involved.html">Get Involved</a></div>
+<div class="page-hero"><div class="container page-hero-inner"><p class="t-label" style="color:rgba(255,255,255,0.45);margin-bottom:14px">Analyst Den</p><h1>Get In Touch</h1><p>Have a research inquiry, partnership proposal, or want to learn more? We respond within 2 working days.</p></div></div>
+<section><div class="form-grid container" style="max-width:1000px;margin:0 auto"><div class="form-side"><div class="section-eyebrow"><span class="eyebrow-text">Contact Details</span><div class="eyebrow-line"></div></div><h2 class="t-headline" style="font-size:24px;margin-bottom:16px">Reach the team</h2><p class="t-body" style="margin-bottom:28px">We welcome research inquiries, partnership discussions, and contributor questions.</p><div style="padding:16px 0;border-bottom:1px solid var(--border)"><p class="t-label" style="margin-bottom:4px">Email</p><p style="font-family:var(--font-body);font-size:15px;color:var(--text)">hello@analystden.org</p></div><div style="padding:16px 0;border-bottom:1px solid var(--border)"><p class="t-label" style="margin-bottom:4px">Platform</p><p style="font-family:var(--font-body);font-size:15px;color:var(--text)">Datavasity · analystden.org</p></div><div style="padding:16px 0"><p class="t-label" style="margin-bottom:4px">Research Location</p><p style="font-family:var(--font-body);font-size:15px;color:var(--text)">Ogun State, Nigeria</p></div></div><div class="form-side"><form id="contact-form"><div class="form-group"><label class="form-label">Name</label><input class="form-input" type="text" placeholder="Your name" required/></div><div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" placeholder="your@email.com" required/></div><div class="form-group"><label class="form-label">Subject</label><select class="form-select"><option>Research Inquiry</option><option>Partnership Proposal</option><option>Contributor Question</option><option>Media Inquiry</option><option>Other</option></select></div><div class="form-group"><label class="form-label">Message</label><textarea class="form-textarea" placeholder="Your message…" required></textarea></div><button type="submit" class="btn btn--primary" style="width:100%;justify-content:center">Send Message →</button></form></div></div></section>
+<footer class="site-footer"><div class="container"><div class="footer-grid"><div class="footer-brand"><span class="footer-logo">Analyst Den</span><p>A Datavasity platform.</p></div><div class="footer-col"><p class="footer-col-title">Research</p><a href="research.html">Projects</a><a href="publications.html">Publications</a></div><div class="footer-col"><p class="footer-col-title">Community</p><a href="contributors.html">Contributors</a><a href="get-involved.html">Get Involved</a></div><div class="footer-col"><p class="footer-col-title">About</p><a href="about.html">About Us</a><a href="contact.html">Contact</a></div><div class="footer-col"><p class="footer-col-title">Portal</p><a href="admin.html" style="opacity:0.7">Admin Login</a><a href="dashboard.html" style="opacity:0.7">Contributor Login</a></div>
+    </div><div class="footer-bottom"><span>© 2026 Analyst Den by Datavasity</span><span>hello@analystden.org</span></div></div></footer>
+<script src="script.js"></script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, addDoc, collection, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+const app = initializeApp({
+  apiKey:"AIzaSyBzlCB74rpbd6o2vx7RbsfuIrkfOyhBUTQ",
+  authDomain:"analyst-den-3f9c9.firebaseapp.com",
+  projectId:"analyst-den-3f9c9",
+  storageBucket:"analyst-den-3f9c9.firebasestorage.app",
+  messagingSenderId:"438646500281",
+  appId:"1:438646500281:web:8a7c48d0ca882e2b5a6468"
+});
+const db = getFirestore(app);
+const form = document.getElementById('contact-form');
+if(form){
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    const btn = form.querySelector('button[type="submit"]');
+    const inputs = [...form.querySelectorAll('input,select,textarea')];
+    try {
+      await addDoc(collection(db,'messages'), {
+        name:    inputs[0]?.value || '',
+        email:   inputs[1]?.value || '',
+        subject: inputs[2]?.value || '',
+        message: form.querySelector('textarea')?.value || '',
+        read:    false,
+        submittedAt: serverTimestamp()
+      });
+      btn.textContent = 'Message sent ✓';
+      btn.disabled = true;
+      btn.style.background = 'var(--forest)';
+      form.reset();
+      setTimeout(() => { btn.textContent = 'Send Message →'; btn.disabled = false; btn.style.background = ''; }, 4000);
+    } catch(err) {
+      console.error(err);
+      alert('Something went wrong. Please try again.');
+    }
+  });
+}
+</script>
+</body>
+</html>

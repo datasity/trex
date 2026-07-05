@@ -1,0 +1,2234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Admin — Analyst Den</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800&family=Lora:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#111111; --gold:#B8860B; --forest:#1F4D3A; --red:#C0392B;
+  --bg:#F6F3ED; --bg-alt:#EDEBE4; --white:#fff;
+  --border:#D8D2C8; --border-dk:#C4BDB0;
+  --text:#111; --text-mid:#3A3832; --text-lt:#6B6560; --text-xs:#9E9890;
+  --font-data:'Barlow Condensed',sans-serif;
+  --font-body:'Lora',serif;
+  --sidebar:240px;
+}
+body{font-family:var(--font-data);background:var(--bg);color:var(--text);min-height:100vh;display:flex;font-size:14px}
+
+/* ── LOGIN SCREEN ── */
+#login-screen{
+  display:flex;align-items:center;justify-content:center;
+  min-height:100vh;width:100%;background:var(--ink);
+}
+.login-box{
+  background:var(--white);padding:48px 40px;width:100%;max-width:400px;
+  border-top:4px solid var(--gold);
+}
+.login-box h1{font-family:var(--font-body);font-size:28px;font-weight:600;margin-bottom:6px}
+.login-box p{font-size:13px;color:var(--text-lt);margin-bottom:32px;letter-spacing:0.04em}
+.form-field{margin-bottom:18px}
+.form-field label{display:block;font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-lt);margin-bottom:7px}
+.form-field input{width:100%;padding:12px 14px;border:1.5px solid var(--border);font-family:var(--font-data);font-size:14px;color:var(--text);background:var(--bg);outline:none;transition:border-color 0.2s}
+.form-field input:focus{border-color:var(--gold)}
+.login-btn{width:100%;padding:13px;background:var(--gold);color:#fff;border:none;font-family:var(--font-data);font-weight:800;font-size:13px;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;transition:opacity 0.2s}
+.login-btn:hover{opacity:0.88}
+.login-error{color:var(--red);font-size:12px;margin-top:10px;display:none}
+
+/* ── ADMIN LAYOUT ── */
+#admin-app{display:none;width:100%;min-height:100vh}
+
+/* SIDEBAR */
+.sidebar{
+  width:var(--sidebar);background:var(--ink);
+  display:flex;flex-direction:column;
+  position:fixed;top:0;left:0;height:100%;z-index:100;
+}
+.sidebar-logo{
+  padding:24px 20px;border-bottom:1px solid rgba(255,255,255,0.08);
+  font-family:var(--font-body);font-size:18px;font-weight:600;color:#fff;
+}
+.sidebar-logo span{display:block;font-family:var(--font-data);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-top:2px}
+.sidebar-nav{flex:1;padding:16px 0;overflow-y:auto}
+.nav-section{padding:12px 20px 4px;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.3)}
+.nav-item{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 20px;color:rgba(255,255,255,0.6);
+  cursor:pointer;transition:all 0.18s;font-size:13px;font-weight:600;letter-spacing:0.04em;
+  border-left:3px solid transparent;
+}
+.nav-item:hover{color:#fff;background:rgba(255,255,255,0.06)}
+.nav-item.active{color:#fff;background:rgba(255,255,255,0.1);border-left-color:var(--gold)}
+.nav-item-icon{font-size:16px;width:18px;text-align:center}
+.nav-badge{
+  margin-left:auto;background:var(--gold);color:#fff;
+  font-size:10px;font-weight:800;padding:2px 7px;border-radius:20px;
+}
+.sidebar-footer{
+  padding:16px 20px;border-top:1px solid rgba(255,255,255,0.08);
+}
+.logout-btn{
+  width:100%;padding:9px;background:transparent;
+  border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.6);
+  font-family:var(--font-data);font-size:12px;letter-spacing:0.08em;
+  text-transform:uppercase;cursor:pointer;font-weight:600;transition:all 0.18s;
+}
+.logout-btn:hover{border-color:rgba(255,255,255,0.5);color:#fff}
+
+/* MAIN CONTENT */
+.main{margin-left:var(--sidebar);flex:1;display:flex;flex-direction:column;min-height:100vh}
+.topbar{
+  height:60px;background:var(--white);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 32px;position:sticky;top:0;z-index:50;
+}
+.topbar-title{font-family:var(--font-body);font-size:18px;font-weight:600;color:var(--text)}
+.topbar-actions{display:flex;gap:10px;align-items:center}
+.content{padding:32px;flex:1}
+
+/* ── BUTTONS ── */
+.btn{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:9px 20px;font-family:var(--font-data);font-weight:700;
+  font-size:12px;letter-spacing:0.08em;text-transform:uppercase;
+  border:1.5px solid;cursor:pointer;transition:all 0.18s;
+}
+.btn-primary{background:var(--gold);color:#fff;border-color:var(--gold)}
+.btn-primary:hover{opacity:0.88}
+.btn-forest{background:var(--forest);color:#fff;border-color:var(--forest)}
+.btn-forest:hover{opacity:0.88}
+.btn-outline{background:transparent;color:var(--text);border-color:var(--border-dk)}
+.btn-outline:hover{border-color:var(--ink);background:var(--ink);color:#fff}
+.btn-danger{background:transparent;color:var(--red);border-color:var(--red)}
+.btn-danger:hover{background:var(--red);color:#fff}
+.btn-sm{padding:6px 14px;font-size:11px}
+
+/* ── STATS ROW ── */
+.stats-row{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-bottom:28px}
+.stat-card{
+  background:var(--white);border:1px solid var(--border);
+  padding:20px;
+}
+.stat-num{font-family:var(--font-data);font-weight:800;font-size:36px;line-height:1;color:var(--text);margin-bottom:4px}
+.stat-label{font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-lt)}
+.stat-card.gold .stat-num{color:var(--gold)}
+.stat-card.forest .stat-num{color:var(--forest)}
+
+/* ── TABLES ── */
+.table-wrap{background:var(--white);border:1px solid var(--border);overflow:hidden}
+.table-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 20px;border-bottom:1px solid var(--border);
+}
+.table-header h3{font-family:var(--font-body);font-size:16px;font-weight:600}
+.table-search{
+  padding:8px 12px;border:1.5px solid var(--border);
+  font-family:var(--font-data);font-size:13px;color:var(--text);
+  background:var(--bg);outline:none;width:220px;
+}
+.table-search:focus{border-color:var(--gold)}
+table{width:100%;border-collapse:collapse}
+th{
+  background:var(--bg-alt);font-size:11px;font-weight:700;
+  letter-spacing:0.10em;text-transform:uppercase;color:var(--text-lt);
+  padding:10px 16px;text-align:left;border-bottom:1px solid var(--border);
+}
+td{padding:13px 16px;border-bottom:1px solid var(--border);font-size:13px;color:var(--text-mid)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--bg)}
+.td-actions{display:flex;gap:8px;align-items:center}
+
+/* ── BADGES ── */
+.badge{display:inline-block;font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:3px 9px}
+.badge-active{background:rgba(31,77,58,0.12);color:var(--forest);border:1px solid rgba(31,77,58,0.25)}
+.badge-ongoing{background:rgba(184,134,11,0.10);color:var(--gold);border:1px solid rgba(184,134,11,0.25)}
+.badge-planned{background:var(--bg-alt);color:var(--text-lt);border:1px solid var(--border)}
+.badge-completed{background:rgba(15,76,129,0.10);color:#0F4C81;border:1px solid rgba(15,76,129,0.25)}
+.badge-new{background:rgba(184,134,11,0.15);color:var(--gold);border:1px solid var(--gold)}
+.badge-read{background:var(--bg-alt);color:var(--text-lt);border:1px solid var(--border)}
+.badge-approved{background:rgba(31,77,58,0.12);color:var(--forest)}
+.badge-pending{background:rgba(184,134,11,0.10);color:var(--gold)}
+.badge-rejected{background:rgba(192,57,43,0.10);color:var(--red)}
+
+/* ── MODAL ── */
+.modal-overlay{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);
+  z-index:500;align-items:center;justify-content:center;
+}
+.modal-overlay.open{display:flex}
+.modal{
+  background:var(--white);width:100%;max-width:580px;
+  max-height:90vh;overflow-y:auto;
+  border-top:4px solid var(--gold);
+}
+.modal-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:20px 24px;border-bottom:1px solid var(--border);
+}
+.modal-head h3{font-family:var(--font-body);font-size:18px;font-weight:600}
+.modal-close{background:none;border:none;font-size:22px;cursor:pointer;color:var(--text-lt);transition:color 0.18s}
+.modal-close:hover{color:var(--text)}
+.modal-body{padding:24px}
+.modal-footer{padding:16px 24px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end}
+
+/* ── FORM FIELDS ── */
+.field{margin-bottom:18px}
+.field label{display:block;font-size:11px;font-weight:700;letter-spacing:0.10em;text-transform:uppercase;color:var(--text-lt);margin-bottom:7px}
+.field input,.field textarea,.field select{
+  width:100%;padding:11px 13px;
+  border:1.5px solid var(--border);
+  font-family:var(--font-data);font-size:14px;color:var(--text);
+  background:var(--bg);outline:none;transition:border-color 0.2s;
+}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--gold)}
+.field textarea{min-height:100px;resize:vertical}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+
+/* ── EMPTY STATE ── */
+.empty{text-align:center;padding:56px 20px;color:var(--text-lt)}
+.empty-icon{font-size:40px;margin-bottom:12px;opacity:0.4}
+.empty p{font-size:14px}
+
+/* ── IMAGE UPLOAD ── */
+.upload-wrap { display:flex; align-items:center; gap:10px; margin-top:6px; flex-wrap:wrap }
+.upload-btn {
+  padding:9px 16px; background:var(--forest); color:#fff;
+  border:none; font-family:var(--font-data); font-weight:700;
+  font-size:11px; letter-spacing:0.08em; text-transform:uppercase;
+  cursor:pointer; transition:opacity 0.18s; white-space:nowrap;
+}
+.upload-btn:hover { opacity:0.85 }
+.upload-btn:disabled { opacity:0.5; cursor:not-allowed }
+.upload-preview {
+  width:56px; height:56px; object-fit:cover;
+  border:1px solid var(--border); display:none;
+}
+.upload-preview.show { display:block }
+.upload-progress {
+  font-size:11px; color:var(--text-lt); display:none;
+}
+.upload-progress.show { display:block }
+
+/* ── TOAST ── */
+#toast{
+  position:fixed;bottom:24px;right:24px;z-index:1000;
+  background:var(--ink);color:#fff;
+  padding:13px 22px;font-size:13px;font-weight:600;letter-spacing:0.04em;
+  border-left:4px solid var(--gold);
+  opacity:0;transform:translateY(12px);
+  transition:opacity 0.3s,transform 0.3s;pointer-events:none;
+}
+#toast.show{opacity:1;transform:translateY(0)}
+
+/* ── PAGES ── */
+.page{display:none}
+.page.active{display:block}
+
+/* DETAIL VIEW */
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px}
+.detail-item{background:var(--bg);padding:12px 14px;border:1px solid var(--border)}
+.detail-item label{display:block;font-size:10px;font-weight:700;letter-spacing:0.10em;text-transform:uppercase;color:var(--text-xs);margin-bottom:4px}
+.detail-item span{font-size:14px;color:var(--text)}
+
+/* STATUS SELECTOR */
+.status-pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.status-pill{
+  padding:6px 14px;font-size:11px;font-weight:700;letter-spacing:0.08em;
+  text-transform:uppercase;border:1.5px solid var(--border);
+  cursor:pointer;transition:all 0.18s;background:transparent;color:var(--text-lt);
+  font-family:var(--font-data);
+}
+.status-pill.selected{background:var(--gold);color:#fff;border-color:var(--gold)}
+
+@media(max-width:900px){
+  .stats-row{grid-template-columns:repeat(2,1fr)}
+  .field-row{grid-template-columns:1fr}
+}
+
+/* Quill editor in admin */
+.ql-toolbar.ql-snow{border:none;border-bottom:1px solid var(--border);font-family:var(--font-data);padding:8px 12px;background:var(--bg-alt);font-size:12px}
+.ql-container.ql-snow{border:none;font-family:var(--font-body,serif);font-size:14px}
+.ql-editor{min-height:130px;padding:14px 16px;line-height:1.75;font-size:14px;color:var(--text);background:#fff}
+.ql-editor.ql-blank::before{color:var(--text-xs);font-style:normal;font-size:13px;font-family:var(--font-data)}
+.ql-container.ql-snow{background:#fff}
+.rich-admin{border:1.5px solid var(--border);transition:border-color 0.2s;background:#fff}
+.rich-admin:focus-within{border-color:var(--gold)}
+#proj-writeup-editor .ql-editor{min-height:200px}
+.rich-wc{font-size:11px;color:var(--text-xs);padding:4px 12px;border-top:1px solid var(--border);background:var(--bg-alt);text-align:right;font-family:var(--font-data);letter-spacing:0.06em}
+</style>
+
+</head>
+<body>
+
+<!-- ════════════════════════════
+     LOGIN SCREEN
+════════════════════════════ -->
+<div id="login-screen">
+  <div class="login-box">
+    <h1>Analyst Den</h1>
+    <p>ADMIN DASHBOARD — SIGN IN TO CONTINUE</p>
+    <div class="form-field">
+      <label>Email</label>
+      <input type="email" id="login-email" placeholder="your@email.com" autocomplete="email"/>
+    </div>
+    <div class="form-field">
+      <label>Password</label>
+      <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password"/>
+    </div>
+    <button class="login-btn" id="login-btn">Sign In →</button>
+    <div class="login-error" id="login-error">Incorrect email or password. Try again.</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════
+     ADMIN APP
+════════════════════════════ -->
+<div id="admin-app">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      Analyst Den
+      <span>Admin Dashboard</span>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">Overview</div>
+      <div class="nav-item active" data-page="overview">
+        <span class="nav-item-icon">📊</span> Overview
+      </div>
+
+      <div class="nav-section">Content</div>
+      <div class="nav-item" data-page="projects">
+        <span class="nav-item-icon">🗂️</span> Projects
+      </div>
+      <div class="nav-item" data-page="publications">
+        <span class="nav-item-icon">📄</span> Publications
+      </div>
+      <div class="nav-item" data-page="contributors">
+        <span class="nav-item-icon">👥</span> Contributors
+      </div>
+
+      <div class="nav-section">Inbox</div>
+      <div class="nav-item" data-page="applications">
+        <span class="nav-item-icon">📥</span> Applications
+        <span class="nav-badge" id="app-badge">0</span>
+      </div>
+      <div class="nav-item" data-page="interests">
+        <span class="nav-item-icon">🙋</span> Interests
+        <span class="nav-badge" id="int-badge">0</span>
+      </div>
+      <div class="nav-item" data-page="proposals">
+        <span class="nav-item-icon">💡</span> Proposals
+        <span class="nav-badge" id="prop-badge">0</span>
+      </div>
+      <div class="nav-item" data-page="messages">
+        <span class="nav-item-icon">✉️</span> Messages
+        <span class="nav-badge" id="msg-badge">0</span>
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="logout-btn" id="logout-btn">Sign Out</button>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <span class="topbar-title" id="page-title">Overview</span>
+      <div class="topbar-actions" id="topbar-actions"></div>
+    </div>
+
+    <div class="content">
+
+      <!-- ── OVERVIEW ── -->
+      <div class="page active" id="page-overview">
+        <div class="stats-row">
+          <div class="stat-card gold">
+            <div class="stat-num" id="stat-projects">—</div>
+            <div class="stat-label">Active Projects</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num" id="stat-publications">—</div>
+            <div class="stat-label">Publications</div>
+          </div>
+          <div class="stat-card forest">
+            <div class="stat-num" id="stat-contributors">—</div>
+            <div class="stat-label">Contributors</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num" id="stat-applications">—</div>
+            <div class="stat-label">Applications</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num" id="stat-interests">—</div>
+            <div class="stat-label">Interests</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num" id="stat-proposals">—</div>
+            <div class="stat-label">Proposals</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num" id="stat-messages">—</div>
+            <div class="stat-label">Messages</div>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <div class="table-header"><h3>Recent Applications</h3></div>
+          <table>
+            <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Date</th><th>Status</th></tr></thead>
+            <tbody id="overview-apps-body">
+              <tr><td colspan="5"><div class="empty"><div class="empty-icon">📥</div><p>No applications yet</p></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── PROJECTS ── -->
+      <div class="page" id="page-projects">
+        <div class="table-wrap">
+          <div class="table-header">
+            <h3>Research Projects</h3>
+            <div style="display:flex;gap:10px;align-items:center">
+              <input class="table-search" type="text" placeholder="Search projects…" id="search-projects"/>
+              <button class="btn btn-primary" id="add-project-btn">+ Add Project</button>
+            </div>
+          </div>
+          <table>
+            <thead><tr><th>Title</th><th>Category</th><th>Location</th><th>Period</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="projects-body">
+              <tr><td colspan="6"><div class="empty"><div class="empty-icon">🗂️</div><p>No projects yet. Add your first project.</p></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── PUBLICATIONS ── -->
+      <div class="page" id="page-publications">
+        <div class="table-wrap">
+          <div class="table-header">
+            <h3>Publications</h3>
+            <div style="display:flex;gap:10px;align-items:center">
+              <input class="table-search" type="text" placeholder="Search publications…" id="search-pubs"/>
+              <button class="btn btn-primary" id="add-pub-btn">+ Add Publication</button>
+            </div>
+          </div>
+          <table>
+            <thead><tr><th>Title</th><th>Type</th><th>Authors</th><th>Date</th><th>PDF</th><th>Actions</th></tr></thead>
+            <tbody id="publications-body">
+              <tr><td colspan="6"><div class="empty"><div class="empty-icon">📄</div><p>No publications yet. Add your first report.</p></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── CONTRIBUTORS ── -->
+      <div class="page" id="page-contributors">
+        <div class="table-wrap">
+          <div class="table-header">
+            <h3>Contributors</h3>
+            <div style="display:flex;gap:10px;align-items:center">
+              <input class="table-search" type="text" placeholder="Search contributors…" id="search-contribs"/>
+              <button class="btn btn-primary" id="add-contrib-btn">+ Add Contributor</button>
+            </div>
+          </div>
+          <table>
+            <thead><tr><th>Name</th><th>Role</th><th>Location</th><th>Projects</th><th>Actions</th></tr></thead>
+            <tbody id="contributors-body">
+              <tr><td colspan="5"><div class="empty"><div class="empty-icon">👥</div><p>No contributors yet.</p></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── APPLICATIONS ── -->
+      <div class="page" id="page-applications">
+        <div class="table-wrap">
+          <div class="table-header">
+            <h3>Applications</h3>
+            <div style="display:flex;gap:10px">
+              <input class="table-search" type="text" placeholder="Search applications…" id="search-apps"/>
+            </div>
+          </div>
+          <table>
+            <thead><tr><th>Name</th><th>Email</th><th>Role Applied</th><th>Location</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="applications-body">
+              <tr><td colspan="7"><div class="empty"><div class="empty-icon">📥</div><p>No applications yet</p></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── INTERESTS ── -->
+      <div class="page" id="page-interests">
+        <div class="table-wrap">
+          <div class="table-header">
+            <h3>Project Interests</h3>
+            <span style="font-size:12px;color:var(--text-lt)">Contributors who expressed interest in projects</span>
+          </div>
+          <table>
+            <thead><tr><th>Contributor</th><th>Email</th><th>Project</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="interests-body">
+              <tr><td colspan="6"><div class="empty"><div class="empty-icon">🙋</div><p>No interests yet</p></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── PROPOSALS ── -->
+      <div class="page" id="page-proposals">
+        <div class="table-wrap">
+          <div class="table-header">
+            <h3>Project Proposals</h3>
+            <span style="font-size:12px;color:var(--text-lt)">Projects proposed by contributors — review quarterly</span>
+          </div>
+          <table>
+            <thead><tr><th>Title & Problem</th><th>Proposed By</th><th>Sponsor</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="proposals-body">
+              <tr><td colspan="6"><div class="empty"><div class="empty-icon">💡</div><p>No proposals yet</p></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── MESSAGES ── -->
+      <div class="page" id="page-messages">
+        <div class="table-wrap">
+          <div class="table-header">
+            <h3>Messages</h3>
+            <input class="table-search" type="text" placeholder="Search messages…" id="search-msgs"/>
+          </div>
+          <table>
+            <thead><tr><th>Name</th><th>Email</th><th>Subject</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="messages-body">
+              <tr><td colspan="6"><div class="empty"><div class="empty-icon">✉️</div><p>No messages yet</p></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /admin-app -->
+
+<!-- ════════════
+     MODALS
+════════════ -->
+
+<!-- Project Modal -->
+<div class="modal-overlay" id="project-modal">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="project-modal-title">Add Project</h3>
+      <button class="modal-close" data-close="project-modal">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="project-id"/>
+      <div class="field-row">
+        <div class="field"><label>Project Title *</label><input type="text" id="proj-title" placeholder="e.g. Transportation Cost Stress"/></div>
+        <div class="field"><label>Category *</label>
+          <select id="proj-category">
+            <option value="">Select category</option>
+            <option>Transportation</option><option>Environment</option>
+            <option>Health</option><option>Education</option>
+            <option>Economy</option><option>Governance</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Location</label><input type="text" id="proj-location" placeholder="e.g. Ogun State, Nigeria"/></div>
+        <div class="field"><label>Study Period</label><input type="text" id="proj-period" placeholder="e.g. March – May 2026"/></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Survey Responses / Target</label><input type="number" id="proj-responses" placeholder="e.g. 1240"/></div>
+        <div class="field"><label>Status</label>
+          <select id="proj-status" onchange="toggleFindingsFields(this.value)">
+            <option value="ongoing">Ongoing</option>
+            <option value="active">Active</option>
+            <option value="planned">Planned</option>
+            <option value="completed">Completed</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>Short Description * <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:11px;color:var(--text-xs)">(max 150 words — shown on project cards)</span></label>
+        <div class="rich-admin" id="proj-desc-wrap"><div id="proj-desc-editor"></div><div class="rich-wc" id="proj-desc-wc">0 / 150 words</div></div>
+        <input type="hidden" id="proj-desc"/>
+      </div>
+      <div class="field-row">
+      <div class="field">
+        <label>Project Sponsor</label>
+        <div style="position:relative">
+          <input type="text" id="proj-sponsor-search" placeholder="Search contributors or type Datavasity…"
+            oninput="filterSponsorList(this.value); document.getElementById('proj-sponsor').value=this.value.trim();"
+            onfocus="document.getElementById('sponsor-dropdown').style.display='block'"
+            onblur="setTimeout(function(){document.getElementById('sponsor-dropdown').style.display='none'},200)"
+            style="width:100%;padding:11px 13px;border:1.5px solid var(--border);font-family:var(--font-data);font-size:14px;color:var(--text);background:var(--bg);outline:none"/>
+          <input type="hidden" id="proj-sponsor"/>
+          <div id="sponsor-dropdown" style="display:none;position:absolute;top:100%;left:0;right:0;background:#fff;border:1.5px solid var(--gold);border-top:none;max-height:200px;overflow-y:auto;z-index:200">
+            <div onclick="selectSponsor('Datavasity','')" style="padding:10px 14px;cursor:pointer;font-size:13px;font-weight:700;color:var(--forest);border-bottom:1px solid var(--border)" onmouseover="this.style.background='var(--bg-alt)'" onmouseout="this.style.background='#fff'">🏢 Datavasity</div>
+            <div id="sponsor-contrib-list"></div>
+          </div>
+        </div>
+        <small style="color:var(--text-xs);font-size:11px;margin-top:4px;display:block">Pick Datavasity, a contributor — or type any company/organisation name directly</small>
+      </div>
+      </div>
+      <div class="field"><label>Key Quote / Pull Quote</label><input type="text" id="proj-quote" placeholder='e.g. "7 out of 10 households spend more than 20% of income on transport"'/><small style="color:var(--text-xs);font-size:11px;margin-top:4px;display:block">This appears as the highlighted quote on the project page</small></div>
+      <div class="field">
+        <label>Full Research Write-up <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:11px;color:var(--text-xs)">(appears on the project detail page)</span></label>
+        <div class="rich-admin" id="proj-writeup-wrap"><div id="proj-writeup-editor"></div><div class="rich-wc" id="proj-writeup-wc">0 words</div></div>
+        <input type="hidden" id="proj-writeup"/>
+      </div>
+      <div class="field">
+        <label>Project Image</label>
+        <div class="upload-wrap">
+          <input type="text" id="proj-image" placeholder="URL appears here after upload" style="flex:1"/>
+          <button type="button" class="upload-btn" id="proj-upload-btn" onclick="document.getElementById('proj-file-input').click()">↑ Upload Image</button>
+          <input type="file" id="proj-file-input" accept="image/jpeg,image/png,image/webp" style="display:none" onchange="handleUpload(this,'proj-image','proj-img-preview','proj-upload-btn','proj-upload-progress')"/>
+          <img id="proj-img-preview" class="upload-preview" src="" alt="preview"/>
+        </div>
+        <span class="upload-progress" id="proj-upload-progress">Uploading…</span>
+      </div>
+      <div class="field">
+        <label>Power BI Dashboard URL <small style="font-weight:400;text-transform:none;letter-spacing:0;font-size:11px;color:var(--text-xs)">(Optional — paste the Power BI embed/share link)</small></label>
+        <input type="text" id="proj-powerbi" placeholder="https://app.powerbi.com/view?r=..."/>
+        <small style="color:var(--text-xs);font-size:11px;margin-top:4px;display:block">A "View Dashboard" button will appear on the project page automatically when this is filled in</small>
+      </div>
+      <div style="border-top:1px solid var(--border);padding-top:18px;margin-top:6px">
+        <p style="font-size:11px;font-weight:700;letter-spacing:0.10em;text-transform:uppercase;color:var(--text-lt);margin-bottom:16px">Downloads — Upload each file separately</p>
+
+        <div class="field">
+          <label>PDF Report</label>
+          <div class="upload-wrap">
+            <input type="text" id="proj-pdf" placeholder="URL appears here after upload" style="flex:1"/>
+            <button type="button" class="upload-btn" id="proj-pdf-btn" onclick="document.getElementById('proj-pdf-file').click()">↑ Upload PDF</button>
+            <input type="file" id="proj-pdf-file" accept=".pdf" style="display:none" onchange="handleFileUpload(this,'proj-pdf','proj-pdf-btn','proj-pdf-prog','pdf')"/>
+          </div>
+          <span class="upload-progress" id="proj-pdf-prog"></span>
+        </div>
+
+        <div class="field">
+          <label>Dataset (CSV / Excel)</label>
+          <div class="upload-wrap">
+            <input type="text" id="proj-dataset" placeholder="URL appears here after upload" style="flex:1"/>
+            <button type="button" class="upload-btn" id="proj-dataset-btn" onclick="document.getElementById('proj-dataset-file').click()">↑ Upload Dataset</button>
+            <input type="file" id="proj-dataset-file" accept=".csv,.xlsx,.xls" style="display:none" onchange="handleFileUpload(this,'proj-dataset','proj-dataset-btn','proj-dataset-prog','raw')"/>
+          </div>
+          <span class="upload-progress" id="proj-dataset-prog"></span>
+        </div>
+
+        <!-- KEY FINDINGS — shown when saving completed projects -->
+        <div id="findings-fields" style="border-top:1px solid var(--border);padding-top:18px;margin-top:6px;display:none">
+          <p style="font-size:11px;font-weight:700;letter-spacing:0.10em;text-transform:uppercase;color:var(--gold);margin-bottom:14px">Key Findings Metrics <span style="font-weight:400;color:var(--text-lt)">(required for completed projects)</span></p>
+          <div style="display:grid;grid-template-columns:1fr 2fr;gap:10px;align-items:center;margin-bottom:10px">
+            <input type="text" id="finding-1-metric" placeholder="e.g. 72%" style="padding:9px 12px;border:1.5px solid var(--border);font-family:var(--font-data);font-size:14px;font-weight:700;color:var(--text);background:var(--bg);outline:none"/>
+            <input type="text" id="finding-1-label" placeholder="e.g. Report high transport burden" style="padding:9px 12px;border:1.5px solid var(--border);font-family:var(--font-data);font-size:13px;color:var(--text);background:var(--bg);outline:none"/>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 2fr;gap:10px;align-items:center;margin-bottom:10px">
+            <input type="text" id="finding-2-metric" placeholder="e.g. 58%" style="padding:9px 12px;border:1.5px solid var(--border);font-family:var(--font-data);font-size:14px;font-weight:700;color:var(--text);background:var(--bg);outline:none"/>
+            <input type="text" id="finding-2-label" placeholder="e.g. Changed travel behaviour" style="padding:9px 12px;border:1.5px solid var(--border);font-family:var(--font-data);font-size:13px;color:var(--text);background:var(--bg);outline:none"/>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 2fr;gap:10px;align-items:center;margin-bottom:10px">
+            <input type="text" id="finding-3-metric" placeholder="e.g. 34%" style="padding:9px 12px;border:1.5px solid var(--border);font-family:var(--font-data);font-size:14px;font-weight:700;color:var(--text);background:var(--bg);outline:none"/>
+            <input type="text" id="finding-3-label" placeholder="e.g. Spend over ₦15,000 monthly" style="padding:9px 12px;border:1.5px solid var(--border);font-family:var(--font-data);font-size:13px;color:var(--text);background:var(--bg);outline:none"/>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 2fr;gap:10px;align-items:center">
+            <input type="text" id="finding-4-metric" placeholder="e.g. 61%" style="padding:9px 12px;border:1.5px solid var(--border);font-family:var(--font-data);font-size:14px;font-weight:700;color:var(--text);background:var(--bg);outline:none"/>
+            <input type="text" id="finding-4-label" placeholder="e.g. Use informal transport" style="padding:9px 12px;border:1.5px solid var(--border);font-family:var(--font-data);font-size:13px;color:var(--text);background:var(--bg);outline:none"/>
+          </div>
+          <p style="font-size:11px;color:var(--text-xs);margin-top:10px">Left column: metric (e.g. 72%) · Right column: what it means</p>
+        </div>
+
+        <div class="field">
+          <label>Methodology (PDF)</label>
+          <div class="upload-wrap">
+            <input type="text" id="proj-methodology" placeholder="URL appears here after upload" style="flex:1"/>
+            <button type="button" class="upload-btn" id="proj-method-btn" onclick="document.getElementById('proj-method-file').click()">↑ Upload Methodology</button>
+            <input type="file" id="proj-method-file" accept=".pdf" style="display:none" onchange="handleFileUpload(this,'proj-methodology','proj-method-btn','proj-method-prog','pdf')"/>
+          </div>
+          <span class="upload-progress" id="proj-method-prog"></span>
+        </div>
+
+        <div class="field">
+          <label>Presentation (PPTX / PDF)</label>
+          <div class="upload-wrap">
+            <input type="text" id="proj-presentation" placeholder="URL appears here after upload" style="flex:1"/>
+            <button type="button" class="upload-btn" id="proj-pptx-btn" onclick="document.getElementById('proj-pptx-file').click()">↑ Upload Presentation</button>
+            <input type="file" id="proj-pptx-file" accept=".pptx,.ppt,.pdf" style="display:none" onchange="handleFileUpload(this,'proj-presentation','proj-pptx-btn','proj-pptx-prog','raw')"/>
+          </div>
+          <span class="upload-progress" id="proj-pptx-prog"></span>
+        </div>
+      </div>
+    </div>
+    <!-- ── TIMELINE MILESTONES ── -->
+    <div style="border-top:1px solid var(--border);padding:20px 24px;background:var(--bg-alt)">
+      <p style="font-size:11px;font-weight:700;letter-spacing:0.10em;text-transform:uppercase;color:var(--text-lt);margin-bottom:4px">Project Timeline Milestones</p>
+      <p style="font-size:12px;color:var(--text-xs);margin-bottom:16px">Set dates for each stage. Past dates show as completed (green), current as amber pulse, future as pending (grey). Leave blank if not yet scheduled.</p>
+
+      <div style="display:flex;flex-direction:column;gap:12px">
+
+        <div style="background:var(--bg-card);border:1px solid var(--border);border-left:3px solid var(--forest);padding:14px 16px">
+          <div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--forest);margin-bottom:8px">01 — Project Approved</div>
+          <div style="display:grid;grid-template-columns:160px 1fr;gap:10px;align-items:start">
+            <input type="date" id="tl-approved-date" style="padding:8px 10px;border:1.5px solid var(--border);font-family:var(--font-data);font-size:13px;color:var(--text);background:var(--bg);outline:none;width:100%"/>
+            <textarea id="tl-approved-desc" maxlength="250" placeholder="e.g. Project formally approved and added to the research pipeline…" style="padding:8px 10px;border:1.5px solid var(--border);font-family:var(--font-body);font-size:13px;color:var(--text);background:var(--bg);outline:none;resize:none;height:60px;width:100%"></textarea>
+          </div>
+          <div style="text-align:right;font-size:11px;color:var(--text-xs);margin-top:3px"><span id="tl-approved-count">0</span>/250</div>
+        </div>
+
+        <div style="background:var(--bg-card);border:1px solid var(--border);border-left:3px solid var(--forest);padding:14px 16px">
+          <div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--forest);margin-bottom:8px">02 — Field Research Begins</div>
+          <div style="display:grid;grid-template-columns:160px 1fr;gap:10px;align-items:start">
+            <input type="date" id="tl-fieldstart-date" style="padding:8px 10px;border:1.5px solid var(--border);font-family:var(--font-data);font-size:13px;color:var(--text);background:var(--bg);outline:none;width:100%"/>
+            <textarea id="tl-fieldstart-desc" maxlength="250" placeholder="e.g. Field researchers deployed across target LGAs to begin data collection…" style="padding:8px 10px;border:1.5px solid var(--border);font-family:var(--font-body);font-size:13px;color:var(--text);background:var(--bg);outline:none;resize:none;height:60px;width:100%"></textarea>
+          </div>
+          <div style="text-align:right;font-size:11px;color:var(--text-xs);margin-top:3px"><span id="tl-fieldstart-count">0</span>/250</div>
+        </div>
+
+        <div style="background:var(--bg-card);border:1px solid var(--border);border-left:3px solid var(--forest);padding:14px 16px">
+          <div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--forest);margin-bottom:8px">03 — Data Collection Complete</div>
+          <div style="display:grid;grid-template-columns:160px 1fr;gap:10px;align-items:start">
+            <input type="date" id="tl-datacomplete-date" style="padding:8px 10px;border:1.5px solid var(--border);font-family:var(--font-data);font-size:13px;color:var(--text);background:var(--bg);outline:none;width:100%"/>
+            <textarea id="tl-datacomplete-desc" maxlength="250" placeholder="e.g. All survey responses collected and raw data secured for cleaning…" style="padding:8px 10px;border:1.5px solid var(--border);font-family:var(--font-body);font-size:13px;color:var(--text);background:var(--bg);outline:none;resize:none;height:60px;width:100%"></textarea>
+          </div>
+          <div style="text-align:right;font-size:11px;color:var(--text-xs);margin-top:3px"><span id="tl-datacomplete-count">0</span>/250</div>
+        </div>
+
+        <div style="background:var(--bg-card);border:1px solid var(--border);border-left:3px solid var(--gold);padding:14px 16px">
+          <div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold);margin-bottom:8px">04 — Analysis Phase</div>
+          <div style="display:grid;grid-template-columns:160px 1fr;gap:10px;align-items:start">
+            <input type="date" id="tl-analysis-date" style="padding:8px 10px;border:1.5px solid var(--border);font-family:var(--font-data);font-size:13px;color:var(--text);background:var(--bg);outline:none;width:100%"/>
+            <textarea id="tl-analysis-desc" maxlength="250" placeholder="e.g. Data cleaned and validated, now being analysed using Power BI and Python…" style="padding:8px 10px;border:1.5px solid var(--border);font-family:var(--font-body);font-size:13px;color:var(--text);background:var(--bg);outline:none;resize:none;height:60px;width:100%"></textarea>
+          </div>
+          <div style="text-align:right;font-size:11px;color:var(--text-xs);margin-top:3px"><span id="tl-analysis-count">0</span>/250</div>
+        </div>
+
+        <div style="background:var(--bg-card);border:1px solid var(--border);border-left:3px solid var(--ink);padding:14px 16px">
+          <div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink);margin-bottom:8px">05 — Report Published</div>
+          <div style="display:grid;grid-template-columns:160px 1fr;gap:10px;align-items:start">
+            <input type="date" id="tl-published-date" style="padding:8px 10px;border:1.5px solid var(--border);font-family:var(--font-data);font-size:13px;color:var(--text);background:var(--bg);outline:none;width:100%"/>
+            <textarea id="tl-published-desc" maxlength="250" placeholder="e.g. Full research report published with downloadable PDF and interactive dashboard…" style="padding:8px 10px;border:1.5px solid var(--border);font-family:var(--font-body);font-size:13px;color:var(--text);background:var(--bg);outline:none;resize:none;height:60px;width:100%"></textarea>
+          </div>
+          <div style="text-align:right;font-size:11px;color:var(--text-xs);margin-top:3px"><span id="tl-published-count">0</span>/250</div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-outline" data-close="project-modal">Cancel</button>
+      <button class="btn btn-primary" id="save-project-btn">Save Project</button>
+    </div>
+  </div>
+</div>
+
+<!-- Publication Modal -->
+<div class="modal-overlay" id="pub-modal">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="pub-modal-title">Add Publication</h3>
+      <button class="modal-close" data-close="pub-modal">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="pub-id"/>
+      <div class="field"><label>Title *</label><input type="text" id="pub-title" placeholder="e.g. Transportation Cost Stress in Ogun State 2026"/></div>
+      <div class="field-row">
+        <div class="field"><label>Type</label>
+          <select id="pub-type">
+            <option>Report</option><option>Policy Brief</option>
+            <option>White Paper</option><option>Research Note</option><option>Case Study</option>
+          </select>
+        </div>
+        <div class="field"><label>Category</label>
+          <select id="pub-category">
+            <option>Transportation</option><option>Environment</option>
+            <option>Health</option><option>Education</option>
+            <option>Economy</option><option>Governance</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Authors</label><input type="text" id="pub-authors" placeholder="e.g. Ayo Adewale et al."/></div>
+        <div class="field"><label>Date Published</label><input type="text" id="pub-date" placeholder="e.g. April 2026"/></div>
+      </div>
+      <div class="field"><label>PDF Link *</label><input type="text" id="pub-pdf" placeholder="assets/report.pdf or full URL"/></div>
+      <div class="field">
+        <label>Description <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:11px;color:var(--text-xs)">(max 150 words)</span></label>
+        <div class="rich-admin" id="pub-desc-wrap"><div id="pub-desc-editor"></div><div class="rich-wc" id="pub-desc-wc">0 / 150 words</div></div>
+        <input type="hidden" id="pub-desc"/>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" data-close="pub-modal">Cancel</button>
+      <button class="btn btn-primary" id="save-pub-btn">Save Publication</button>
+    </div>
+  </div>
+</div>
+
+<!-- Contributor Modal -->
+<div class="modal-overlay" id="contrib-modal">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="contrib-modal-title">Add Contributor</h3>
+      <button class="modal-close" data-close="contrib-modal">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="contrib-id"/>
+      <div class="field-row">
+        <div class="field"><label>Full Name *</label><input type="text" id="contrib-name" placeholder="e.g. Ayo Adewale"/></div>
+        <div class="field"><label>Role *</label><input type="text" id="contrib-role" placeholder="e.g. Lead Analyst"/></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Email</label><input type="email" id="contrib-email" placeholder="email@example.com"/></div>
+        <div class="field"><label>Location</label><input type="text" id="contrib-location" placeholder="e.g. Lagos, Nigeria"/></div>
+              <div class="field-row">
+                <div class="field"><label>LinkedIn URL</label><input type="text" id="contrib-linkedin" placeholder="https://linkedin.com/in/username"/></div>
+                <div class="field"><label>GitHub URL</label><input type="text" id="contrib-github" placeholder="https://github.com/username"/></div>
+              </div>
+      </div>
+      <div class="field">
+        <label>Bio <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:11px;color:var(--text-xs)">(max 150 words)</span></label>
+        <div class="rich-admin" id="contrib-bio-wrap"><div id="contrib-bio-editor"></div><div class="rich-wc" id="contrib-bio-wc">0 / 150 words</div></div>
+        <input type="hidden" id="contrib-bio"/>
+      </div>
+      <div class="field"><label>Skills (comma separated)</label><input type="text" id="contrib-skills" placeholder="e.g. Power BI, Python, SQL, Field Research"/></div>
+      <div class="field">
+        <label>Avatar / Profile Photo</label>
+        <div class="upload-wrap">
+          <input type="text" id="contrib-avatar" placeholder="URL appears here after upload" style="flex:1"/>
+          <button type="button" class="upload-btn" id="contrib-upload-btn" onclick="document.getElementById('contrib-file-input').click()">↑ Upload Photo</button>
+          <input type="file" id="contrib-file-input" accept="image/jpeg,image/png,image/webp" style="display:none" onchange="handleUpload(this,'contrib-avatar','contrib-img-preview','contrib-upload-btn','contrib-upload-progress')"/>
+          <img id="contrib-img-preview" class="upload-preview" src="" alt="preview"/>
+        </div>
+        <span class="upload-progress" id="contrib-upload-progress">Uploading…</span>
+      </div>
+      <div class="field">
+        <label>Assign to Projects</label>
+        <div id="contrib-projects-checkboxes" style="display:flex;flex-direction:column;gap:8px;padding:12px;border:1.5px solid var(--border);background:var(--bg);max-height:180px;overflow-y:auto">
+          <span style="font-size:12px;color:var(--text-xs)">Loading projects…</span>
+        </div>
+        <input type="hidden" id="contrib-projects"/>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" data-close="contrib-modal">Cancel</button>
+      <button class="btn btn-primary" id="save-contrib-btn">Save Contributor</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- Project View Modal -->
+<div class="modal-overlay" id="view-project-modal">
+  <div class="modal" style="max-width:680px">
+    <div class="modal-head">
+      <h3 id="vp-title">Project Detail</h3>
+      <button class="modal-close" data-close="view-project-modal">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="detail-grid">
+        <div class="detail-item"><label>Category</label><span id="vp-category">—</span></div>
+        <div class="detail-item"><label>Status</label><span id="vp-status">—</span></div>
+        <div class="detail-item"><label>Location</label><span id="vp-location">—</span></div>
+        <div class="detail-item"><label>Period</label><span id="vp-period">—</span></div>
+        <div class="detail-item"><label>Survey Responses</label><span id="vp-responses">—</span></div>
+        <div class="detail-item"><label>PDF Link</label><span id="vp-pdf">—</span></div>
+        <div class="detail-item"><label>Power BI URL</label><span id="vp-powerbi">—</span></div>
+      </div>
+      <div class="field" style="margin-bottom:14px"><label>Description</label>
+        <div id="vp-desc" style="padding:12px;background:var(--bg);border:1px solid var(--border);font-size:14px;line-height:1.7;color:var(--text-mid)">—</div>
+      </div>
+      <div class="field" style="margin-bottom:14px"><label>Key Quote</label>
+        <div id="vp-quote" style="padding:12px;background:var(--bg);border-left:3px solid var(--gold);font-size:14px;font-style:italic;line-height:1.65;color:var(--text-mid)">—</div>
+      </div>
+      <div class="field"><label>Full Write-up</label>
+        <div id="vp-writeup" style="padding:12px;background:var(--bg);border:1px solid var(--border);font-size:14px;line-height:1.75;color:var(--text-mid);white-space:pre-wrap;max-height:260px;overflow-y:auto">—</div>
+      </div>
+      <div id="vp-image-wrap" style="margin-top:14px;display:none">
+        <label class="field" style="display:block;font-size:11px;font-weight:700;letter-spacing:0.10em;text-transform:uppercase;color:var(--text-lt);margin-bottom:7px">Project Image</label>
+        <img id="vp-image" src="" style="max-width:100%;max-height:220px;object-fit:contain;border:1px solid var(--border)"/>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" data-close="view-project-modal">Close</button>
+      <button class="btn btn-primary" id="vp-edit-btn">Edit Project</button>
+    </div>
+  </div>
+</div>
+
+<!-- Publication View Modal -->
+<div class="modal-overlay" id="view-pub-modal">
+  <div class="modal" style="max-width:620px">
+    <div class="modal-head">
+      <h3 id="vpub-title">Publication Detail</h3>
+      <button class="modal-close" data-close="view-pub-modal">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="detail-grid">
+        <div class="detail-item"><label>Type</label><span id="vpub-type">—</span></div>
+        <div class="detail-item"><label>Category</label><span id="vpub-category">—</span></div>
+        <div class="detail-item"><label>Authors</label><span id="vpub-authors">—</span></div>
+        <div class="detail-item"><label>Date</label><span id="vpub-date">—</span></div>
+      </div>
+      <div class="field" style="margin-bottom:14px"><label>Description</label>
+        <div id="vpub-desc" style="padding:12px;background:var(--bg);border:1px solid var(--border);font-size:14px;line-height:1.75;color:var(--text-mid)">—</div>
+      </div>
+      <div class="detail-item" style="margin-top:10px"><label>PDF Link</label>
+        <a id="vpub-pdf" href="#" target="_blank" style="color:var(--gold);font-size:14px">—</a>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" data-close="view-pub-modal">Close</button>
+      <button class="btn btn-primary" id="vpub-edit-btn">Edit Publication</button>
+    </div>
+  </div>
+</div>
+
+<!-- Contributor View Modal -->
+<div class="modal-overlay" id="view-contrib-modal">
+  <div class="modal" style="max-width:620px">
+    <div class="modal-head">
+      <h3 id="vc-name">Contributor Detail</h3>
+      <button class="modal-close" data-close="view-contrib-modal">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:18px">
+        <img id="vc-avatar" src="" style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid var(--border);display:none"/>
+        <div>
+          <div style="font-size:18px;font-weight:600;color:var(--text)" id="vc-name-large">—</div>
+          <div style="font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold)" id="vc-role">—</div>
+          <div style="font-size:13px;color:var(--text-lt);margin-top:2px" id="vc-location">—</div>
+        </div>
+      </div>
+      <div class="detail-grid">
+        <div class="detail-item"><label>Email</label><span id="vc-email">—</span></div>
+        <div class="detail-item"><label>Projects</label><span id="vc-projects-count">—</span></div>
+      </div>
+      <div class="field" style="margin:14px 0"><label>Bio</label>
+        <div id="vc-bio" style="padding:12px;background:var(--bg);border:1px solid var(--border);font-size:14px;line-height:1.75;color:var(--text-mid)">—</div>
+      </div>
+      <div class="field"><label>Skills</label>
+        <div id="vc-skills" style="display:flex;flex-wrap:wrap;gap:7px;padding:10px 0"></div>
+      </div>
+      <div class="field" style="margin-top:10px"><label>Assigned Projects</label>
+        <div id="vc-projects" style="font-size:13px;color:var(--text-mid);padding:10px 0;line-height:1.8">—</div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" data-close="view-contrib-modal">Close</button>
+      <button class="btn btn-outline btn-sm" id="vc-toggle-complete-btn">Mark as Complete</button>
+      <button class="btn btn-primary" id="vc-edit-btn">Edit Contributor</button>
+    </div>
+  </div>
+</div>
+
+<!-- Application Detail Modal -->
+<div class="modal-overlay" id="app-modal">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>Application Detail</h3>
+      <button class="modal-close" data-close="app-modal">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="app-detail-id"/>
+      <div class="detail-grid">
+        <div class="detail-item"><label>Name</label><span id="app-detail-name">—</span></div>
+        <div class="detail-item"><label>Email</label><span id="app-detail-email">—</span></div>
+        <div class="detail-item"><label>Role Applied</label><span id="app-detail-role">—</span></div>
+        <div class="detail-item"><label>Location</label><span id="app-detail-location">—</span></div>
+        <div class="detail-item"><label>Date</label><span id="app-detail-date">—</span></div>
+        <div class="detail-item"><label>Status</label><span id="app-detail-status">—</span></div>
+      </div>
+      <div class="field"><label>Motivation / Background</label>
+        <div id="app-detail-motivation" style="padding:12px;background:var(--bg);border:1px solid var(--border);font-size:14px;line-height:1.7;color:var(--text-mid)">—</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:14px">
+        <div class="detail-item">
+          <label>Profile Photo</label>
+          <div id="app-detail-photo-wrap">
+            <img id="app-detail-photo" src="" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid var(--border);display:none;margin-top:4px"/>
+            <span id="app-detail-no-photo" style="font-size:13px;color:var(--text-xs)">Not uploaded</span>
+          </div>
+        </div>
+        <div class="detail-item">
+          <label>CV / Resume</label>
+          <a id="app-detail-cv" href="#" target="_blank" style="color:var(--gold);font-size:13px;display:none">↓ Download CV</a>
+          <span id="app-detail-no-cv" style="font-size:13px;color:var(--text-xs)">Not uploaded</span>
+        </div>
+        <div class="detail-item">
+          <label>Cover Letter</label>
+          <a id="app-detail-cl" href="#" target="_blank" style="color:var(--gold);font-size:13px;display:none">↓ Download Cover Letter</a>
+          <span id="app-detail-no-cl" style="font-size:13px;color:var(--text-xs)">Not uploaded</span>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger btn-sm" id="app-reject-btn">Reject</button>
+      <button class="btn btn-outline btn-sm" data-close="app-modal">Close</button>
+      <button class="btn btn-forest btn-sm" id="app-approve-btn">✓ Approve</button>
+    </div>
+  </div>
+</div>
+
+<!-- Message Detail Modal -->
+<div class="modal-overlay" id="msg-modal">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>Message Detail</h3>
+      <button class="modal-close" data-close="msg-modal">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="msg-detail-id"/>
+      <div class="detail-grid">
+        <div class="detail-item"><label>From</label><span id="msg-detail-name">—</span></div>
+        <div class="detail-item"><label>Email</label><span id="msg-detail-email">—</span></div>
+        <div class="detail-item"><label>Subject</label><span id="msg-detail-subject">—</span></div>
+        <div class="detail-item"><label>Date</label><span id="msg-detail-date">—</span></div>
+      </div>
+      <div class="field"><label>Message</label>
+        <div id="msg-detail-body" style="padding:12px;background:var(--bg);border:1px solid var(--border);font-size:14px;line-height:1.75;color:var(--text-mid)">—</div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger btn-sm" id="msg-delete-btn">Delete</button>
+      <button class="btn btn-outline btn-sm" data-close="msg-modal">Close</button>
+      <button class="btn btn-primary btn-sm" id="msg-reply-btn">Reply by Email</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+
+<!-- Proposal View Modal -->
+<div class="modal-overlay" id="proposal-modal">
+  <div class="modal" style="max-width:640px">
+    <div class="modal-head">
+      <h3 id="pm-title">Project Proposal</h3>
+      <button class="modal-close" data-close="proposal-modal">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="detail-grid">
+        <div class="detail-item"><label>Proposed By</label><span id="pm-name">—</span></div>
+        <div class="detail-item"><label>Email</label><span id="pm-email">—</span></div>
+        <div class="detail-item"><label>Role in Project</label><span id="pm-role">—</span></div>
+        <div class="detail-item"><label>Sponsor</label><span id="pm-sponsor">—</span></div>
+        <div class="detail-item"><label>Date Submitted</label><span id="pm-date">—</span></div>
+        <div class="detail-item"><label>Status</label><span id="pm-status">—</span></div>
+      </div>
+      <div class="field" style="margin-top:14px">
+        <label>Problem Statement</label>
+        <div id="pm-problem" style="padding:14px;background:var(--bg);border:1px solid var(--border);font-size:14px;line-height:1.75;color:var(--text-mid);min-height:80px"></div>
+      </div>
+      <div class="field" style="margin-top:14px">
+        <label>Expected Outcome</label>
+        <div id="pm-outcome" style="padding:14px;background:var(--bg);border:1px solid var(--border);font-size:14px;line-height:1.75;color:var(--text-mid);min-height:60px"></div>
+      </div>
+    </div>
+    <div class="modal-body" style="border-top:1px solid var(--border);padding-top:16px">
+      <div class="field">
+        <label>Message to Contributor <span style="font-weight:400;font-size:11px;color:var(--text-xs)">(Required when rejecting, optional when approving)</span></label>
+        <textarea id="pm-admin-message" placeholder="e.g. Thank you for your proposal — we'd like to discuss scope before proceeding..." style="width:100%;min-height:80px;padding:11px;border:1.5px solid var(--border);font-family:var(--font-body);font-size:14px;color:var(--text);background:var(--bg);outline:none;resize:vertical"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger btn-sm" id="pm-reject-btn">Reject</button>
+      <button class="btn btn-outline" data-close="proposal-modal">Close</button>
+      <button class="btn btn-forest" id="pm-approve-btn">✓ Approve Proposal</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<!-- ════════════════════════════
+     FIREBASE + ADMIN LOGIC
+════════════════════════════ -->
+<script src="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.js"></script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBzlCB74rpbd6o2vx7RbsfuIrkfOyhBUTQ",
+  authDomain: "analyst-den-3f9c9.firebaseapp.com",
+  projectId: "analyst-den-3f9c9",
+  storageBucket: "analyst-den-3f9c9.firebasestorage.app",
+  messagingSenderId: "438646500281",
+  appId: "1:438646500281:web:8a7c48d0ca882e2b5a6468"
+};
+
+const app  = initializeApp(firebaseConfig);
+const db   = getFirestore(app);
+const auth = getAuth(app);
+
+/* ── HELPERS ── */
+const $  = id => document.getElementById(id);
+const fmt = ts => ts?.toDate ? ts.toDate().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) : (ts || '—');
+
+function toast(msg, dur=3000){
+  const t = $('toast'); t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), dur);
+}
+
+function showModal(id){ $(id).classList.add('open') }
+function hideModal(id){ $(id).classList.remove('open') }
+
+/* ── AUTH ── */
+onAuthStateChanged(auth, user => {
+  if(user){
+    $('login-screen').style.display = 'none';
+    $('admin-app').style.display    = 'flex';
+    loadAll();
+  } else {
+    $('login-screen').style.display = 'flex';
+    $('admin-app').style.display    = 'none';
+  }
+});
+
+$('login-btn').onclick = async () => {
+  const email = $('login-email').value.trim();
+  const pass  = $('login-password').value;
+  $('login-error').style.display = 'none';
+  try {
+    await signInWithEmailAndPassword(auth, email, pass);
+  } catch(e){
+    $('login-error').style.display = 'block';
+  }
+};
+
+$('login-password').addEventListener('keydown', e => { if(e.key==='Enter') $('login-btn').click() });
+$('logout-btn').onclick = () => signOut(auth);
+
+/* ── NAV ── */
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.onclick = () => {
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    item.classList.add('active');
+    const page = item.dataset.page;
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    $('page-' + page).classList.add('active');
+    $('page-title').textContent = item.textContent.trim().replace(/\d+/g,'').trim();
+  };
+});
+
+/* Close modals */
+document.querySelectorAll('[data-close]').forEach(btn => {
+  btn.onclick = () => hideModal(btn.dataset.close);
+});
+document.querySelectorAll('.modal-overlay').forEach(ov => {
+  ov.onclick = e => { if(e.target===ov) ov.classList.remove('open') };
+});
+
+/* ══════════════════════════════
+   LOAD ALL DATA
+══════════════════════════════ */
+let allProjects=[], allPubs=[], allContribs=[], allApps=[], allMsgs=[];
+
+async function loadAll(){
+  try {
+    await Promise.all([loadProjects(), loadPublications(), loadContributors(), loadApplications(), loadMessages(), loadInterests(), loadProposals()]);
+    loadOverview();
+  } catch(e) {
+    console.error('Load error:', e);
+    toast('Error loading data — check console', 5000);
+  }
+}
+
+/* ── QUILL EDITORS — integrated inside module ── */
+let projDescEditor, projWriteupEditor, pubDescEditor, contribBioEditor;
+
+function initQuillEditors(){
+  // Populate sponsor contributor list
+  const list = document.getElementById('sponsor-contrib-list');
+  if(list && allContribs.length){
+    list.innerHTML = allContribs.map(c => `
+      <div onclick="selectSponsor('${(c.name||'').replace(/'/g,"\'")}','${(c.email||'').replace(/'/g,"\'")}'"
+        style="padding:9px 14px;cursor:pointer;font-size:13px;border-bottom:1px solid var(--border)"
+        onmouseover="this.style.background='var(--bg-alt)'" onmouseout="this.style.background='#fff'">
+        <span style="font-weight:600">${c.name||'—'}</span> <span style="font-size:11px;color:var(--text-lt)">${c.role||''}</span>
+      </div>`).join('');
+  }
+
+  if(typeof Quill === 'undefined') return;
+  const tb = [['bold','italic','underline'],[{'list':'ordered'},{'list':'bullet'}],['clean']];
+  const tbFull = [['bold','italic','underline'],[{'list':'ordered'},{'list':'bullet'}],[{'header':[2,3,false]}],['clean']];
+  if(!projDescEditor && document.getElementById('proj-desc-editor')){
+    projDescEditor = new Quill('#proj-desc-editor',{theme:'snow',placeholder:'Brief description shown on project cards…',modules:{toolbar:tb}});
+    projDescEditor.on('text-change',()=>{ const w=cw(projDescEditor.getText()); $('proj-desc-wc').textContent=w+' / 150 words'; $('proj-desc-wc').style.color=w>150?'#C0392B':''; $('proj-desc').value=projDescEditor.root.innerHTML; });
+  }
+  if(!projWriteupEditor && document.getElementById('proj-writeup-editor')){
+    projWriteupEditor = new Quill('#proj-writeup-editor',{theme:'snow',placeholder:'Full project overview, background context and detailed findings…',modules:{toolbar:tbFull}});
+    projWriteupEditor.on('text-change',()=>{ const w=cw(projWriteupEditor.getText()); $('proj-writeup-wc').textContent=w+' words'; $('proj-writeup').value=projWriteupEditor.root.innerHTML; });
+  }
+  if(!pubDescEditor && document.getElementById('pub-desc-editor')){
+    pubDescEditor = new Quill('#pub-desc-editor',{theme:'snow',placeholder:'Brief summary of this publication…',modules:{toolbar:tb}});
+    pubDescEditor.on('text-change',()=>{ const w=cw(pubDescEditor.getText()); $('pub-desc-wc').textContent=w+' / 150 words'; $('pub-desc-wc').style.color=w>150?'#C0392B':''; $('pub-desc').value=pubDescEditor.root.innerHTML; });
+  }
+  if(!contribBioEditor && document.getElementById('contrib-bio-editor')){
+    contribBioEditor = new Quill('#contrib-bio-editor',{theme:'snow',placeholder:"2-3 sentences about this contributor's background and expertise…",modules:{toolbar:tb}});
+    contribBioEditor.on('text-change',()=>{ const w=cw(contribBioEditor.getText()); $('contrib-bio-wc').textContent=w+' / 150 words'; $('contrib-bio-wc').style.color=w>150?'#C0392B':''; $('contrib-bio').value=contribBioEditor.root.innerHTML; });
+  }
+}
+
+function cw(text){ return text.trim().split(/\s+/).filter(Boolean).length; }
+
+function setQuill(editor, content){
+  if(!editor) return;
+  editor.root.innerHTML = content || '';
+}
+
+// Patch showModal to init quill editors after modal opens
+const _origShowModal = showModal;
+window.showModal = function(id){
+  _origShowModal(id);
+  setTimeout(initQuillEditors, 80);
+};
+
+// Patch editProject to fill quill content
+const __origEditProject = window.editProject;
+window.editProject = function(id){
+  __origEditProject(id);
+  const p = allProjects.find(x=>x.id===id);
+  setTimeout(()=>{
+    initQuillEditors();
+    setQuill(projDescEditor, p?.description||'');
+    setQuill(projWriteupEditor, p?.writeup||'');
+  }, 120);
+};
+
+// Patch add project button
+
+
+// Patch editPub
+const __origEditPub = window.editPub;
+window.editPub = function(id){
+  __origEditPub(id);
+  const p = allPubs.find(x=>x.id===id);
+  setTimeout(()=>{ initQuillEditors(); setQuill(pubDescEditor, p?.description||''); }, 120);
+};
+
+
+// Patch editContrib
+const __origEditContrib = window.editContrib;
+window.editContrib = function(id){
+  __origEditContrib(id);
+  const c = allContribs.find(x=>x.id===id);
+  setTimeout(()=>{ initQuillEditors(); setQuill(contribBioEditor, c?.bio||''); }, 120);
+};
+
+
+
+/* ── PROJECTS ── */
+async function loadProjects(){
+  const snap = await getDocs(collection(db,'projects'));
+  allProjects = snap.docs.map(d => ({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+  renderProjects(allProjects);
+  $('stat-projects').textContent = allProjects.length;
+}
+
+function renderProjects(list){
+  const tbody = $('projects-body');
+  if(!list.length){ tbody.innerHTML='<tr><td colspan="6"><div class="empty"><div class="empty-icon">🗂️</div><p>No projects yet. Add your first project.</p></div></td></tr>'; return; }
+  tbody.innerHTML = list.map(p => `
+    <tr>
+      <td><strong>${p.title||'—'}</strong></td>
+      <td>${p.category||'—'}</td>
+      <td>${p.location||'—'}</td>
+      <td>${p.period||'—'}</td>
+      <td><span class="badge badge-${p.status||'planned'}">${p.status||'planned'}</span></td>
+      <td><div class="td-actions">
+        <button class="btn btn-forest btn-sm" onclick="viewProject('${p.id}')">View</button>
+        <button class="btn btn-outline btn-sm" onclick="editProject('${p.id}')">Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteProject('${p.id}')">Delete</button>
+      </div></td>
+    </tr>`).join('');
+}
+
+$('search-projects').oninput = e => {
+  const q = e.target.value.toLowerCase();
+  renderProjects(allProjects.filter(p => (p.title+p.category+p.location).toLowerCase().includes(q)));
+};
+
+$('add-project-btn').onclick = () => {
+  $('project-modal-title').textContent = 'Add Project';
+  ['project-id','proj-title','proj-location','proj-period','proj-desc','proj-quote','proj-writeup','proj-powerbi','proj-sponsor','proj-image','proj-pdf','proj-dataset','proj-methodology','proj-presentation','finding-1-metric','finding-1-label','finding-2-metric','finding-2-label','finding-3-metric','finding-3-label','finding-4-metric','finding-4-label','tl-approved-date','tl-approved-desc','tl-fieldstart-date','tl-fieldstart-desc','tl-datacomplete-date','tl-datacomplete-desc','tl-analysis-date','tl-analysis-desc','tl-published-date','tl-published-desc'].forEach(id => $(id).value='');
+  ['tl-approved-count','tl-fieldstart-count','tl-datacomplete-count','tl-analysis-count','tl-published-count'].forEach(id => { const el=$(id); if(el) el.textContent='0'; }); ['proj-pdf-prog','proj-dataset-prog','proj-method-prog','proj-pptx-prog'].forEach(id => { const el=$(id); if(el) el.textContent=''; });
+  $('proj-responses').value=''; $('proj-category').value=''; $('proj-status').value='ongoing';
+  if($('proj-sponsor-search')) $('proj-sponsor-search').value='';
+  showModal('project-modal');
+  setTimeout(()=>{
+    initQuillEditors();
+    setQuill(projDescEditor,'');
+    setQuill(projWriteupEditor,'');
+  }, 120);
+};
+
+window.editProject = id => {
+  const p = allProjects.find(x=>x.id===id); if(!p) return;
+  $('project-modal-title').textContent = 'Edit Project';
+  $('project-id').value      = p.id;
+  $('proj-title').value      = p.title||'';
+  $('proj-category').value   = p.category||'';
+  $('proj-location').value   = p.location||'';
+  $('proj-period').value     = p.period||'';
+  $('proj-responses').value  = p.responses||'';
+  $('proj-status').value     = p.status||'ongoing';
+  $('proj-desc').value       = p.description||'';
+  $('proj-quote').value      = p.quote||'';
+  $('proj-writeup').value    = p.writeup||'';
+  $('proj-powerbi').value       = p.powerbi||'';
+  if($('proj-sponsor')){ $('proj-sponsor').value = p.sponsor||''; }
+  if($('proj-sponsor-search')){ $('proj-sponsor-search').value = p.sponsor||''; }
+  
+  $('proj-image').value      = p.image||'';
+  $('proj-pdf').value        = p.pdf||'';
+  $('proj-dataset').value    = p.dataset||'';
+  $('proj-methodology').value= p.methodology||'';
+  $('proj-presentation').value= p.presentation||'';
+  $('proj-pdf').value        = p.pdf||'';
+
+  // Pre-fill findings
+  if(Array.isArray(p.findings)){
+    p.findings.forEach((f,i)=>{
+      const m=$('finding-'+(i+1)+'-metric'); const l=$('finding-'+(i+1)+'-label');
+      if(m) m.value=f.metric||''; if(l) l.value=f.label||'';
+    });
+  }
+  toggleFindingsFields(p.status||'ongoing');
+
+  // Pre-fill timeline milestones
+  const tlKeys = ['approved','fieldstart','datacomplete','analysis','published'];
+  if(Array.isArray(p.timeline)){
+    p.timeline.forEach((m,i) => {
+      if(i >= tlKeys.length) return;
+      const dk = document.getElementById('tl-'+tlKeys[i]+'-date');
+      const tk = document.getElementById('tl-'+tlKeys[i]+'-desc');
+      const ck = document.getElementById('tl-'+tlKeys[i]+'-count');
+      if(dk) dk.value = m.date||'';
+      if(tk) tk.value = m.description||'';
+      if(ck) ck.textContent = (m.description||'').length;
+    });
+  } else {
+    tlKeys.forEach(k => {
+      const dk = document.getElementById('tl-'+k+'-date');
+      const tk = document.getElementById('tl-'+k+'-desc');
+      const ck = document.getElementById('tl-'+k+'-count');
+      if(dk) dk.value = '';
+      if(tk) tk.value = '';
+      if(ck) ck.textContent = '0';
+    });
+  }
+
+  setTimeout(()=>{
+    initQuillEditors();
+    setQuill(projDescEditor, p?.description||'');
+    setQuill(projWriteupEditor, p?.writeup||'');
+    renderProjectCheckboxes(Array.isArray(p?.projects) ? p.projects : []);
+  }, 120);
+
+  showModal('project-modal');
+};
+
+$('save-project-btn').onclick = async () => {
+  const title = $('proj-title').value.trim();
+  if(!title){ toast('Title is required'); return; }
+  const data = {
+    title, category:$('proj-category').value,
+    sponsor:$('proj-sponsor')?.value.trim()||'Datavasity',
+    sponsorEmail:$('proj-sponsor-email')?.value.trim()||'',
+    location:$('proj-location').value.trim(),
+    period:$('proj-period').value.trim(),
+    responses:parseInt($('proj-responses').value)||0,
+    status:$('proj-status').value,
+    description:$('proj-desc').value.trim(),
+    quote:$('proj-quote').value.trim(),
+    writeup:$('proj-writeup').value.trim(),
+    powerbi:$('proj-powerbi').value.trim(),
+    timeline: [
+      { label:'Project Approved',        date:($('tl-approved-date')?.value||''),     description:($('tl-approved-desc')?.value||'').trim() },
+      { label:'Field Research Begins',   date:($('tl-fieldstart-date')?.value||''),   description:($('tl-fieldstart-desc')?.value||'').trim() },
+      { label:'Data Collection Complete',date:($('tl-datacomplete-date')?.value||''), description:($('tl-datacomplete-desc')?.value||'').trim() },
+      { label:'Analysis Phase',          date:($('tl-analysis-date')?.value||''),     description:($('tl-analysis-desc')?.value||'').trim() },
+      { label:'Report Published',        date:($('tl-published-date')?.value||''),    description:($('tl-published-desc')?.value||'').trim() },
+    ],
+    findings: [
+      { metric: ($('finding-1-metric')?.value||'').trim(), label: ($('finding-1-label')?.value||'').trim() },
+      { metric: ($('finding-2-metric')?.value||'').trim(), label: ($('finding-2-label')?.value||'').trim() },
+      { metric: ($('finding-3-metric')?.value||'').trim(), label: ($('finding-3-label')?.value||'').trim() },
+      { metric: ($('finding-4-metric')?.value||'').trim(), label: ($('finding-4-label')?.value||'').trim() },
+    ].filter(f => f.metric),
+    image:$('proj-image').value.trim(),
+    pdf:$('proj-pdf').value.trim(),
+    dataset:$('proj-dataset').value.trim(),
+    methodology:$('proj-methodology').value.trim(),
+    presentation:$('proj-presentation').value.trim(),
+    updatedAt: serverTimestamp()
+  };
+  const id = $('project-id').value;
+  try {
+    if(id){ await updateDoc(doc(db,'projects',id), data); toast('Project updated ✓'); }
+    else { data.createdAt = serverTimestamp(); await addDoc(collection(db,'projects'), data); toast('Project added ✓'); }
+    hideModal('project-modal'); await loadProjects();
+  } catch(e){ toast('Error saving project'); console.error(e); }
+};
+
+window.deleteProject = async id => {
+  if(!confirm('Delete this project? This cannot be undone.')) return;
+  await deleteDoc(doc(db,'projects',id));
+  toast('Project deleted'); await loadProjects();
+};
+
+/* ── PUBLICATIONS ── */
+async function loadPublications(){
+  const snap = await getDocs(collection(db,'publications'));
+  allPubs = snap.docs.map(d => ({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+  renderPubs(allPubs);
+  $('stat-publications').textContent = allPubs.length;
+}
+
+function renderPubs(list){
+  const tbody = $('publications-body');
+  if(!list.length){ tbody.innerHTML='<tr><td colspan="6"><div class="empty"><div class="empty-icon">📄</div><p>No publications yet.</p></div></td></tr>'; return; }
+  tbody.innerHTML = list.map(p => `
+    <tr>
+      <td><strong>${p.title||'—'}</strong></td>
+      <td>${p.type||'Report'}</td>
+      <td>${p.authors||'—'}</td>
+      <td>${p.date||'—'}</td>
+      <td>${p.pdf ? `<a href="${p.pdf}" target="_blank" style="color:var(--gold)">↓ PDF</a>` : '—'}</td>
+      <td><div class="td-actions">
+        <button class="btn btn-forest btn-sm" onclick="viewPub('${p.id}')">View</button>
+        <button class="btn btn-outline btn-sm" onclick="editPub('${p.id}')">Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="deletePub('${p.id}')">Delete</button>
+      </div></td>
+    </tr>`).join('');
+}
+
+$('search-pubs').oninput = e => {
+  const q = e.target.value.toLowerCase();
+  renderPubs(allPubs.filter(p => (p.title+p.type+p.authors).toLowerCase().includes(q)));
+};
+
+$('add-pub-btn').onclick = () => {
+  $('pub-modal-title').textContent = 'Add Publication';
+  ['pub-id','pub-title','pub-authors','pub-date','pub-pdf','pub-desc'].forEach(id => $(id).value='');
+  $('pub-type').value='Report'; $('pub-category').value='Transportation';
+  showModal('pub-modal');
+  setTimeout(()=>{ initQuillEditors(); setQuill(pubDescEditor,''); }, 120);
+};
+
+window.editPub = id => {
+  const p = allPubs.find(x=>x.id===id); if(!p) return;
+  $('pub-modal-title').textContent = 'Edit Publication';
+  $('pub-id').value       = p.id;
+  $('pub-title').value    = p.title||'';
+  $('pub-type').value     = p.type||'Report';
+  $('pub-category').value = p.category||'';
+  $('pub-authors').value  = p.authors||'';
+  $('pub-date').value     = p.date||'';
+  $('pub-pdf').value      = p.pdf||'';
+  $('pub-desc').value     = p.description||'';
+  showModal('pub-modal');
+};
+
+$('save-pub-btn').onclick = async () => {
+  const title = $('pub-title').value.trim();
+  if(!title){ toast('Title is required'); return; }
+  const data = {
+    title, type:$('pub-type').value, category:$('pub-category').value,
+    authors:$('pub-authors').value.trim(), date:$('pub-date').value.trim(),
+    pdf:$('pub-pdf').value.trim(), description:$('pub-desc').value.trim(),
+    updatedAt: serverTimestamp()
+  };
+  const id = $('pub-id').value;
+  try {
+    if(id){ await updateDoc(doc(db,'publications',id), data); toast('Publication updated ✓'); }
+    else { data.createdAt = serverTimestamp(); await addDoc(collection(db,'publications'), data); toast('Publication added ✓'); }
+    hideModal('pub-modal'); await loadPublications();
+  } catch(e){ toast('Error saving publication'); console.error(e); }
+};
+
+window.deletePub = async id => {
+  if(!confirm('Delete this publication?')) return;
+  await deleteDoc(doc(db,'publications',id));
+  toast('Publication deleted'); await loadPublications();
+};
+
+/* ── CONTRIBUTORS ── */
+async function loadContributors(){
+  const snap = await getDocs(collection(db,'contributors'));
+  allContribs = snap.docs.map(d => ({id:d.id,...d.data()})).sort((a,b)=>(a.name||'').localeCompare(b.name||''));
+  renderContribs(allContribs);
+  $('stat-contributors').textContent = allContribs.length;
+}
+
+function renderContribs(list){
+  const tbody = $('contributors-body');
+  if(!list.length){ tbody.innerHTML='<tr><td colspan="5"><div class="empty"><div class="empty-icon">👥</div><p>No contributors yet.</p></div></td></tr>'; return; }
+  tbody.innerHTML = list.map(c => `
+    <tr>
+      <td><strong>${c.name||'—'}</strong></td>
+      <td>${c.role||'—'}</td>
+      <td>${c.location||'—'}</td>
+      <td>${Array.isArray(c.projects) ? c.projects.length : 0}</td>
+      <td><div class="td-actions">
+        <button class="btn btn-forest btn-sm" onclick="viewContrib('${c.id}')">View</button>
+        <button class="btn btn-outline btn-sm" onclick="editContrib('${c.id}')">Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteContrib('${c.id}')">Delete</button>
+      </div></td>
+    </tr>`).join('');
+}
+
+$('search-contribs').oninput = e => {
+  const q = e.target.value.toLowerCase();
+  renderContribs(allContribs.filter(c => (c.name+c.role+c.location).toLowerCase().includes(q)));
+};
+
+$('add-contrib-btn').onclick = () => {
+  $('contrib-modal-title').textContent = 'Add Contributor';
+  ['contrib-id','contrib-name','contrib-role','contrib-email','contrib-location','contrib-linkedin','contrib-github','contrib-bio','contrib-skills','contrib-avatar','contrib-projects'].forEach(id => $(id).value='');
+  showModal('contrib-modal');
+  setTimeout(()=>{ initQuillEditors(); setQuill(contribBioEditor,''); }, 120);
+};
+
+window.editContrib = id => {
+  const c = allContribs.find(x=>x.id===id); if(!c) return;
+  $('contrib-modal-title').textContent = 'Edit Contributor';
+  $('contrib-id').value       = c.id;
+  $('contrib-name').value     = c.name||'';
+  $('contrib-role').value     = c.role||'';
+  $('contrib-email').value    = c.email||'';
+  $('contrib-location').value = c.location||'';
+  if($('contrib-linkedin')) $('contrib-linkedin').value = c.linkedin||'';
+  if($('contrib-github'))   $('contrib-github').value   = c.github||'';
+  $('contrib-bio').value      = c.bio||'';
+  $('contrib-skills').value   = Array.isArray(c.skills) ? c.skills.join(', ') : '';
+  $('contrib-avatar').value   = c.avatar||'';
+  $('contrib-projects').value = Array.isArray(c.projects) ? c.projects.join(', ') : '';
+  showModal('contrib-modal');
+};
+
+$('save-contrib-btn').onclick = async () => {
+  const name = $('contrib-name').value.trim();
+  if(!name){ toast('Name is required'); return; }
+  const data = {
+    name, role:$('contrib-role').value.trim(),
+    email:$('contrib-email').value.trim(),
+    location:$('contrib-location').value.trim(),
+    linkedin:($('contrib-linkedin')?.value||'').trim(),
+    github:  ($('contrib-github')?.value||'').trim(),
+    bio:$('contrib-bio').value.trim(),
+    skills: $('contrib-skills').value.split(',').map(s=>s.trim()).filter(Boolean),
+    avatar:$('contrib-avatar').value.trim(),
+    projects: $('contrib-projects').value.split(',').map(s=>s.trim()).filter(Boolean),
+    updatedAt: serverTimestamp()
+  };
+  const id = $('contrib-id').value;
+  try {
+    if(id){ await updateDoc(doc(db,'contributors',id), data); toast('Contributor updated ✓'); }
+    else { data.createdAt = serverTimestamp(); await addDoc(collection(db,'contributors'), data); toast('Contributor added ✓'); }
+    hideModal('contrib-modal'); await loadContributors();
+  } catch(e){ toast('Error saving contributor'); console.error(e); }
+};
+
+window.deleteContrib = async id => {
+  if(!confirm('Remove this contributor?')) return;
+  await deleteDoc(doc(db,'contributors',id));
+  toast('Contributor removed'); await loadContributors();
+};
+
+/* ── APPLICATIONS ── */
+async function loadApplications(){
+  const snap = await getDocs(collection(db,'applications'));
+  allApps = snap.docs.map(d => ({id:d.id,...d.data()})).sort((a,b)=>(b.submittedAt?.seconds||0)-(a.submittedAt?.seconds||0));
+  renderApps(allApps);
+  const pending = allApps.filter(a => !a.status || a.status==='pending').length;
+  $('stat-applications').textContent = allApps.length;
+  $('app-badge').textContent = pending;
+  $('app-badge').style.display = pending > 0 ? 'inline-block' : 'none';
+}
+
+function renderApps(list){
+  const tbody = $('applications-body');
+  if(!list.length){ tbody.innerHTML='<tr><td colspan="7"><div class="empty"><div class="empty-icon">📥</div><p>No applications yet</p></div></td></tr>'; return; }
+  tbody.innerHTML = list.map(a => `
+    <tr>
+      <td><strong>${a.name||'—'}</strong></td>
+      <td>${a.email||'—'}</td>
+      <td>${a.role||'—'}</td>
+      <td>${a.location||'—'}</td>
+      <td>${fmt(a.submittedAt)}</td>
+      <td><span class="badge badge-${a.status||'pending'}">${a.status||'pending'}</span></td>
+      <td><div class="td-actions">
+        <button class="btn btn-outline btn-sm" onclick="viewApp('${a.id}')">View</button>
+      </div></td>
+    </tr>`).join('');
+}
+
+$('search-apps').oninput = e => {
+  const q = e.target.value.toLowerCase();
+  renderApps(allApps.filter(a => (a.name+a.email+a.role).toLowerCase().includes(q)));
+};
+
+window.viewApp = id => {
+  const a = allApps.find(x=>x.id===id); if(!a) return;
+  $('app-detail-id').value             = id;
+  $('app-detail-name').textContent     = a.name||'—';
+  $('app-detail-email').textContent    = a.email||'—';
+  $('app-detail-role').textContent     = a.role||'—';
+  $('app-detail-location').textContent = a.location||'—';
+  $('app-detail-date').textContent     = fmt(a.submittedAt);
+  $('app-detail-status').textContent   = a.status||'pending';
+  $('app-detail-motivation').textContent = a.motivation||'—';
+
+  // Photo
+  const photo = $('app-detail-photo');
+  const noPhoto = $('app-detail-no-photo');
+  if(a.photoUrl){ photo.src=a.photoUrl; photo.style.display='block'; noPhoto.style.display='none'; }
+  else { photo.style.display='none'; noPhoto.style.display='block'; }
+
+  // CV
+  const cvLink = $('app-detail-cv');
+  const noCV   = $('app-detail-no-cv');
+  if(a.cvUrl){ cvLink.href=a.cvUrl; cvLink.style.display='block'; noCV.style.display='none'; }
+  else { cvLink.style.display='none'; noCV.style.display='block'; }
+
+  // Cover Letter
+  const clLink = $('app-detail-cl');
+  const noCL   = $('app-detail-no-cl');
+  if(a.coverLetterUrl){ clLink.href=a.coverLetterUrl; clLink.style.display='block'; noCL.style.display='none'; }
+  else { clLink.style.display='none'; noCL.style.display='block'; }
+
+  showModal('app-modal');
+};
+
+$('app-approve-btn').onclick = async () => {
+  const id = $('app-detail-id').value;
+  const app = allApps.find(x => x.id === id);
+  if(!app) return;
+
+  try {
+    // 1. Update application status to approved
+    await updateDoc(doc(db,'applications',id), {
+      status:'approved',
+      updatedAt: serverTimestamp()
+    });
+
+    // 2. Check if contributor already exists with this email
+    const existingContrib = allContribs.find(c => c.email === app.email);
+
+    if(!existingContrib){
+      // 3. Auto-create contributor profile from application data
+      await addDoc(collection(db,'contributors'), {
+        name:            app.name || '',
+        email:           app.email || '',
+        role:            app.role || '',
+        location:        app.location || '',
+        bio:             app.motivation || '',
+        avatar:          app.photoUrl || '',
+        cvUrl:           app.cvUrl || '',
+        coverLetterUrl:  app.coverLetterUrl || '',
+        skills:          [],
+        projects:        [],
+        profileComplete: false,
+        createdAt:       serverTimestamp(),
+        updatedAt:       serverTimestamp()
+      });
+      toast('✓ Approved — contributor profile created. Invite them to complete it.');
+    } else {
+      toast('✓ Approved — contributor already exists');
+    }
+
+    hideModal('app-modal');
+    await loadApplications();
+    await loadContributors();
+    loadOverview();
+
+  } catch(e){
+    console.error('Approve error:', e);
+    toast('Error approving application');
+  }
+};
+
+$('app-reject-btn').onclick = async () => {
+  const id = $('app-detail-id').value;
+  await updateDoc(doc(db,'applications',id), {status:'rejected', updatedAt:serverTimestamp()});
+  toast('Application rejected'); hideModal('app-modal'); await loadApplications(); loadOverview();
+};
+
+/* ── MESSAGES ── */
+async function loadMessages(){
+  const snap = await getDocs(collection(db,'messages'));
+  allMsgs = snap.docs.map(d => ({id:d.id,...d.data()})).sort((a,b)=>(b.submittedAt?.seconds||0)-(a.submittedAt?.seconds||0));
+  renderMsgs(allMsgs);
+  const unread = allMsgs.filter(m => !m.read).length;
+  $('stat-messages').textContent = allMsgs.length;
+  $('msg-badge').textContent = unread;
+  $('msg-badge').style.display = unread > 0 ? 'inline-block' : 'none';
+}
+
+function renderMsgs(list){
+  const tbody = $('messages-body');
+  if(!list.length){ tbody.innerHTML='<tr><td colspan="6"><div class="empty"><div class="empty-icon">✉️</div><p>No messages yet</p></div></td></tr>'; return; }
+  tbody.innerHTML = list.map(m => `
+    <tr style="${!m.read?'font-weight:600':''}">
+      <td>${m.name||'—'}</td>
+      <td>${m.email||'—'}</td>
+      <td>${m.subject||'—'}</td>
+      <td>${fmt(m.submittedAt)}</td>
+      <td><span class="badge badge-${m.read?'read':'new'}">${m.read?'Read':'New'}</span></td>
+      <td><div class="td-actions">
+        <button class="btn btn-outline btn-sm" onclick="viewMsg('${m.id}')">View</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteMsg('${m.id}')">Delete</button>
+      </div></td>
+    </tr>`).join('');
+}
+
+$('search-msgs').oninput = e => {
+  const q = e.target.value.toLowerCase();
+  renderMsgs(allMsgs.filter(m => (m.name+m.email+m.subject).toLowerCase().includes(q)));
+};
+
+window.viewMsg = async id => {
+  const m = allMsgs.find(x=>x.id===id); if(!m) return;
+  $('msg-detail-id').value         = id;
+  $('msg-detail-name').textContent    = m.name||'—';
+  $('msg-detail-email').textContent   = m.email||'—';
+  $('msg-detail-subject').textContent = m.subject||'—';
+  $('msg-detail-date').textContent    = fmt(m.submittedAt);
+  $('msg-detail-body').textContent    = m.message||'—';
+  if(!m.read) await updateDoc(doc(db,'messages',id), {read:true});
+  showModal('msg-modal');
+  await loadMessages();
+};
+
+$('msg-reply-btn').onclick = () => {
+  const email = $('msg-detail-email').textContent;
+  const subject = $('msg-detail-subject').textContent;
+  window.open(`mailto:${email}?subject=Re: ${subject}`);
+};
+
+window.deleteMsg = async id => {
+  if(!confirm('Delete this message?')) return;
+  await deleteDoc(doc(db,'messages',id));
+  toast('Message deleted'); await loadMessages();
+};
+
+$('msg-delete-btn').onclick = async () => {
+  const id = $('msg-detail-id').value;
+  await deleteMsg(id); hideModal('msg-modal');
+};
+
+/* ── OVERVIEW ── */
+function loadOverview(){
+  const tbody = $('overview-apps-body');
+  const recent = allApps.slice(0, 8);
+  if(!recent.length){ tbody.innerHTML='<tr><td colspan="5"><div class="empty"><div class="empty-icon">📥</div><p>No applications yet</p></div></td></tr>'; return; }
+  tbody.innerHTML = recent.map(a => `
+    <tr>
+      <td><strong>${a.name||'—'}</strong></td>
+      <td>${a.email||'—'}</td>
+      <td>${a.role||'—'}</td>
+      <td>${fmt(a.submittedAt)}</td>
+      <td><span class="badge badge-${a.status||'pending'}">${a.status||'pending'}</span></td>
+    </tr>`).join('');
+}
+
+/* ── CLOUDINARY DIRECT UPLOAD (no widget — works from local files) ── */
+const CLOUD_NAME    = 'dzacwqaam';
+const UPLOAD_PRESET = 'analyst_den_uploads';
+const UPLOAD_URL    = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
+
+window.handleUpload = async function(fileInput, urlInputId, previewId, btnId, progressId) {
+  const file = fileInput.files[0];
+  if(!file) return;
+
+  // Client-side size check — warn if over 4MB
+  if(file.size > 4 * 1024 * 1024){
+    toast('File too large — please use an image under 4MB');
+    fileInput.value = '';
+    return;
+  }
+
+  // Show loading state
+  const btn      = document.getElementById(btnId);
+  const progress = document.getElementById(progressId);
+  const urlInput = document.getElementById(urlInputId);
+  const preview  = document.getElementById(previewId);
+
+  btn.disabled = true;
+  btn.textContent = 'Uploading…';
+  progress.textContent = 'Uploading to Cloudinary…';
+  progress.classList.add('show');
+
+  try {
+    const formData = new FormData();
+    formData.append('file',           file);
+    formData.append('upload_preset',  UPLOAD_PRESET);
+    formData.append('folder',         'analyst-den');
+    // Cloudinary transformation: compress + resize on delivery
+    const res  = await fetch(UPLOAD_URL, { method:'POST', body: formData });
+    const data = await res.json();
+
+    if(data.secure_url){
+      // Use optimised delivery URL
+      const url = data.secure_url.replace('/upload/', '/upload/q_auto:good,f_auto,w_1200,c_limit/');
+      urlInput.value = url;
+      preview.src    = url;
+      preview.classList.add('show');
+      const sizeKB = Math.round((data.bytes || 0) / 1024);
+      const label  = sizeKB > 1000 ? (sizeKB/1024).toFixed(1)+'MB' : sizeKB+'KB';
+      progress.textContent = `✓ Uploaded (${label} → auto-compressed on delivery)`;
+      toast('Image uploaded ✓');
+    } else {
+      throw new Error(data.error?.message || 'Upload failed');
+    }
+  } catch(err) {
+    console.error('Upload error:', err);
+    progress.textContent = '✗ Upload failed — check console';
+    toast('Upload failed: ' + err.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '↑ Upload Image';
+    fileInput.value = ''; // reset so same file can be re-uploaded
+  }
+};
+
+/* Show preview when URL is pasted manually */
+['proj-image','contrib-avatar'].forEach(id => {
+  const input     = document.getElementById(id);
+  const previewId = id === 'proj-image' ? 'proj-img-preview' : 'contrib-img-preview';
+  if(input){
+    input.addEventListener('blur', () => {
+      const url     = input.value.trim();
+      const preview = document.getElementById(previewId);
+      if(url && preview){ preview.src = url; preview.classList.add('show'); }
+    });
+  }
+});
+
+/* Pre-fill preview when editing existing records */
+const origEditProject = window.editProject;
+window.editProject = id => {
+  origEditProject(id);
+  const p = allProjects.find(x => x.id === id);
+  if(p?.image){
+    setTimeout(() => {
+      const prev = document.getElementById('proj-img-preview');
+      if(prev){ prev.src = p.image; prev.classList.add('show'); }
+    }, 50);
+  }
+};
+
+const origEditContrib = window.editContrib;
+window.editContrib = id => {
+  origEditContrib(id);
+  const c = allContribs.find(x => x.id === id);
+  if(c?.avatar){
+    setTimeout(() => {
+      const prev = document.getElementById('contrib-img-preview');
+      if(prev){ prev.src = c.avatar; prev.classList.add('show'); }
+    }, 50);
+  }
+};
+
+
+
+/* ── FILE UPLOAD (PDF, CSV, PPTX — raw files via Cloudinary) ── */
+window.handleFileUpload = async function(fileInput, urlInputId, btnId, progressId, resourceType) {
+  const file = fileInput.files[0];
+  if(!file) return;
+
+  // 50MB max for documents
+  if(file.size > 50 * 1024 * 1024){
+    toast('File too large — max 50MB'); fileInput.value=''; return;
+  }
+
+  const btn      = document.getElementById(btnId);
+  const progress = document.getElementById(progressId);
+  const urlInput = document.getElementById(urlInputId);
+
+  btn.disabled = true;
+  btn.textContent = 'Uploading…';
+  progress.textContent = 'Uploading file…';
+  progress.classList.add('show');
+
+  try {
+    const uploadUrl = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/raw/upload`;
+    const formData  = new FormData();
+    formData.append('file',          file);
+    formData.append('upload_preset', UPLOAD_PRESET);
+    formData.append('folder',        'analyst-den/files');
+
+    const res  = await fetch(uploadUrl, { method:'POST', body: formData });
+    const data = await res.json();
+
+    if(data.secure_url){
+      urlInput.value = data.secure_url;
+      const sizeKB   = Math.round((data.bytes || 0) / 1024);
+      const label    = sizeKB > 1000 ? (sizeKB/1024).toFixed(1)+'MB' : sizeKB+'KB';
+      progress.textContent = `✓ Uploaded — ${file.name} (${label})`;
+      toast('File uploaded ✓');
+    } else {
+      throw new Error(data.error?.message || 'Upload failed');
+    }
+  } catch(err) {
+    console.error('File upload error:', err);
+    progress.textContent = '✗ Upload failed — ' + err.message;
+    toast('Upload failed');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '↑ Upload';
+    fileInput.value = '';
+  }
+};
+
+/* ── VIEW FUNCTIONS ── */
+
+// View Project
+window.viewProject = id => {
+  const p = allProjects.find(x => x.id === id); if(!p) return;
+  $('vp-title').textContent     = p.title || '—';
+  $('vp-category').textContent  = p.category || '—';
+  $('vp-status').textContent    = p.status || '—';
+  $('vp-location').textContent  = p.location || '—';
+  $('vp-period').textContent    = p.period || '—';
+  $('vp-responses').textContent = p.responses ? p.responses.toLocaleString() : '—';
+  $('vp-desc').textContent      = p.description || '—';
+  $('vp-quote').textContent     = p.quote || 'No quote added yet';
+  $('vp-writeup').textContent   = p.writeup || 'No write-up added yet';
+  const pdfEl = $('vp-pdf');
+  if(p.pdf){ pdfEl.innerHTML = `<a href="${p.pdf}" target="_blank" style="color:var(--gold)">↓ Open PDF</a>`; }
+  else { pdfEl.textContent = '—'; }
+  const imgWrap = $('vp-image-wrap');
+  if(p.image){ $('vp-image').src = p.image; imgWrap.style.display='block'; }
+  else { imgWrap.style.display='none'; }
+  $('vp-edit-btn').onclick = () => { hideModal('view-project-modal'); editProject(id); };
+  showModal('view-project-modal');
+};
+
+// View Publication
+window.viewPub = id => {
+  const p = allPubs.find(x => x.id === id); if(!p) return;
+  $('vpub-title').textContent    = p.title || '—';
+  $('vpub-type').textContent     = p.type || '—';
+  $('vpub-category').textContent = p.category || '—';
+  $('vpub-authors').textContent  = p.authors || '—';
+  $('vpub-date').textContent     = p.date || '—';
+  $('vpub-desc').textContent     = p.description || '—';
+  const pdfLink = $('vpub-pdf');
+  if(p.pdf){ pdfLink.href = p.pdf; pdfLink.textContent = '↓ Open PDF'; }
+  else { pdfLink.textContent = 'No PDF linked'; }
+  $('vpub-edit-btn').onclick = () => { hideModal('view-pub-modal'); editPub(id); };
+  showModal('view-pub-modal');
+};
+
+// View Contributor
+window.viewContrib = id => {
+  const c = allContribs.find(x => x.id === id); if(!c) return;
+  $('vc-name').textContent        = c.name || '—';
+  $('vc-name-large').textContent  = c.name || '—';
+  $('vc-role').textContent        = c.role || '—';
+  $('vc-location').textContent    = c.location ? '📍 ' + c.location : '—';
+  $('vc-email').textContent       = c.email || '—';
+  $('vc-bio').textContent         = c.bio || '—';
+  const avatar = $('vc-avatar');
+  if(c.avatar){ avatar.src = c.avatar; avatar.style.display='block'; }
+  else { avatar.style.display='none'; }
+  const skills = $('vc-skills');
+  skills.innerHTML = Array.isArray(c.skills) && c.skills.length
+    ? c.skills.map(s => `<span style="padding:4px 10px;border:1px solid var(--border);font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-lt)">${s}</span>`).join('')
+    : '<span style="color:var(--text-xs)">No skills listed</span>';
+  const projects = Array.isArray(c.projects) ? c.projects : [];
+  $('vc-projects-count').textContent = projects.length + ' project(s)';
+  $('vc-projects').textContent = projects.length ? projects.join(' · ') : '—';
+  $('vc-edit-btn').onclick = () => { hideModal('view-contrib-modal'); editContrib(id); };
+
+  // Toggle profile complete
+  const toggleBtn = $('vc-toggle-complete-btn');
+  const isComplete = c.profileComplete === true;
+  toggleBtn.textContent = isComplete ? 'Mark as Incomplete' : 'Mark as Complete';
+  toggleBtn.className   = isComplete ? 'btn btn-danger btn-sm' : 'btn btn-forest btn-sm';
+  toggleBtn.onclick = async () => {
+    const newState = !isComplete;
+    await updateDoc(doc(db,'contributors',id), { profileComplete: newState, updatedAt: serverTimestamp() });
+    toast(newState ? '✓ Profile marked complete — now visible on site' : 'Profile marked incomplete — hidden from site');
+    hideModal('view-contrib-modal');
+    await loadContributors();
+  };
+  showModal('view-contrib-modal');
+};
+
+
+/* ── INTERESTS ── */
+let allInterests = [];
+
+async function loadInterests(){
+  const snap = await getDocs(collection(db,'interests'));
+  allInterests = snap.docs.map(d=>({id:d.id,...d.data()}))
+    .sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+  renderInterests(allInterests);
+  const pending = allInterests.filter(i=>i.status==='pending').length;
+  $('stat-interests').textContent = allInterests.length;
+  $('int-badge').textContent = pending;
+  $('int-badge').style.display = pending > 0 ? 'inline-block' : 'none';
+}
+
+function renderInterests(list){
+  const tbody = $('interests-body');
+  if(!list.length){ tbody.innerHTML='<tr><td colspan="6"><div class="empty"><div class="empty-icon">🙋</div><p>No interests yet</p></div></td></tr>'; return; }
+  tbody.innerHTML = list.map(i=>`
+    <tr>
+      <td><strong>${i.name||'—'}</strong></td>
+      <td>${i.email||'—'}</td>
+      <td>${i.projectTitle||i.projectId||'—'}</td>
+      <td>${fmt(i.createdAt)}</td>
+      <td><span class="badge badge-${i.status==='assigned'?'approved':'pending'}">${i.status||'pending'}</span></td>
+      <td><div class="td-actions">
+        ${i.status!=='assigned'?`<button class="btn btn-forest btn-sm" onclick="assignInterest('${i.id}','${(i.email||'').replace(/'/g,"\'")}','${(i.projectTitle||'').replace(/'/g,"\'")}')">✓ Assign</button>`:'<span style="color:var(--text-lt);font-size:12px">Assigned</span>'}
+        <button class="btn btn-danger btn-sm" onclick="deleteInterest('${i.id}')">Delete</button>
+      </div></td>
+    </tr>`).join('');
+}
+
+window.assignInterest = async function(interestId, email, projectTitle){
+  try {
+    // Update interest status
+    await updateDoc(doc(db,'interests',interestId), {status:'assigned', updatedAt:serverTimestamp()});
+    // Find contributor and add project
+    const cSnap = await getDocs(query(collection(db,'contributors'), where('email','==',email)));
+    if(!cSnap.empty){
+      const cDoc = cSnap.docs[0];
+      const existing = Array.isArray(cDoc.data().projects) ? cDoc.data().projects : [];
+      if(!existing.includes(projectTitle)){
+        await updateDoc(doc(db,'contributors',cDoc.id), {
+          projects: [...existing, projectTitle],
+          updatedAt: serverTimestamp()
+        });
+      }
+    }
+    toast('✓ Contributor assigned to project');
+    await loadInterests();
+    await loadContributors();
+  } catch(e){ console.error(e); toast('Error assigning'); }
+};
+
+window.deleteInterest = async function(id){
+  if(!confirm('Remove this interest?')) return;
+  await deleteDoc(doc(db,'interests',id));
+  toast('Removed'); await loadInterests();
+};
+
+/* ── LOAD PROJECTS INTO CONTRIBUTOR CHECKBOX LIST ── */
+function renderProjectCheckboxes(selectedProjects){
+  const wrap = $('contrib-projects-checkboxes');
+  if(!wrap) return;
+  if(!allProjects.length){ wrap.innerHTML='<span style="font-size:12px;color:var(--text-xs)">No projects yet</span>'; return; }
+  wrap.innerHTML = allProjects.map(p=>`
+    <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;padding:4px 0">
+      <input type="checkbox" value="${p.title||''}" ${selectedProjects.includes(p.title||'') ? 'checked' : ''} 
+        onchange="updateContribProjects()" style="accent-color:var(--gold);width:14px;height:14px"/>
+      ${p.title||'Untitled'}
+      <span style="font-size:11px;color:var(--text-xs);margin-left:auto">${p.status||''}</span>
+    </label>`).join('');
+}
+
+window.updateContribProjects = function(){
+  const checkboxes = document.querySelectorAll('#contrib-projects-checkboxes input[type=checkbox]:checked');
+  const vals = [...checkboxes].map(c=>c.value);
+  $('contrib-projects').value = vals.join(',');
+};
+
+/* Hook into editContrib to render checkboxes */
+const _origEditContrib = window.editContrib;
+window.editContrib = id => {
+  _origEditContrib(id);
+  const c = allContribs.find(x=>x.id===id);
+  const sel = Array.isArray(c?.projects) ? c.projects : (c?.projects||'').split(',').map(s=>s.trim()).filter(Boolean);
+  setTimeout(()=>renderProjectCheckboxes(sel), 50);
+};
+
+const _origAddContrib = $('add-contrib-btn')?.onclick;
+if($('add-contrib-btn')){
+  $('add-contrib-btn').onclick = ()=>{
+    if(_origAddContrib) _origAddContrib();
+    setTimeout(()=>renderProjectCheckboxes([]), 50);
+  };
+}
+
+
+/* ── PROPOSALS ── */
+let allProposals = [];
+async function loadProposals(){
+  const snap = await getDocs(collection(db,'proposals'));
+  allProposals = snap.docs.map(d=>({id:d.id,...d.data()}))
+    .sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+  renderProposals(allProposals);
+  const pending = allProposals.filter(p=>p.status==='pending').length;
+  $('stat-proposals').textContent = allProposals.length;
+  $('prop-badge').textContent = pending;
+  $('prop-badge').style.display = pending > 0 ? 'inline-block' : 'none';
+}
+
+function renderProposals(list){
+  const tbody=$('proposals-body');
+  if(!list.length){ tbody.innerHTML='<tr><td colspan="6"><div class="empty"><div class="empty-icon">💡</div><p>No proposals yet</p></div></td></tr>'; return; }
+  tbody.innerHTML = list.map(p=>{
+    // Strip HTML tags from Quill-generated content for preview
+    const tmp=document.createElement('div'); tmp.innerHTML=p.problem||'';
+    const problemText=(tmp.textContent||tmp.innerText||'').trim();
+    const preview=problemText.substring(0,100)+(problemText.length>100?'…':'');
+    return `
+    <tr>
+      <td>
+        <strong>${p.title||'—'}</strong>
+        ${p.role?`<span style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--gold);margin-left:8px">${p.role}</span>`:''}
+        ${preview?`<br><span style="font-size:12px;color:var(--text-lt)">${preview}</span>`:''}
+      </td>
+      <td><strong>${p.proposedBy||'—'}</strong><br><span style="font-size:12px;color:var(--text-lt)">${p.email||''}</span></td>
+      <td>${p.sponsor||'Datavasity'}</td>
+      <td>${fmt(p.createdAt)}</td>
+      <td><span class="badge badge-${p.status==='approved'?'approved':p.status==='rejected'?'rejected':'pending'}">${p.status||'pending'}</span></td>
+      <td><div class="td-actions">
+        <button class="btn btn-outline btn-sm" onclick="viewProposal('${p.id}')">View</button>
+        ${p.status==='pending'?`
+          <button class="btn btn-forest btn-sm" onclick="approveProposal('${p.id}','${(p.title||'').replace(/'/g,"\'")}','${(p.proposedBy||'').replace(/'/g,"\'")}','${(p.email||'').replace(/'/g,"\'")}')">✓ Approve</button>
+          <button class="btn btn-danger btn-sm" onclick="rejectProposal('${p.id}')">Reject</button>
+        `:''}
+      </div></td>
+    </tr>`; }).join('');
+}
+
+window.approveProposal = async function(id, title, proposedBy, email){
+  if(!confirm(`Approve this proposal from ${proposedBy}?\n\nNote: This does NOT automatically create a project. You will create the project yourself after your planning meeting, and set ${proposedBy} as the sponsor.`)) return;
+  const adminMsg = $('pm-admin-message')?.value.trim()||'';
+  try {
+    // Just mark as approved + store proposer info for when you create the project manually
+    await updateDoc(doc(db,'proposals',id), {
+      status:       'approved',
+      adminMessage: adminMsg,
+      sponsor:      proposedBy,
+      sponsorEmail: email,
+      updatedAt:    serverTimestamp()
+    });
+    toast(`✓ Proposal approved — remember to set ${proposedBy} as Project Sponsor when you create the project.`);
+    hideModal('proposal-modal');
+    await loadProposals();
+  }catch(e){ console.error(e); toast('Error approving proposal'); }
+};
+
+window.rejectProposal = async function(id){
+  const adminMsg = $('pm-admin-message')?.value.trim()||'';
+  if(!adminMsg){ toast('Please add a message to the contributor before rejecting'); return; }
+  if(!confirm('Reject this proposal?')) return;
+  await updateDoc(doc(db,'proposals',id), {status:'rejected', adminMessage:adminMsg, updatedAt:serverTimestamp()});
+  toast('Proposal rejected'); hideModal('proposal-modal'); await loadProposals();
+};
+
+
+
+/* ── VIEW PROPOSAL ── */
+window.viewProposal = function(id){
+  const msgField = $('pm-admin-message');
+  if(msgField) msgField.value = '';
+  const p = allProposals.find(x=>x.id===id); if(!p) return;
+  $('pm-title').textContent  = p.title||'—';
+  $('pm-name').textContent   = p.proposedBy||'—';
+  $('pm-email').textContent  = p.email||'—';
+  $('pm-role').textContent   = p.role||'—';
+  $('pm-sponsor').textContent= p.sponsor||'Datavasity';
+  $('pm-date').textContent   = fmt(p.createdAt);
+  $('pm-status').textContent = p.status||'pending';
+
+  // Render rich HTML or plain text for problem/outcome
+  const problemEl = $('pm-problem');
+  const outcomeEl = $('pm-outcome');
+  if(problemEl){ problemEl.innerHTML = p.problem||'<em style="color:var(--text-xs)">No problem statement provided</em>'; }
+  if(outcomeEl){ outcomeEl.innerHTML = p.outcome||'<em style="color:var(--text-xs)">No expected outcome provided</em>'; }
+
+  // Wire approve/reject buttons
+  const approveBtn = $('pm-approve-btn');
+  const rejectBtn  = $('pm-reject-btn');
+
+  if(p.status !== 'pending'){
+    approveBtn.style.display = 'none';
+    rejectBtn.style.display  = 'none';
+  } else {
+    approveBtn.style.display = '';
+    rejectBtn.style.display  = '';
+    approveBtn.onclick = () => {
+      hideModal('proposal-modal');
+      approveProposal(id, p.title||'', p.proposedBy||'', p.email||'');
+    };
+    rejectBtn.onclick = () => {
+      hideModal('proposal-modal');
+      rejectProposal(id);
+    };
+  }
+
+  showModal('proposal-modal');
+};
+
+
+/* ── SPONSOR DROPDOWN ── */
+window.filterSponsorList = function(query){
+  const list = document.getElementById('sponsor-contrib-list');
+  const drop = document.getElementById('sponsor-dropdown');
+  drop.style.display = 'block';
+  const q = (query||'').toLowerCase();
+  const filtered = allContribs.filter(c => (c.name||'').toLowerCase().includes(q));
+  if(!filtered.length && q){
+    list.innerHTML = '<div style="padding:10px 14px;font-size:12px;color:var(--text-lt)">No contributors match — your typed name will be saved as sponsor</div>';
+  } else {
+    list.innerHTML = filtered.map(c => `
+      <div onclick="selectSponsor('${(c.name||'').replace(/'/g,"\'")}','${(c.email||'').replace(/'/g,"\'")}'"
+        style="padding:9px 14px;cursor:pointer;font-size:13px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px"
+        onmouseover="this.style.background='var(--bg-alt)'" onmouseout="this.style.background='#fff'">
+        ${c.avatar ? `<img src="${c.avatar}" style="width:28px;height:28px;border-radius:50%;object-fit:cover"/>` : '<div style="width:28px;height:28px;border-radius:50%;background:var(--bg-alt);display:flex;align-items:center;justify-content:center;font-size:12px">👤</div>'}
+        <div><div style="font-weight:600;color:var(--text)">${c.name||'—'}</div><div style="font-size:11px;color:var(--text-lt)">${c.role||''}</div></div>
+      </div>`).join('');
+  }
+};
+
+window.selectSponsor = function(name, email){
+  const inp = document.getElementById('proj-sponsor');
+  const search = document.getElementById('proj-sponsor-search');
+  const drop = document.getElementById('sponsor-dropdown');
+  if(inp) inp.value = name;
+  if(search) search.value = name;
+  if(drop) drop.style.display = 'none';
+};
+
+// Close dropdown when clicking outside
+document.addEventListener('click', function(e){
+  if(!e.target.closest('#proj-sponsor-search') && !e.target.closest('#sponsor-dropdown')){
+    const drop = document.getElementById('sponsor-dropdown');
+    if(drop) drop.style.display = 'none';
+  }
+});
+
+
+/* ── TOGGLE FINDINGS FIELDS ── */
+window.toggleFindingsFields = function(status){
+  const ff = document.getElementById('findings-fields');
+  if(ff) ff.style.display = (status === 'completed') ? 'block' : 'none';
+};
+
+
+/* ── TIMELINE CHAR COUNTERS ── */
+['approved','fieldstart','datacomplete','analysis','published'].forEach(key => {
+  const ta = document.getElementById('tl-'+key+'-desc');
+  const ct = document.getElementById('tl-'+key+'-count');
+  if(ta && ct){
+    ta.addEventListener('input', () => { ct.textContent = ta.value.length; ct.style.color = ta.value.length > 230 ? 'var(--red)' : 'var(--text-xs)'; });
+  }
+});
+
+</script>
+</body>
+</html>

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Contributor — Analyst Den</title>
+<link rel="stylesheet" href="styles.css"/>
+<style>
+.cd-layout { display:grid; grid-template-columns:280px 1fr; gap:48px; padding:48px 0; }
+.cd-sidebar { position:sticky; top:24px; align-self:start; }
+.cd-avatar { width:120px; height:120px; border-radius:50%; object-fit:cover; border:3px solid var(--border); display:block; margin-bottom:20px; }
+.cd-avatar-initials { width:120px; height:120px; border-radius:50%; background:var(--bg-alt); border:3px solid var(--border); display:flex; align-items:center; justify-content:center; font-family:var(--font-data); font-weight:800; font-size:36px; color:var(--text-lt); margin-bottom:20px; }
+.cd-name { font-family:var(--font-display); font-weight:600; font-size:28px; color:var(--ink); margin-bottom:6px; }
+.cd-role { font-family:var(--font-data); font-weight:700; font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold); margin-bottom:10px; }
+.cd-location { font-size:13px; color:var(--text-lt); display:flex; align-items:center; gap:6px; margin-bottom:16px; }
+.cd-bio { font-size:15px; line-height:1.75; color:var(--text-mid); margin-bottom:20px; }
+.cd-tags { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:20px; }
+.cd-tag { font-family:var(--font-data); font-size:10px; font-weight:700; letter-spacing:0.10em; text-transform:uppercase; padding:5px 10px; border:1.5px solid var(--border); color:var(--text-lt); }
+.cd-social-link { display:inline-flex; align-items:center; gap:8px; font-family:var(--font-data); font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink); text-decoration:none; padding:8px 14px; border:1.5px solid var(--border); transition:all 0.2s; margin-bottom:8px; width:100%; box-sizing:border-box; }
+.cd-social-link:hover { border-color:var(--gold); color:var(--gold); }
+.cd-contact-btn { display:block; text-align:center; padding:12px; background:var(--forest); color:#fff; font-family:var(--font-data); font-weight:700; font-size:12px; letter-spacing:0.10em; text-transform:uppercase; text-decoration:none; margin-top:4px; transition:opacity 0.2s; }
+.cd-contact-btn:hover { opacity:0.88; }
+.cd-section-label { font-family:var(--font-data); font-size:10px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:var(--text-lt); margin-bottom:20px; padding-bottom:10px; border-bottom:1px solid var(--border); }
+.cd-project-card { display:flex; align-items:flex-start; gap:18px; padding:20px 0; border-bottom:1px solid var(--border); text-decoration:none; transition:opacity 0.2s; }
+.cd-project-card:hover { opacity:0.75; }
+.cd-project-thumb { width:80px; height:60px; object-fit:cover; border:1px solid var(--border); flex-shrink:0; }
+.cd-project-thumb-placeholder { width:80px; height:60px; background:var(--bg-alt); border:1px solid var(--border); flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:22px; }
+.cd-project-title { font-family:var(--font-display); font-weight:600; font-size:17px; color:var(--ink); margin-bottom:4px; }
+.cd-project-meta { font-family:var(--font-data); font-size:10px; font-weight:700; letter-spacing:0.10em; text-transform:uppercase; color:var(--text-lt); margin-top:6px; }
+.cd-empty { padding:32px 0; color:var(--text-lt); font-size:13px; font-family:var(--font-data); }
+@media(max-width:768px){
+  .cd-layout { grid-template-columns:1fr; gap:32px; padding:32px 0; }
+  .cd-sidebar { position:static; }
+}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="index.html" class="header-logo"><img src="assets/analyst-den-logo-3d.png" alt="Analyst Den"/></a>
+    <nav class="header-nav">
+      <a href="index.html">Home</a>
+      <a href="research.html">Research</a>
+      <a href="contributors.html" class="active">Community</a>
+      <a href="about.html">About</a>
+      <a href="get-involved.html">Get Involved</a>
+    </nav>
+    <div class="header-right">
+      <a href="get-involved.html" class="header-cta">Apply Now</a>
+      <button class="menu-toggle">☰</button>
+    </div>
+  </div>
+</header>
+<div class="mobile-menu">
+  <button class="mobile-close">✕</button>
+  <a href="index.html">Home</a><a href="research.html">Research</a>
+  <a href="contributors.html" class="active">Community</a>
+  <a href="about.html">About</a><a href="get-involved.html">Get Involved</a>
+</div>
+
+<div class="container">
+  <div class="breadcrumb">
+    <a href="index.html">Home</a>
+    <span class="breadcrumb-sep">/</span>
+    <a href="contributors.html">Community</a>
+    <span class="breadcrumb-sep">/</span>
+    <span id="bc-name">Contributor</span>
+  </div>
+</div>
+
+<div class="container">
+  <div class="cd-layout">
+
+    <!-- SIDEBAR -->
+    <div class="cd-sidebar">
+      <div id="cd-avatar-wrap">
+        <div class="cd-avatar-initials" id="cd-initials">—</div>
+      </div>
+      <div class="cd-name" id="cd-name">Loading…</div>
+      <div class="cd-role" id="cd-role"></div>
+      <div class="cd-location" id="cd-location" style="display:none">
+        <span>📍</span><span id="cd-location-text"></span>
+      </div>
+      <p class="cd-bio" id="cd-bio"></p>
+      <div class="cd-tags" id="cd-tags"></div>
+      <div id="cd-social" style="margin-bottom:12px"></div>
+      <!-- Contact Me — anti-bot email reveal -->
+      <div id="cd-contact-wrap">
+        <button onclick="window.showContactCaptcha()" class="cd-contact-btn" style="width:100%;cursor:pointer;border:none">Contact Me</button>
+      </div>
+
+      <!-- Captcha modal -->
+      <div id="cd-captcha-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:999;align-items:center;justify-content:center">
+        <div style="background:#fff;width:90%;max-width:380px;padding:32px;border-top:3px solid var(--gold)">
+          <div style="font-family:var(--font-data);font-size:10px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--text-lt);margin-bottom:8px">Verify you're human</div>
+          <div style="font-family:var(--font-display);font-size:22px;font-weight:600;color:var(--ink);margin-bottom:16px" id="cd-math-q">—</div>
+          <input type="number" id="cd-math-ans" placeholder="Your answer…" style="width:100%;padding:11px 13px;border:1.5px solid var(--border);font-family:var(--font-data);font-size:16px;color:var(--ink);background:var(--bg);outline:none;box-sizing:border-box;margin-bottom:10px"/>
+          <p id="cd-captcha-err" style="color:#C0392B;font-size:12px;margin-bottom:10px;display:none">Incorrect — try again</p>
+          <div style="display:flex;gap:10px">
+            <button onclick="window.checkCaptcha()" style="flex:1;padding:12px;background:var(--forest);color:#fff;border:none;font-family:var(--font-data);font-weight:700;font-size:12px;letter-spacing:0.10em;text-transform:uppercase;cursor:pointer">Reveal Email</button>
+            <button onclick="document.getElementById('cd-captcha-modal').style.display='none'" style="padding:12px 16px;background:none;border:1.5px solid var(--border);font-family:var(--font-data);font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;color:var(--text-lt)">Cancel</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Email reveal -->
+      <div id="cd-email-reveal" style="display:none;margin-top:8px;padding:14px;background:var(--bg-alt);border:1px solid var(--border)">
+        <div style="font-family:var(--font-data);font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-lt);margin-bottom:6px">Email</div>
+        <a id="cd-email-link" href="#" style="font-family:var(--font-data);font-size:14px;font-weight:700;color:var(--gold);text-decoration:none;word-break:break-all"></a>
+      </div>
+    </div>
+
+    <!-- MAIN -->
+    <div>
+      <div class="cd-section-label">Research Contributions</div>
+      <div id="cd-projects-list">
+        <div class="cd-empty">Loading projects…</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand"><span class="footer-logo">Analyst Den</span><p>A Datavasity platform.</p></div>
+      <div class="footer-col"><p class="footer-col-title">Research</p><a href="research.html">Projects</a><a href="publications.html">Publications</a></div>
+      <div class="footer-col"><p class="footer-col-title">Community</p><a href="contributors.html">Contributors</a><a href="get-involved.html">Get Involved</a></div>
+      <div class="footer-col"><p class="footer-col-title">About</p><a href="about.html">About Us</a><a href="contact.html">Contact</a></div>
+      <div class="footer-col"><p class="footer-col-title">Portal</p><a href="admin.html" style="opacity:0.7">Admin Login</a><a href="dashboard.html" style="opacity:0.7">Contributor Login</a></div>
+    </div>
+    <div class="footer-bottom"><span>© 2026 Analyst Den by Datavasity</span><span>hello@analystden.org</span></div>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, doc, getDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const app = initializeApp({
+  apiKey:"AIzaSyBzlCB74rpbd6o2vx7RbsfuIrkfOyhBUTQ",
+  authDomain:"analyst-den-3f9c9.firebaseapp.com",
+  projectId:"analyst-den-3f9c9",
+  storageBucket:"analyst-den-3f9c9.firebasestorage.app",
+  messagingSenderId:"438646500281",
+  appId:"1:438646500281:web:8a7c48d0ca882e2b5a6468"
+});
+const db = getFirestore(app);
+
+async function loadProfile(){
+  const id = new URLSearchParams(window.location.search).get('id');
+  if(!id){ document.getElementById('cd-name').textContent = 'Contributor not found'; return; }
+
+  try {
+    const snap = await getDoc(doc(db,'contributors',id));
+    if(!snap.exists()){ document.getElementById('cd-name').textContent = 'Contributor not found'; return; }
+    const c = { id: snap.id, ...snap.data() };
+
+    // Title + breadcrumb
+    document.title = (c.name||'Contributor') + ' — Analyst Den';
+    const bc = document.getElementById('bc-name');
+    if(bc) bc.textContent = c.name||'Contributor';
+
+    // Avatar
+    const avatarWrap = document.getElementById('cd-avatar-wrap');
+    const initials = (c.name||'?').split(' ').map(w=>w[0]||'').join('').substring(0,2).toUpperCase();
+    if(c.avatar){
+      avatarWrap.innerHTML = `<img src="${c.avatar}" alt="${c.name||''}" class="cd-avatar" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/><div class="cd-avatar-initials" style="display:none">${initials}</div>`;
+    } else {
+      avatarWrap.innerHTML = `<div class="cd-avatar-initials">${initials}</div>`;
+    }
+
+    // Name + role
+    document.getElementById('cd-name').textContent = c.name||'—';
+    _cdEmail = c.email||'';
+    if(!c.email){ var btn = document.querySelector('#cd-contact-wrap button'); if(btn){ btn.style.opacity='0.4'; btn.style.cursor='default'; btn.onclick=null; btn.title='No email on file'; } }
+    document.getElementById('cd-role').textContent = c.role||'';
+
+    // Location
+    if(c.location){
+      document.getElementById('cd-location').style.display = 'flex';
+      document.getElementById('cd-location-text').textContent = c.location;
+    }
+
+    // Bio — strip HTML tags from Quill if needed
+    const bioEl = document.getElementById('cd-bio');
+    if(bioEl){
+      const tmp = document.createElement('div');
+      tmp.innerHTML = c.bio||'';
+      bioEl.textContent = (tmp.textContent||tmp.innerText||'').trim();
+    }
+
+    // Skills tags
+    const tagsEl = document.getElementById('cd-tags');
+    if(tagsEl && c.skills){
+      const skills = typeof c.skills === 'string'
+        ? c.skills.split(',').map(s=>s.trim()).filter(Boolean)
+        : (Array.isArray(c.skills) ? c.skills : []);
+      tagsEl.innerHTML = skills.map(s=>`<span class="cd-tag">${s}</span>`).join('');
+    }
+
+    // Social links
+    const socialEl = document.getElementById('cd-social');
+    if(socialEl){
+      let links = '';
+      if(c.linkedin) links += `<a href="${c.linkedin}" target="_blank" rel="noopener" class="cd-social-link"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg> LinkedIn</a>`;
+      if(c.github)   links += `<a href="${c.github}" target="_blank" rel="noopener" class="cd-social-link"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.929.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg> GitHub</a>`;
+      socialEl.innerHTML = links;
+    }
+
+    // Load assigned projects
+    const projList = document.getElementById('cd-projects-list');
+    if(projList){
+      if(Array.isArray(c.projects) && c.projects.length){
+        const projSnap = await getDocs(collection(db,'projects'));
+        const allProjects = projSnap.docs.map(d=>({id:d.id,...d.data()}));
+
+        const matched = allProjects.filter(p =>
+          c.projects.some(cp => {
+            const pt = (p.title||'').toLowerCase().trim();
+            const ct = (cp||'').toLowerCase().trim();
+            if(!ct || ct.length < 3) return false;
+            return pt === ct || pt.includes(ct) || ct.includes(pt);
+          })
+        );
+
+        if(matched.length){
+          projList.innerHTML = matched.map(p => {
+            const tmp = document.createElement('div');
+            tmp.innerHTML = p.description||'';
+            const desc = (tmp.textContent||tmp.innerText||'').trim().substring(0,120);
+            return `<a href="project-transportation-cost-stress.html?id=${p.id}" class="cd-project-card">
+              ${p.image
+                ? `<img src="${p.image}" alt="${p.title||''}" class="cd-project-thumb" onerror="this.style.display='none'"/>`
+                : `<div class="cd-project-thumb-placeholder">🗂️</div>`}
+              <div>
+                <div class="cd-project-title">${p.title||'—'}</div>
+                ${desc ? `<p class="t-body-sm" style="margin:4px 0">${desc}${desc.length===120?'…':''}</p>` : ''}
+                <div class="cd-project-meta">${p.period||''}${p.location?' · '+p.location:''}</div>
+              </div>
+            </a>`;
+          }).join('');
+        } else {
+          // Show names even if no matching project records
+          projList.innerHTML = c.projects.map(name =>
+            `<div style="padding:16px 0;border-bottom:1px solid var(--border)">
+              <div class="cd-project-title">${name}</div>
+            </div>`
+          ).join('');
+        }
+      } else {
+        projList.innerHTML = '<div class="cd-empty">No projects assigned yet.</div>';
+      }
+    }
+
+  } catch(e){
+    console.error('Profile load error:', e);
+    document.getElementById('cd-name').textContent = 'Error loading profile';
+  }
+}
+
+loadProfile();
+
+/* ── CONTACT ME — anti-bot email reveal ── */
+var _cdEmail = '';
+var _cdMathAnswer = 0;
+
+window.showContactCaptcha = function(){
+  if(!_cdEmail){ return; } // email not loaded yet
+  // Generate simple math question
+  var a = Math.floor(Math.random()*9)+1;
+  var b = Math.floor(Math.random()*9)+1;
+  _cdMathAnswer = a + b;
+  document.getElementById('cd-math-q').textContent = 'What is ' + a + ' + ' + b + '?';
+  document.getElementById('cd-math-ans').value = '';
+  document.getElementById('cd-captcha-err').style.display = 'none';
+  document.getElementById('cd-captcha-modal').style.display = 'flex';
+  setTimeout(function(){ document.getElementById('cd-math-ans').focus(); }, 100);
+};
+
+window.checkCaptcha = function(){
+  var ans = parseInt(document.getElementById('cd-math-ans').value, 10);
+  if(ans === _cdMathAnswer){
+    document.getElementById('cd-captcha-modal').style.display = 'none';
+    var emailLink = document.getElementById('cd-email-link');
+    var emailReveal = document.getElementById('cd-email-reveal');
+    if(emailLink && emailReveal){
+      emailLink.textContent = _cdEmail;
+      emailLink.href = 'mailto:' + _cdEmail;
+      emailReveal.style.display = 'block';
+    }
+    // Change button to show email is revealed
+    var btn = document.querySelector('#cd-contact-wrap button');
+    if(btn){ btn.textContent = 'Email Revealed ↓'; btn.style.background = 'var(--gold)'; btn.onclick = null; }
+  } else {
+    document.getElementById('cd-captcha-err').style.display = 'block';
+    document.getElementById('cd-math-ans').value = '';
+    document.getElementById('cd-math-ans').focus();
+  }
+};
+
+// Allow Enter key to submit
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Enter' && document.getElementById('cd-captcha-modal').style.display === 'flex'){
+    window.checkCaptcha();
+  }
+});
+
+</script>
+</body>
+</html>

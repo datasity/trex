@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Publications — Analyst Den</title>
+<link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+<header class="site-header"><div class="container header-inner"><a href="index.html" class="header-logo"><img src="assets/analyst-den-logo-3d.png" alt="Analyst Den"/></a><nav class="header-nav"><a href="index.html">Home</a><a href="research.html">Research</a><a href="contributors.html">Community</a><a href="about.html">About</a><a href="get-involved.html">Get Involved</a></nav><div class="header-right"><a href="get-involved.html" class="header-cta">Apply Now</a><button class="menu-toggle">☰</button></div></div></header>
+<div class="mobile-menu"><button class="mobile-close">✕</button><a href="index.html">Home</a><a href="research.html">Research</a><a href="contributors.html">Community</a><a href="about.html">About</a><a href="get-involved.html">Get Involved</a></div>
+
+<div class="page-hero"><div class="container page-hero-inner"><p class="t-label" style="color:rgba(255,255,255,0.45);margin-bottom:14px">Research Library</p><h1>Publications</h1><p>Research outputs, reports, and insights from our studies across Ogun State, Nigeria.</p></div></div>
+
+<section>
+  <div class="container">
+    <div class="pub-header">
+      <div class="filter-bar">
+        <button class="filter-btn active">All</button>
+        <button class="filter-btn">Reports</button>
+        <button class="filter-btn">Policy Briefs</button>
+        <button class="filter-btn">White Papers</button>
+        <button class="filter-btn">Research Notes</button>
+        <button class="filter-btn">Case Studies</button>
+      </div>
+      <div class="search-bar" style="max-width:280px">
+        <input class="search-input" type="text" placeholder="Search publications…"/>
+        <button class="search-btn">Search</button>
+      </div>
+    </div>
+    <div class="pub-grid">
+      <div class="pub-card"><span class="pub-tag">Report · Transportation</span><h3 class="pub-title">Transportation Cost Stress in Ogun State 2026</h3><p class="t-body-sm" style="margin-bottom:10px">Documenting how rising transport costs reshape mobility and household finances across 12 local government areas.</p><p class="pub-meta">Analyst Den · April 2026 · Ayo Adewale et al.</p><a href="assets/report.pdf" class="pub-download" download>↓ Download PDF · 2.4MB</a></div>
+      <div class="pub-card"><span class="pub-tag">Report · Economy</span><h3 class="pub-title">SME Cashflow Stress Report 2026</h3><p class="t-body-sm" style="margin-bottom:10px">Financial pressure and cashflow gaps among small businesses in Ogun State's informal economy.</p><p class="pub-meta">Analyst Den · April 2026 · Tosin Bello et al.</p><a href="assets/report.pdf" class="pub-download" download>↓ Download PDF · 2.3MB</a></div>
+      <div class="pub-card"><span class="pub-tag">Report · Environment</span><h3 class="pub-title">Market Environmental Conditions Report</h3><p class="t-body-sm" style="margin-bottom:10px">Market sanitation gaps, waste patterns, and environmental risks across urban trading centres.</p><p class="pub-meta">Analyst Den · April 2026 · Ibrahim Musa et al.</p><a href="assets/report.pdf" class="pub-download" download>↓ Download PDF · 2.3MB</a></div>
+      <div class="pub-card" style="opacity:0.55"><span class="pub-tag">Policy Brief · Transportation</span><h3 class="pub-title">Reducing Transport Costs for Low Income Households</h3><p class="t-body-sm" style="margin-bottom:10px">Evidence-based policy recommendations for state transport authorities and community planners.</p><p class="pub-meta">Analyst Den · May 2026 · Forthcoming</p><span class="pub-download" style="color:var(--text-lt)">Forthcoming</span></div>
+      <div class="pub-card" style="opacity:0.55"><span class="pub-tag">White Paper · Governance</span><h3 class="pub-title">Data-Driven Decisions for Local Development</h3><p class="t-body-sm" style="margin-bottom:10px">A framework for evidence-based local governance using community research platforms.</p><p class="pub-meta">Analyst Den · Feb 2026 · Forthcoming</p><span class="pub-download" style="color:var(--text-lt)">Forthcoming</span></div>
+      <div class="pub-card" style="opacity:0.55"><span class="pub-tag">Case Study · Transport</span><h3 class="pub-title">Informal Transport Systems in Ogun State</h3><p class="t-body-sm" style="margin-bottom:10px">Deep dive into okada, keke napep and informal taxi networks and their role in last-mile connectivity.</p><p class="pub-meta">Analyst Den · March 2026 · Forthcoming</p><span class="pub-download" style="color:var(--text-lt)">Forthcoming</span></div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer"><div class="container"><div class="footer-grid"><div class="footer-brand"><span class="footer-logo">Analyst Den</span><p>A Datavasity platform.</p></div><div class="footer-col"><p class="footer-col-title">Research</p><a href="research.html">Projects</a><a href="publications.html">Publications</a></div><div class="footer-col"><p class="footer-col-title">Community</p><a href="contributors.html">Contributors</a><a href="get-involved.html">Get Involved</a></div><div class="footer-col"><p class="footer-col-title">About</p><a href="about.html">About Us</a><a href="contact.html">Contact</a></div><div class="footer-col"><p class="footer-col-title">Portal</p><a href="admin.html" style="opacity:0.7">Admin Login</a><a href="dashboard.html" style="opacity:0.7">Contributor Login</a></div>
+    </div><div class="footer-bottom"><span>© 2026 Analyst Den by Datavasity</span><span>hello@analystden.org</span></div></div></footer>
+<script src="script.js"></script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const app = initializeApp({
+  apiKey:"AIzaSyBzlCB74rpbd6o2vx7RbsfuIrkfOyhBUTQ",
+  authDomain:"analyst-den-3f9c9.firebaseapp.com",
+  projectId:"analyst-den-3f9c9",
+  storageBucket:"analyst-den-3f9c9.firebasestorage.app",
+  messagingSenderId:"438646500281",
+  appId:"1:438646500281:web:8a7c48d0ca882e2b5a6468"
+});
+const db = getFirestore(app);
+
+async function loadPublications(){
+  const grid = document.querySelector('.pub-grid');
+  if(!grid) return;
+  try {
+    const snap = await getDocs(collection(db,'publications'));
+    const pubs = snap.docs.map(d=>({id:d.id,...d.data()}))
+      .sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+
+    if(!pubs.length) return;
+
+    grid.innerHTML = pubs.map(p => `
+      <div class="pub-card">
+        <span class="pub-tag">${p.type||'Report'} · ${p.category||''}</span>
+        <h3 class="pub-title">${p.title||'Untitled'}</h3>
+        <p class="t-body-sm" style="margin-bottom:10px">${p.description||''}</p>
+        <p class="pub-meta">${p.authors||''} ${p.date ? '· '+p.date : ''}</p>
+        ${p.pdf ? `<a href="${p.pdf}" class="pub-download" target="_blank" download>↓ Download PDF</a>` : '<span class="pub-download" style="color:var(--text-lt)">Forthcoming</span>'}
+      </div>`).join('');
+
+    /* Search */
+    const searchInput = document.querySelector('.search-input');
+    if(searchInput){
+      searchInput.addEventListener('input', e => {
+        const q = e.target.value.toLowerCase();
+        grid.querySelectorAll('.pub-card').forEach(card => {
+          const text = card.textContent.toLowerCase();
+          card.style.display = text.includes(q) ? '' : 'none';
+        });
+      });
+    }
+  } catch(e){ console.error('Publications load error:', e); }
+}
+
+loadPublications();
+</script>
+</body>
+</html>

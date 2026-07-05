@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>About Us — Analyst Den</title>
+<link rel="stylesheet" href="styles.css"/>
+<style>
+.about-section { padding:56px 0; border-bottom:1px solid var(--border); }
+.about-section:last-of-type { border-bottom:none; }
+.about-section h2 { font-family:var(--font-display); font-weight:600; font-size:28px; color:var(--ink); margin-bottom:14px; line-height:1.15; }
+.about-section p { font-family:var(--font-body); font-size:16px; line-height:1.8; color:var(--text-mid); margin-bottom:12px; }
+.about-section ul { padding-left:1.4em; margin-bottom:14px; }
+.about-section ul li { font-family:var(--font-body); font-size:15px; line-height:1.8; color:var(--text-mid); margin-bottom:6px; }
+.about-grid { display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:start; }
+.about-label { font-family:var(--font-data); font-size:10px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:var(--gold); margin-bottom:10px; }
+.team-grid-wrap { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin-top:32px; }
+.team-member { text-align:center; }
+.team-member-photo { width:100%; aspect-ratio:1; object-fit:cover; border-radius:50%; border:2px solid var(--border); margin-bottom:14px; max-width:140px; }
+.team-member-name { font-family:var(--font-display); font-weight:600; font-size:17px; color:var(--ink); margin-bottom:4px; }
+.team-member-title { font-family:var(--font-data); font-size:10px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-lt); }
+.team-member-desc { font-size:13px; color:var(--text-lt); margin-top:6px; line-height:1.6; }
+.vision-box { background:var(--ink); padding:40px; margin-top:32px; }
+.vision-box h3 { font-family:var(--font-display); font-size:24px; font-weight:600; color:#fff; margin-bottom:12px; }
+.vision-box p { font-family:var(--font-body); font-size:15px; color:rgba(255,255,255,0.7); line-height:1.8; margin-bottom:20px; }
+@media(max-width:768px){
+  .about-grid { grid-template-columns:1fr; gap:24px; }
+  .team-grid-wrap { grid-template-columns:repeat(2,1fr); }
+}
+@media(max-width:480px){
+  .team-grid-wrap { grid-template-columns:1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="index.html" class="header-logo"><img src="assets/analyst-den-logo-3d.png" alt="Analyst Den"/></a>
+    <nav class="header-nav">
+      <a href="index.html">Home</a>
+      <a href="research.html">Research</a>
+      <a href="contributors.html">Community</a>
+      <a href="about.html" class="active">About</a>
+      <a href="get-involved.html">Get Involved</a>
+    </nav>
+    <div class="header-right">
+      <a href="get-involved.html" class="header-cta">Apply Now</a>
+      <button class="menu-toggle" aria-label="Open menu">☰</button>
+    </div>
+  </div>
+</header>
+<div class="mobile-menu">
+  <button class="mobile-close">✕</button>
+  <a href="index.html">Home</a>
+  <a href="research.html">Research</a>
+  <a href="contributors.html">Community</a>
+  <a href="about.html" class="active">About</a>
+  <a href="get-involved.html">Get Involved</a>
+</div>
+
+<!-- HERO -->
+<div class="page-hero">
+  <div class="container page-hero-inner">
+    <p class="t-label" style="color:rgba(255,255,255,0.45);margin-bottom:14px">Who We Are</p>
+    <h1>About Analyst Den</h1>
+    <p>A data and analytics hub focused on turning raw data into insight that drives better decisions — across Africa and beyond.</p>
+  </div>
+</div>
+
+<!-- CONTENT SECTIONS -->
+<div class="container">
+
+  <div class="about-section">
+    <div class="about-grid">
+      <div>
+        <div class="about-label">Who We Are</div>
+        <h2>Built at the intersection of data, research and storytelling</h2>
+        <p>Analyst Den works at the intersection of data analysis, research, and storytelling. We help organisations, institutions, and communities understand what their data is really saying.</p>
+        <p>We believe data should not live in spreadsheets alone. It should inform policy, guide strategy, and create measurable impact.</p>
+      </div>
+      <div>
+        <img src="assets/headerimg.png" alt="Analyst Den research team" style="width:100%;height:auto;border:1px solid var(--border)"/>
+      </div>
+    </div>
+  </div>
+
+  <div class="about-section">
+    <div class="about-label">What We Do</div>
+    <h2>End-to-end analytics — from raw data to real decisions</h2>
+    <p>We design and deliver end-to-end analytics solutions — from data collection and cleaning to analysis, visualisation, and insight communication.</p>
+    <ul>
+      <li>Public sector and policy research</li>
+      <li>Business intelligence and dashboards</li>
+      <li>Economic and market analysis</li>
+      <li>Community-focused data projects</li>
+    </ul>
+    <p>Whether it is surveys, dashboards, reports, or deep analytical studies, we focus on clarity, accuracy, and relevance.</p>
+  </div>
+
+  <div class="about-section">
+    <div class="about-label">How We Work</div>
+    <h2>Practical, evidence-based and stakeholder-driven</h2>
+    <p>Our approach is practical and evidence-based. We engage directly with stakeholders, validate findings through field research when needed, and communicate results in a way that decision makers can act on.</p>
+    <p>We value transparency, methodological rigour, and real-world application over buzzwords.</p>
+  </div>
+
+  <div class="about-section">
+    <div class="about-label">Why Analyst Den</div>
+    <h2>We go beyond the chart — we explain what to do next</h2>
+    <p>Too much data analysis stops at charts. We go further by explaining the story behind the numbers and what should be done next.</p>
+    <p>Our work is designed to be trusted, published, and used. From small teams to large institutions, we help clients move from data to decisions.</p>
+  </div>
+
+  <!-- STATS -->
+  <div class="about-section" style="border-bottom:none;padding-bottom:0">
+    <div class="data-numbers">
+      <div class="data-number-col">
+        <div class="data-number">5,000+</div>
+        <div class="data-number-label">Survey Responses</div>
+      </div>
+      <div class="data-number-col">
+        <div class="data-number">12</div>
+        <div class="data-number-label">Research Publications</div>
+      </div>
+      <div class="data-number-col">
+        <div class="data-number">18</div>
+        <div class="data-number-label">Contributors</div>
+      </div>
+      <div class="data-number-col">
+        <div class="data-number">3</div>
+        <div class="data-number-label">Partner Communities</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- TEAM -->
+<section style="background:var(--bg-alt);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:64px 0;margin-top:56px">
+  <div class="container">
+    <div class="section-eyebrow">
+      <span class="eyebrow-text">Our Team</span>
+      <div class="eyebrow-line"></div>
+    </div>
+
+    <!-- Founders row — centered, larger -->
+    <div style="display:flex;justify-content:center;gap:64px;flex-wrap:wrap;margin-bottom:56px;padding-bottom:48px;border-bottom:1px solid var(--border)">
+
+      <div class="team-member" style="max-width:220px">
+        <div style="width:120px;height:120px;border-radius:50%;background:var(--bg);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:40px">👤</div>
+        <div class="team-member-name">Michael Soetan</div>
+        <div style="font-family:var(--font-data);font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:6px">Founder &amp; CEO</div>
+        <div class="team-member-title">Data &amp; Analytics Strategy</div>
+        <p class="team-member-desc">Building Datavasity and Analyst Den to create a new generation of applied data researchers across Africa.</p>
+      </div>
+
+      <div class="team-member" style="max-width:220px">
+        <div style="width:120px;height:120px;border-radius:50%;background:var(--bg);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:40px">👤</div>
+        <div class="team-member-name">Co-Founder</div>
+        <div style="font-family:var(--font-data);font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:6px">Co-Founder &amp; COO</div>
+        <div class="team-member-title">Research &amp; Operations</div>
+        <p class="team-member-desc">Overseeing research design, contributor management and field operations across all active projects.</p>
+      </div>
+
+    </div>
+
+    <!-- Core team row -->
+    <div style="font-family:var(--font-data);font-size:10px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--text-lt);text-align:center;margin-bottom:28px">Core Team</div>
+    <div class="team-grid-wrap">
+      <div class="team-member">
+        <div style="width:80px;height:80px;border-radius:50%;background:var(--bg);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:28px">👤</div>
+        <div class="team-member-name" style="font-size:15px">Lead Analyst</div>
+        <div class="team-member-title">Analytics &amp; Strategy</div>
+        <p class="team-member-desc">Applied analytics and public sector research.</p>
+      </div>
+      <div class="team-member">
+        <div style="width:80px;height:80px;border-radius:50%;background:var(--bg);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:28px">👤</div>
+        <div class="team-member-name" style="font-size:15px">Research Lead</div>
+        <div class="team-member-title">Research &amp; Methods</div>
+        <p class="team-member-desc">Research design, surveys, and validation.</p>
+      </div>
+      <div class="team-member">
+        <div style="width:80px;height:80px;border-radius:50%;background:var(--bg);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:28px">👤</div>
+        <div class="team-member-name" style="font-size:15px">Data Engineer</div>
+        <div class="team-member-title">Data Infrastructure</div>
+        <p class="team-member-desc">Data pipelines and dashboards.</p>
+      </div>
+      <div class="team-member">
+        <div style="width:80px;height:80px;border-radius:50%;background:var(--bg);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:28px">👤</div>
+        <div class="team-member-name" style="font-size:15px">Insights Lead</div>
+        <div class="team-member-title">Storytelling &amp; Impact</div>
+        <p class="team-member-desc">Storytelling and insight communication.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VISION CTA -->
+<div class="container" style="padding:56px 0">
+  <div class="vision-box">
+    <h3>Our Vision</h3>
+    <p>To be a trusted analytics partner known for credible research, practical insights, and data-driven impact across Africa and beyond.</p>
+    <a href="get-involved.html" class="btn btn--primary">Work With Us →</a>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand"><span class="footer-logo">Analyst Den</span><p>A Datavasity platform.</p></div>
+      <div class="footer-col"><p class="footer-col-title">Research</p><a href="research.html">Projects</a><a href="publications.html">Publications</a></div>
+      <div class="footer-col"><p class="footer-col-title">Community</p><a href="contributors.html">Contributors</a><a href="get-involved.html">Get Involved</a></div>
+      <div class="footer-col"><p class="footer-col-title">About</p><a href="about.html">About Us</a><a href="contact.html">Contact</a></div>
+      <div class="footer-col"><p class="footer-col-title">Portal</p><a href="admin.html" style="opacity:0.7">Admin Login</a><a href="dashboard.html" style="opacity:0.7">Contributor Login</a></div>
+    </div>
+    <div class="footer-bottom"><span>© 2026 Analyst Den by Datavasity</span><span>hello@analystden.org</span></div>
+  </div>
+</footer>
+<script src="script.js"></script>
+</body>
+</html>

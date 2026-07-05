@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Contributors — Analyst Den</title>
+<link rel="stylesheet" href="styles.css"/>
+<style>
+/* Pagination */
+.pagination {
+  display:flex;align-items:center;justify-content:center;
+  gap:6px;padding:40px 0 16px;flex-wrap:wrap;
+}
+.pg-btn {
+  min-width:38px;height:38px;padding:0 10px;
+  border:1.5px solid var(--border);background:transparent;
+  font-family:var(--font-data);font-size:12px;font-weight:700;
+  letter-spacing:0.06em;color:var(--text-lt);cursor:pointer;
+  transition:all 0.18s;
+}
+.pg-btn:hover { border-color:var(--ink);color:var(--ink); }
+.pg-btn.active { background:var(--ink);color:#fff;border-color:var(--ink); }
+.pg-btn:disabled { opacity:0.35;cursor:default; }
+.pg-info {
+  font-family:var(--font-data);font-size:11px;letter-spacing:0.08em;
+  text-transform:uppercase;color:var(--text-lt);text-align:center;
+  padding-bottom:8px;
+}
+/* Filter active state */
+.filter-btn.active {
+  background:var(--ink);color:#fff;border-color:var(--ink);
+}
+/* Search clear */
+.search-wrap { position:relative;max-width:280px; }
+.search-clear {
+  position:absolute;right:48px;top:50%;transform:translateY(-50%);
+  background:none;border:none;color:var(--text-lt);cursor:pointer;
+  font-size:16px;display:none;padding:0 6px;
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="index.html" class="header-logo"><img src="assets/analyst-den-logo-3d.png" alt="Analyst Den"/></a>
+    <nav class="header-nav">
+      <a href="index.html">Home</a>
+      <a href="research.html">Research</a>
+      <a href="contributors.html" class="active">Community</a>
+      <a href="about.html">About</a>
+      <a href="get-involved.html">Get Involved</a>
+    </nav>
+    <div class="header-right">
+      <a href="get-involved.html" class="header-cta">Apply Now</a>
+      <button class="menu-toggle">☰</button>
+    </div>
+  </div>
+</header>
+<div class="mobile-menu">
+  <button class="mobile-close">✕</button>
+  <a href="index.html">Home</a>
+  <a href="research.html">Research</a>
+  <a href="contributors.html" class="active">Community</a>
+  <a href="about.html">About</a>
+  <a href="get-involved.html">Get Involved</a>
+</div>
+
+<div class="page-hero">
+  <div class="container page-hero-inner">
+    <p class="t-label" style="color:rgba(255,255,255,0.45);margin-bottom:14px">The Community</p>
+    <h1>Our Contributors</h1>
+    <p>A network of analysts, researchers, field officers, and collaborators producing public-interest research.</p>
+  </div>
+</div>
+
+<section>
+  <div class="container">
+
+    <!-- Controls -->
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:28px;flex-wrap:wrap">
+      <div class="filter-bar" id="filter-bar">
+        <button class="filter-btn active" data-role="all">All</button>
+        <button class="filter-btn" data-role="analyst">Analysts</button>
+        <button class="filter-btn" data-role="researcher">Researchers</button>
+        <button class="filter-btn" data-role="data engineer">Data Engineers</button>
+        <button class="filter-btn" data-role="writer">Writers</button>
+        <button class="filter-btn" data-role="field">Field Officers</button>
+      </div>
+      <div class="search-wrap">
+        <div class="search-bar" style="max-width:280px;width:100%">
+          <input class="search-input" id="contrib-search" type="text" placeholder="Search contributors…" autocomplete="off"/>
+          <button class="search-btn" onclick="doSearch()">Search</button>
+        </div>
+        <button class="search-clear" id="search-clear" onclick="clearSearch()">✕</button>
+      </div>
+    </div>
+
+    <!-- Results info -->
+    <div class="pg-info" id="pg-info" style="text-align:left;margin-bottom:16px"></div>
+
+    <!-- Grid -->
+    <div class="contributor-grid" id="contributors-grid">
+      <div style="grid-column:1/-1;padding:48px;text-align:center;color:var(--text-lt);font-family:var(--font-data);font-size:13px;letter-spacing:0.06em">Loading contributors…</div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination" id="pagination"></div>
+
+    <div style="text-align:center;padding:24px 0 48px">
+      <a href="get-involved.html" class="btn btn--primary">Join the Community →</a>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand"><span class="footer-logo">Analyst Den</span><p>A Datavasity platform.</p></div>
+      <div class="footer-col"><p class="footer-col-title">Research</p><a href="research.html">Projects</a><a href="publications.html">Publications</a></div>
+      <div class="footer-col"><p class="footer-col-title">Community</p><a href="contributors.html">Contributors</a><a href="get-involved.html">Get Involved</a></div>
+      <div class="footer-col"><p class="footer-col-title">About</p><a href="about.html">About Us</a><a href="contact.html">Contact</a></div>
+      <div class="footer-col"><p class="footer-col-title">Portal</p><a href="admin.html" style="opacity:0.7">Admin Login</a><a href="dashboard.html" style="opacity:0.7">Contributor Login</a></div>
+    </div>
+    <div class="footer-bottom"><span>© 2026 Analyst Den by Datavasity</span><span>hello@analystden.org</span></div>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const app = initializeApp({
+  apiKey:"AIzaSyBzlCB74rpbd6o2vx7RbsfuIrkfOyhBUTQ",
+  authDomain:"analyst-den-3f9c9.firebaseapp.com",
+  projectId:"analyst-den-3f9c9",
+  storageBucket:"analyst-den-3f9c9.firebasestorage.app",
+  messagingSenderId:"438646500281",
+  appId:"1:438646500281:web:8a7c48d0ca882e2b5a6468"
+});
+const db = getFirestore(app);
+
+const PAGE_SIZE = 12;
+let allContribs  = [];   // full list from Firebase
+let allProjects  = [];   // for project count
+let filtered     = [];   // after filter+search
+let currentPage  = 1;
+let activeRole   = 'all';
+let searchQuery  = '';
+
+/* ── LOAD ── */
+async function loadContributors(){
+  const grid = document.getElementById('contributors-grid');
+  try {
+    // Load both in parallel
+    const [cSnap, pSnap] = await Promise.all([
+      getDocs(collection(db,'contributors')),
+      getDocs(collection(db,'projects'))
+    ]);
+
+    allProjects = pSnap.docs.map(d=>({id:d.id,...d.data()}));
+    allContribs = cSnap.docs
+      .map(d=>({id:d.id,...d.data()}))
+      .filter(c => c.profileComplete === true)
+      .sort((a,b)=>(a.name||'').localeCompare(b.name||''));
+
+    if(!allContribs.length){
+      grid.innerHTML = '<div style="grid-column:1/-1;padding:56px;text-align:center;color:var(--text-lt);font-family:var(--font-data);font-size:13px;letter-spacing:0.06em">Contributors are being verified — check back soon.</div>';
+      return;
+    }
+
+    applyFilters();
+  } catch(e){
+    console.error('Contributors load error:', e);
+    document.getElementById('contributors-grid').innerHTML =
+      '<div style="grid-column:1/-1;padding:56px;text-align:center;color:var(--text-lt);font-family:var(--font-data);font-size:13px">Failed to load contributors — please refresh.</div>';
+  }
+}
+
+/* ── FILTER + SEARCH ── */
+function applyFilters(){
+  const q = searchQuery.toLowerCase().trim();
+
+  filtered = allContribs.filter(c => {
+    // Role filter
+    const role = (c.role||'').toLowerCase();
+    const roleMatch = activeRole === 'all' || role.includes(activeRole);
+
+    // Search — name, role, location, skills
+    const skills = Array.isArray(c.skills) ? c.skills.join(' ') : (c.skills||'');
+    const searchable = [c.name, c.role, c.location, skills].join(' ').toLowerCase();
+    const searchMatch = !q || searchable.includes(q);
+
+    return roleMatch && searchMatch;
+  });
+
+  currentPage = 1;
+  renderPage();
+  renderPagination();
+  renderInfo();
+}
+
+/* ── RENDER PAGE ── */
+function renderPage(){
+  const grid = document.getElementById('contributors-grid');
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const page  = filtered.slice(start, start + PAGE_SIZE);
+
+  if(!page.length){
+    grid.innerHTML = '<div style="grid-column:1/-1;padding:56px;text-align:center;color:var(--text-lt);font-family:var(--font-data);font-size:13px;letter-spacing:0.06em">No contributors match your search.</div>';
+    return;
+  }
+
+  grid.innerHTML = page.map(c => {
+    // Count real matched projects
+    let projCount = 0;
+    if(Array.isArray(c.projects) && c.projects.length){
+      projCount = allProjects.filter(p =>
+        c.projects.some(cp => {
+          const pt = (p.title||'').toLowerCase().trim();
+          const ct = (cp||'').toLowerCase().trim();
+          return ct.length >= 3 && (pt === ct || pt.includes(ct) || ct.includes(pt));
+        })
+      ).length;
+    }
+    const projLabel = projCount + (projCount === 1 ? ' Project' : ' Projects');
+
+    return `<a href="contributor-profile.html?id=${c.id}" class="contributor-profile" style="text-decoration:none">
+      <div class="contributor-profile-avatar">
+        <img src="${c.avatar||'assets/avatars/contr-1.png'}" alt="${c.name||''}" onerror="this.src='assets/avatars/contr-1.png'"/>
+      </div>
+      <p class="contributor-profile-name">${c.name||'—'}</p>
+      <p class="contributor-profile-role">${c.role||''}</p>
+      <p class="t-label" style="margin-top:6px;font-size:10px">${projLabel}</p>
+    </a>`;
+  }).join('');
+
+  // Scroll to top of grid on page change
+  grid.scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+/* ── PAGINATION ── */
+function renderPagination(){
+  const total = Math.ceil(filtered.length / PAGE_SIZE);
+  const wrap  = document.getElementById('pagination');
+
+  if(total <= 1){ wrap.innerHTML = ''; return; }
+
+  let btns = '';
+
+  // Prev
+  btns += `<button class="pg-btn" onclick="goPage(${currentPage-1})" ${currentPage===1?'disabled':''}>← Prev</button>`;
+
+  // Page numbers — show max 7 with ellipsis
+  const pages = [];
+  if(total <= 7){
+    for(let i=1;i<=total;i++) pages.push(i);
+  } else {
+    pages.push(1);
+    if(currentPage > 3) pages.push('…');
+    for(let i=Math.max(2,currentPage-1); i<=Math.min(total-1,currentPage+1); i++) pages.push(i);
+    if(currentPage < total-2) pages.push('…');
+    pages.push(total);
+  }
+
+  pages.forEach(p => {
+    if(p === '…'){
+      btns += `<span style="padding:0 4px;color:var(--text-lt);font-family:var(--font-data)">…</span>`;
+    } else {
+      btns += `<button class="pg-btn${p===currentPage?' active':''}" onclick="goPage(${p})">${p}</button>`;
+    }
+  });
+
+  // Next
+  btns += `<button class="pg-btn" onclick="goPage(${currentPage+1})" ${currentPage===total?'disabled':''}>Next →</button>`;
+
+  wrap.innerHTML = btns;
+}
+
+/* ── INFO LINE ── */
+function renderInfo(){
+  const info  = document.getElementById('pg-info');
+  const total = filtered.length;
+  const start = (currentPage-1)*PAGE_SIZE + 1;
+  const end   = Math.min(currentPage*PAGE_SIZE, total);
+  if(!total){ info.textContent = 'No results found'; return; }
+  info.textContent = `Showing ${start}–${end} of ${total} contributor${total===1?'':'s'}`;
+}
+
+/* ── GO PAGE ── */
+window.goPage = function(p){
+  const total = Math.ceil(filtered.length / PAGE_SIZE);
+  if(p < 1 || p > total) return;
+  currentPage = p;
+  renderPage();
+  renderPagination();
+  renderInfo();
+};
+
+/* ── FILTERS ── */
+document.getElementById('filter-bar').addEventListener('click', e => {
+  const btn = e.target.closest('.filter-btn');
+  if(!btn) return;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  activeRole = btn.dataset.role;
+  applyFilters();
+});
+
+/* ── SEARCH ── */
+let searchTimer;
+document.getElementById('contrib-search').addEventListener('input', e => {
+  const val = e.target.value;
+  document.getElementById('search-clear').style.display = val ? 'block' : 'none';
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => {
+    searchQuery = val;
+    applyFilters();
+  }, 220); // debounce 220ms — fast but not on every keystroke
+});
+
+document.getElementById('contrib-search').addEventListener('keydown', e => {
+  if(e.key === 'Enter'){ clearTimeout(searchTimer); searchQuery = e.target.value; applyFilters(); }
+});
+
+window.doSearch = function(){
+  clearTimeout(searchTimer);
+  searchQuery = document.getElementById('contrib-search').value;
+  applyFilters();
+};
+
+window.clearSearch = function(){
+  document.getElementById('contrib-search').value = '';
+  document.getElementById('search-clear').style.display = 'none';
+  searchQuery = '';
+  applyFilters();
+};
+
+loadContributors();
+</script>
+</body>
+</html>

@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Application Received — Analyst Den</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Barlow+Condensed:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#111111;--gold:#B8860B;--forest:#1F4D3A;
+  --bg:#F6F3ED;--border:#D8D2C8;
+  --font-display:'Cormorant Garamond',Georgia,serif;
+  --font-data:'Barlow Condensed',sans-serif;
+}
+html,body{height:100%;overflow:hidden}
+body{
+  font-family:var(--font-display);
+  background:var(--bg);
+  display:flex;align-items:center;justify-content:center;
+  min-height:100vh;
+  position:relative;
+  overflow:hidden;
+}
+
+/* ── BACKGROUND ANIMATED LINES ── */
+.bg-lines{
+  position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0;
+}
+.bg-line{
+  position:absolute;background:var(--border);
+  animation:lineGrow 1.2s cubic-bezier(.4,0,.2,1) forwards;
+  opacity:0;
+}
+.bg-line.h{height:1px;width:0;left:0}
+.bg-line.v{width:1px;height:0;top:0}
+@keyframes lineGrow{
+  to{opacity:1;width:100%}
+}
+.bg-line.v{animation-name:lineGrowV}
+@keyframes lineGrowV{
+  to{opacity:1;height:100%}
+}
+.bg-line:nth-child(1){top:20%;animation-delay:0.1s}
+.bg-line:nth-child(2){top:50%;animation-delay:0.2s}
+.bg-line:nth-child(3){top:80%;animation-delay:0.15s}
+.bg-line:nth-child(4){left:25%;animation-delay:0.25s}
+.bg-line:nth-child(5){left:75%;animation-delay:0.3s}
+
+/* ── GOLD PARTICLES ── */
+.particle{
+  position:absolute;border-radius:50%;
+  background:var(--gold);pointer-events:none;z-index:0;
+  animation:float linear infinite;
+  opacity:0;
+}
+@keyframes float{
+  0%{transform:translateY(100vh) rotate(0deg);opacity:0}
+  10%{opacity:0.6}
+  90%{opacity:0.3}
+  100%{transform:translateY(-20vh) rotate(360deg);opacity:0}
+}
+
+/* ── MAIN CONTENT ── */
+.card{
+  position:relative;z-index:10;
+  text-align:center;
+  padding:64px 56px;
+  max-width:580px;
+  width:100%;
+  animation:cardIn 0.6s cubic-bezier(.4,0,.2,1) 0.4s both;
+}
+@keyframes cardIn{
+  from{opacity:0;transform:translateY(32px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+/* ── CHECK ANIMATION ── */
+.check-wrap{
+  width:96px;height:96px;margin:0 auto 36px;
+  position:relative;
+}
+.check-circle{
+  width:96px;height:96px;border-radius:50%;
+  border:2px solid var(--gold);
+  position:absolute;inset:0;
+  stroke-dasharray:301;
+  stroke-dashoffset:301;
+  animation:circleDraw 0.7s cubic-bezier(.4,0,.2,1) 0.6s forwards;
+}
+@keyframes circleDraw{
+  to{stroke-dashoffset:0}
+}
+.check-svg{
+  position:absolute;inset:0;width:100%;height:100%;
+  overflow:visible;
+}
+.check-mark{
+  stroke-dasharray:60;stroke-dashoffset:60;
+  animation:checkDraw 0.4s cubic-bezier(.4,0,.2,1) 1.3s forwards;
+}
+@keyframes checkDraw{
+  to{stroke-dashoffset:0}
+}
+
+/* GOLD RING PULSE */
+.check-pulse{
+  position:absolute;inset:-8px;border-radius:50%;
+  border:1px solid var(--gold);
+  opacity:0;
+  animation:pulse 1.5s ease-out 1.6s infinite;
+}
+@keyframes pulse{
+  0%{transform:scale(1);opacity:0.6}
+  100%{transform:scale(1.4);opacity:0}
+}
+
+/* ── TYPOGRAPHY ── */
+.tag{
+  font-family:var(--font-data);font-weight:700;font-size:11px;
+  letter-spacing:0.16em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:18px;display:block;
+  opacity:0;animation:fadeUp 0.5s ease 1.4s forwards;
+}
+h1{
+  font-family:var(--font-display);font-weight:600;
+  font-size:clamp(32px,5vw,52px);line-height:1.05;
+  letter-spacing:-0.02em;color:var(--ink);
+  margin-bottom:16px;
+  opacity:0;animation:fadeUp 0.5s ease 1.5s forwards;
+}
+h1 em{font-style:italic;font-weight:300;color:var(--gold)}
+.sub{
+  font-family:var(--font-display);font-size:18px;
+  line-height:1.65;color:#555550;
+  margin-bottom:40px;max-width:420px;margin-left:auto;margin-right:auto;
+  opacity:0;animation:fadeUp 0.5s ease 1.65s forwards;
+}
+.sub strong{color:var(--ink);font-weight:600}
+
+/* ── TIMELINE ── */
+.timeline{
+  display:flex;align-items:center;justify-content:center;
+  gap:0;margin-bottom:44px;
+  opacity:0;animation:fadeUp 0.5s ease 1.8s forwards;
+}
+.tl-step{text-align:center;flex:1}
+.tl-dot{
+  width:10px;height:10px;border-radius:50%;
+  background:var(--gold);margin:0 auto 8px;
+  position:relative;
+}
+.tl-dot::after{
+  content:'';position:absolute;
+  top:50%;left:100%;
+  width:calc(100% + 40px);height:1px;
+  background:var(--border);
+  transform:translateY(-50%);
+}
+.tl-step:last-child .tl-dot::after{display:none}
+.tl-label{
+  font-family:var(--font-data);font-size:11px;
+  letter-spacing:0.06em;text-transform:uppercase;color:#888882;
+}
+.tl-value{
+  font-family:var(--font-display);font-size:14px;
+  color:var(--ink);margin-top:2px;
+}
+
+/* ── BUTTONS ── */
+.actions{
+  display:flex;gap:14px;justify-content:center;flex-wrap:wrap;
+  opacity:0;animation:fadeUp 0.5s ease 2s forwards;
+}
+.btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:13px 28px;
+  font-family:var(--font-data);font-weight:700;font-size:12px;
+  letter-spacing:0.10em;text-transform:uppercase;
+  border:1.5px solid;text-decoration:none;
+  transition:all 0.22s;cursor:pointer;
+}
+.btn-primary{background:var(--gold);color:#fff;border-color:var(--gold)}
+.btn-primary:hover{opacity:0.88;transform:translateY(-2px)}
+.btn-outline{background:transparent;color:var(--ink);border-color:var(--border)}
+.btn-outline:hover{border-color:var(--ink);background:var(--ink);color:var(--bg)}
+
+/* ── CONFETTI BURST ── */
+.confetti-piece{
+  position:absolute;z-index:5;pointer-events:none;
+  width:8px;height:8px;
+  animation:confettiFall 2s ease-in forwards;
+  opacity:0;
+}
+@keyframes confettiFall{
+  0%{opacity:1;transform:translateY(0) rotate(0deg) scale(1)}
+  100%{opacity:0;transform:translateY(200px) rotate(720deg) scale(0.5)}
+}
+
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(12px)}
+  to{opacity:1;transform:translateY(0)}
+}
+</style>
+</head>
+<body>
+
+<!-- Background lines -->
+<div class="bg-lines">
+  <div class="bg-line h"></div>
+  <div class="bg-line h"></div>
+  <div class="bg-line h"></div>
+  <div class="bg-line v"></div>
+  <div class="bg-line v"></div>
+</div>
+
+<!-- Main card -->
+<div class="card">
+
+  <!-- Animated check -->
+  <div class="check-wrap">
+    <div class="check-pulse"></div>
+    <svg class="check-svg" viewBox="0 0 96 96">
+      <circle
+        class="check-circle"
+        cx="48" cy="48" r="46"
+        fill="none"
+        stroke="var(--gold)"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        transform="rotate(-90 48 48)"
+      />
+      <polyline
+        class="check-mark"
+        points="28,50 42,64 68,34"
+        fill="none"
+        stroke="var(--forest)"
+        stroke-width="3"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  </div>
+
+  <span class="tag">Application Received</span>
+  <h1>We've Got<br>Your <em>Application</em></h1>
+  <p class="sub">
+    Thank you for applying to Analyst Den.<br>
+    <strong>We review every application personally</strong> and will be in touch within 5 working days.
+  </p>
+
+  <div class="timeline">
+    <div class="tl-step">
+      <div class="tl-dot"></div>
+      <div class="tl-label">Today</div>
+      <div class="tl-value">Applied</div>
+    </div>
+    <div class="tl-step">
+      <div class="tl-dot" style="background:var(--border)"></div>
+      <div class="tl-label">Within 5 days</div>
+      <div class="tl-value">We review</div>
+    </div>
+    <div class="tl-step">
+      <div class="tl-dot" style="background:var(--border)"></div>
+      <div class="tl-label">On approval</div>
+      <div class="tl-value">Invite sent</div>
+    </div>
+    <div class="tl-step">
+      <div class="tl-dot" style="background:var(--border)"></div>
+      <div class="tl-label">You complete</div>
+      <div class="tl-value">Profile live</div>
+    </div>
+  </div>
+
+  <div class="actions">
+    <a href="research.html" class="btn btn-primary">Explore Our Research →</a>
+    <a href="index.html" class="btn btn-outline">Back to Home</a>
+  </div>
+
+</div>
+
+<script>
+/* ── PARTICLES ── */
+function spawnParticles(){
+  const sizes = [4,5,6,3,5,4];
+  const delays = [0,0.3,0.6,0.9,1.2,0.5,0.8,1.4,0.2,1.0];
+  const durations = [4,5,6,7,5,6,4,7,5,6];
+  for(let i=0;i<12;i++){
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = sizes[i%sizes.length];
+    p.style.cssText = `
+      width:${size}px;height:${size}px;
+      left:${Math.random()*100}%;
+      animation-duration:${durations[i%durations.length]}s;
+      animation-delay:${delays[i%delays.length]+1.5}s;
+      opacity:0;
+    `;
+    document.body.appendChild(p);
+  }
+}
+
+/* ── CONFETTI BURST on check complete ── */
+function burst(){
+  const colors = ['#B8860B','#1F4D3A','#D4A820','#C4891F','#F6F3ED'];
+  const cx = window.innerWidth/2;
+  const cy = window.innerHeight/2;
+  for(let i=0;i<24;i++){
+    const c = document.createElement('div');
+    c.className = 'confetti-piece';
+    const angle = (i/24)*360;
+    const dist  = 80 + Math.random()*60;
+    const rad   = angle*(Math.PI/180);
+    const tx    = cx + Math.cos(rad)*dist;
+    const ty    = cy + Math.sin(rad)*dist - 80;
+    c.style.cssText = `
+      left:${cx}px;top:${cy-80}px;
+      background:${colors[i%colors.length]};
+      border-radius:${Math.random()>0.5?'50%':'2px'};
+      animation-delay:1.6s;
+      animation-duration:${1.5+Math.random()}s;
+      transform-origin:center;
+    `;
+    c.style.setProperty('--tx', tx+'px');
+    c.style.setProperty('--ty', ty+'px');
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(), 4000);
+  }
+}
+
+spawnParticles();
+setTimeout(burst, 100);
+</script>
+</body>
+</html>
